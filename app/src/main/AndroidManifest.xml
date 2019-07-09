@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.firesun.wechat.enhancement">
+    package="com.gentcent.wechat.enhancement">
 
     <application
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".MyApplication">
 
         <activity
-            android:name="me.firesun.wechat.enhancement.SettingsActivity"
+            android:name="com.gentcent.wechat.enhancement.SettingsActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,9 +18,9 @@
         </activity>
 
         <activity-alias
-            android:name="me.firesun.wechat.enhancement.SettingsActivity_Alias"
+            android:name="com.gentcent.wechat.enhancement.SettingsActivity_Alias"
             android:label="@string/app_name"
-            android:targetActivity="me.firesun.wechat.enhancement.SettingsActivity">
+            android:targetActivity="com.gentcent.wechat.enhancement.SettingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -36,7 +37,7 @@
             android:name="xposedminversion"
             android:value="30" />
 
-        <receiver android:name=".util.ConfigReceiver" android:enabled="true">
+        <receiver android:name="com.gentcent.wechat.enhancement.util.ConfigReceiver" android:enabled="true">
             <intent-filter>
                 <action android:name="wechat.intent.action.SAVE_WECHAT_ENHANCEMENT_CONFIG" />
             </intent-filter>

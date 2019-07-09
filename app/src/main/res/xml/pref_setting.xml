@@ -10,6 +10,14 @@
             android:title="@string/generate" />
 
         <Preference
+            android:key="get_wcdb"
+            android:title="@string/getWcdb" />
+
+        <Preference
+            android:key="send_message"
+            android:title="@string/send_message" />
+
+        <Preference
             android:key="repair"
             android:title="@string/repair" />
     </PreferenceCategory>
@@ -44,7 +52,7 @@
             android:key="delay"
             android:title="@string/pref_delay" />
 
-        <me.firesun.wechat.enhancement.RangePreference
+        <com.gentcent.wechat.enhancement.RangePreference
             end="delay_max"
             start="delay_min"
             android:defaultValue="true"
@@ -107,7 +115,7 @@
     <PreferenceCategory android:title="@string/about">
         <Preference
             android:key="author"
-            android:summary="firesun"
+            android:summary="gentcent"
             android:title="@string/author" />
         <Preference
             android:key="author"

@@ -1,4 +1,4 @@
-package me.firesun.wechat.enhancement.util;
+package com.gentcent.wechat.enhancement.util;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,9 +18,9 @@ import java.util.Map;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import me.firesun.wechat.enhancement.Main;
+import com.gentcent.wechat.enhancement.Main;
 
-import static me.firesun.wechat.enhancement.util.ReflectionUtil.log;
+import static com.gentcent.wechat.enhancement.util.ReflectionUtil.log;
 
 public class SearchClasses {
     private static List<String> wxClasses = new ArrayList<>();

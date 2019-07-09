@@ -1,4 +1,4 @@
-package me.firesun.wechat.enhancement.util;
+package com.gentcent.wechat.enhancement.util;
 
 
 import android.content.BroadcastReceiver;

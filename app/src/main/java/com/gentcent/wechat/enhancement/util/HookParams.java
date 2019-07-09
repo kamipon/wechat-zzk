@@ -1,4 +1,4 @@
-package me.firesun.wechat.enhancement.util;
+package com.gentcent.wechat.enhancement.util;
 
 public class HookParams {
     public static final String SAVE_WECHAT_ENHANCEMENT_CONFIG = "wechat.intent.action.SAVE_WECHAT_ENHANCEMENT_CONFIG";

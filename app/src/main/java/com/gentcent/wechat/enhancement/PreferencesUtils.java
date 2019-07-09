@@ -1,12 +1,20 @@
-package me.firesun.wechat.enhancement;
+package com.gentcent.wechat.enhancement;
 
+
+import android.content.SharedPreferences;
+
+import com.gentcent.wechat.enhancement.bean.MessageBean;
+import com.gentcent.wechat.enhancement.util.XLog;
+import com.gentcent.wechat.enhancement.wcdb.GsonUtils;
+
+import java.util.List;
 
 import de.robv.android.xposed.XSharedPreferences;
 
 public class PreferencesUtils {
 
     private static XSharedPreferences instance = null;
-
+    
     private static XSharedPreferences getInstance() {
         if (instance == null) {
             instance = new XSharedPreferences(PreferencesUtils.class.getPackage().getName());
@@ -15,6 +23,18 @@ public class PreferencesUtils {
             instance.reload();
         }
         return instance;
+    }
+    
+    public static List<MessageBean> getSendMessageQueue() {
+        String sendMessageQueueStr = getInstance().getString("sendMessageQueue", "[]");
+        XLog.d("getSendMessageQueue:"+sendMessageQueueStr);
+        return GsonUtils.GsonToList(sendMessageQueueStr, MessageBean.class);
+    }
+    
+    public static void clearSendMessageQueue() {
+        SharedPreferences.Editor edit = getInstance().edit();
+        edit.clear();
+        edit.commit();
     }
 
     public static boolean open() {

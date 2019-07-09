@@ -1,11 +1,11 @@
-package me.firesun.wechat.enhancement.plugin;
+package com.gentcent.wechat.enhancement.plugin;
 
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import me.firesun.wechat.enhancement.PreferencesUtils;
-import me.firesun.wechat.enhancement.util.HookParams;
+import com.gentcent.wechat.enhancement.PreferencesUtils;
+import com.gentcent.wechat.enhancement.util.HookParams;
 
 
 public class ADBlock implements IPlugin {

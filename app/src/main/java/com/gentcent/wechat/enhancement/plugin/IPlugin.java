@@ -1,4 +1,4 @@
-package me.firesun.wechat.enhancement.plugin;
+package com.gentcent.wechat.enhancement.plugin;
 
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 

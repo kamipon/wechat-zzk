@@ -16,8 +16,8 @@
 - 突破发送图片9张限制
 
 ## 效果预览
-<img src="https://raw.githubusercontent.com/firesunCN/WechatEnhancement/master/image/screenshot1.jpg" width="45%" /> <img src="https://raw.githubusercontent.com/firesunCN/WechatEnhancement/master/image/screenshot2.jpg" width="45%" />
-<img src="https://raw.githubusercontent.com/firesunCN/WechatEnhancement/master/image/screenshot3.jpg" width="45%" />
+<img src="https://raw.githubusercontent.com/gentcentCN/WechatEnhancement/master/image/screenshot1.jpg" width="45%" /> <img src="https://raw.githubusercontent.com/gentcentCN/WechatEnhancement/master/image/screenshot2.jpg" width="45%" />
+<img src="https://raw.githubusercontent.com/gentcentCN/WechatEnhancement/master/image/screenshot3.jpg" width="45%" />
 
 ## 致谢
 本项目为以下三个项目的融合，使用Java重（chao）写（xi）了微信巫师的自动搜索hook类的功能，并应用在抢红包和自动接收转账上，使得以上功能都能自动适配微信，在此十分感谢veryyoung，Gh0u1L5，wuxiaosu

@@ -36,4 +36,6 @@
     <string name="generate_success">生成配置成功</string>
     <string name="generate_failed">生成配置失败</string>
     <string name="generating">正在生成配置…</string>
+    <string name="send_message">发消息</string>
+    <string name="getWcdb">获取微信数据</string>
 </resources>

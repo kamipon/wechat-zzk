@@ -1,4 +1,4 @@
-package me.firesun.wechat.enhancement;
+package com.gentcent.wechat.enhancement;
 
 
 import android.content.Context;
