@@ -1,13 +1,14 @@
 package com.gentcent.wechat.enhancement.util;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.text.TextUtils;
 
-import com.gentcent.wechat.enhancement.MyApplication;
+import com.blankj.utilcode.util.AppUtils;
 import com.gentcent.wechat.enhancement.bean.MessageBean;
 import com.gentcent.wechat.enhancement.wcdb.GsonUtils;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 /**
@@ -17,22 +18,39 @@ import java.util.List;
 public class MessageStorage {
 	//发送消息的队列
 	public static List<MessageBean> getSendMessageQueue(){
-		SharedPreferences sharedPreferences = MyApplication.getAppContext().getSharedPreferences(HookParams.WECHAT_ENHANCEMENT_CONFIG_NAME, Context.MODE_WORLD_WRITEABLE);
-		String sendMessageQueueStr = sharedPreferences.getString("sendMessageQueue", "[]");
+		String sendMessageQueueStr = MyHelper.readLine("sendMessageQueue");
+		if(TextUtils.isEmpty(sendMessageQueueStr)){
+			sendMessageQueueStr = "[]";
+		}
 		XLog.d("getSendMessageQueue:" + sendMessageQueueStr);
 		return GsonUtils.GsonToList(sendMessageQueueStr, MessageBean.class);
 	}
 	
-	public static boolean setSendMessageQueque(List<MessageBean> sendMessageQueue){
+	//发送消息的队列
+	public static JsonArray getSendMessageQueueJson(){
+		String sendMessageQueueStr = MyHelper.readLine("sendMessageQueue");
+		if(TextUtils.isEmpty(sendMessageQueueStr)){
+			sendMessageQueueStr = "[]";
+		}
+		XLog.d("getSendMessageQueue:" + sendMessageQueueStr);
+		return new JsonParser().parse(sendMessageQueueStr).getAsJsonArray();
+	}
+	
+	public static void setSendMessageQueque(List<MessageBean> sendMessageQueue){
 		try{
-			SharedPreferences.Editor editor = MyApplication.getAppContext().getSharedPreferences(HookParams.WECHAT_ENHANCEMENT_CONFIG_NAME, Context.MODE_WORLD_WRITEABLE).edit();
+			MyHelper.writeLine("sendMessageQueue",GsonUtils.GsonString(sendMessageQueue));
 			XLog.d("setSendMessageQueque:" + GsonUtils.GsonString(sendMessageQueue));
-			editor.putString("sendMessageQueue", GsonUtils.GsonString(sendMessageQueue));
-			editor.commit();
+		}catch (Exception e){
+			XLog.e(e.toString());
+		}
+	}
+	
+	public static boolean clearSendMessageQueque(){
+		try{
+			return MyHelper.delete("sendMessageQueue");
 		}catch (Exception e){
 			XLog.e(e.toString());
 			return false;
 		}
-		return true;
 	}
 }

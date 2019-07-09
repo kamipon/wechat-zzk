@@ -1,17 +1,16 @@
 package com.gentcent.wechat.enhancement.bean;
 
-import android.app.AndroidAppHelper;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.gentcent.wechat.enhancement.MyApplication;
 import com.gentcent.wechat.enhancement.wcdb.DecryptUtils;
-
-import java.io.Serializable;
 
 /**
  * @author zuozhi
  * @since 2019-07-01
  */
-public class MessageBean {
+public class MessageBean implements Parcelable {
 	private String DeviceIMEI = DecryptUtils.initPhoneIMEI(MyApplication.getAppContext());
 	private String MyWxId;
 	private String FriendWxId;
@@ -44,7 +43,37 @@ public class MessageBean {
 		ServiceGuid = serviceGuid;
 	}
 	
-	public MessageBean() { }
+	public MessageBean() {
+	}
+	
+	protected MessageBean(Parcel in) {
+		DeviceIMEI = in.readString();
+		MyWxId = in.readString();
+		FriendWxId = in.readString();
+		Content = in.readString();
+		Pos = in.readInt();
+		Type = in.readInt();
+		Interval = in.readInt();
+		LinkImg = in.readString();
+		LinkTitle = in.readString();
+		LinkDescription = in.readString();
+		LinkUrl = in.readString();
+		FileName = in.readString();
+		ChatroomMemberWxId = in.readString();
+		ServiceGuid = in.readString();
+	}
+	
+	public static final Creator<MessageBean> CREATOR = new Creator<MessageBean>() {
+		@Override
+		public MessageBean createFromParcel(Parcel in) {
+			return new MessageBean(in);
+		}
+		
+		@Override
+		public MessageBean[] newArray(int size) {
+			return new MessageBean[size];
+		}
+	};
 	
 	public String getDeviceIMEI() {
 		return DeviceIMEI;
@@ -156,5 +185,29 @@ public class MessageBean {
 	
 	public void setServiceGuid(String serviceGuid) {
 		ServiceGuid = serviceGuid;
+	}
+	
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+	
+	@Override
+	public void writeToParcel(Parcel parcel, int i) {
+		
+		parcel.writeString(DeviceIMEI);
+		parcel.writeString(MyWxId);
+		parcel.writeString(FriendWxId);
+		parcel.writeString(Content);
+		parcel.writeInt(Pos);
+		parcel.writeInt(Type);
+		parcel.writeInt(Interval);
+		parcel.writeString(LinkImg);
+		parcel.writeString(LinkTitle);
+		parcel.writeString(LinkDescription);
+		parcel.writeString(LinkUrl);
+		parcel.writeString(FileName);
+		parcel.writeString(ChatroomMemberWxId);
+		parcel.writeString(ServiceGuid);
 	}
 }

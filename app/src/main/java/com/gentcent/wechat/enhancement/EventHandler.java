@@ -1,17 +1,15 @@
 package com.gentcent.wechat.enhancement;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Environment;
 import android.widget.Toast;
 
 import com.gentcent.wechat.enhancement.bean.MessageBean;
-import com.gentcent.wechat.enhancement.util.HookParams;
 import com.gentcent.wechat.enhancement.util.MessageStorage;
 import com.gentcent.wechat.enhancement.util.XLog;
 import com.gentcent.wechat.enhancement.wcdb.DecryptUtils;
 import com.gentcent.wechat.enhancement.wcdb.FileUtils;
-import com.gentcent.wechat.enhancement.wcdb.GsonUtils;
 import com.gentcent.wechat.enhancement.wcdb.Md5Utils;
 import com.gentcent.wechat.enhancement.wcdb.ShellUtils;
 import com.threekilogram.objectbus.bus.ObjectBus;
@@ -32,14 +30,18 @@ public class EventHandler {
 			str = "文本消息";
 		}
 		XLog.d("开始调用发送消息 类型:" + str);
-		
+
 		List<MessageBean> sendMessageQueue = MessageStorage.getSendMessageQueue();
 		MessageBean messageBean = new MessageBean();
 		messageBean.setFriendWxId("wxid_pcxj1zyjpc5n21");
-		messageBean.setContent("测试发消息");
+		messageBean.setContent("7.9号信息");
 		messageBean.setType(1);
 		sendMessageQueue.add(messageBean);
 		MessageStorage.setSendMessageQueque(sendMessageQueue);
+
+		Intent intent = new Intent("MyAction");
+		intent.putExtra("act", "send_message");
+		context.sendBroadcast(intent);
 		
 		Toast toast = Toast.makeText(context, "开始调用发送消息 类型:" + str, Toast.LENGTH_SHORT);
 		toast.show();

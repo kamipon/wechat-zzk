@@ -1,9 +1,14 @@
 package com.gentcent.wechat.enhancement.wcdb;
 
+import com.gentcent.wechat.enhancement.util.XLog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -64,13 +69,16 @@ public class GsonUtils {
 	 * @return
 	 */
 	public static <T> List<T> GsonToList(String gsonString, Class<T> cls) {
-		List<T> list = null;
-		if (gson != null) {
-			//根据泛型返回解析指定的类型,TypeToken<List<T>>{}.getType()获取返回类型
-			list = gson.fromJson(gsonString, new TypeToken<List<T>>() {
-			}.getType());
+		List<T> lst = new ArrayList<>();
+		try {
+			JsonArray array = new JsonParser().parse(gsonString).getAsJsonArray();
+			for (final JsonElement elem : array) {
+				lst.add(gson.fromJson(elem, cls));
+			}
+		} catch (Exception e) {
+			XLog.e("GsonToListError"+e.getMessage());
 		}
-		return list;
+		return lst;
 	}
 	
 	/**
