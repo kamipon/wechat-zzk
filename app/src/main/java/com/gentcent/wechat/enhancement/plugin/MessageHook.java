@@ -4,10 +4,8 @@ package com.gentcent.wechat.enhancement.plugin;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 
-import com.gentcent.wechat.enhancement.util.MessageStorage;
+import com.gentcent.wechat.enhancement.util.HookParams;
 import com.gentcent.wechat.enhancement.util.XLog;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
@@ -15,9 +13,10 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 
 public class MessageHook implements IPlugin {
+	
 	@Override
 	public void hook(final XC_LoadPackage.LoadPackageParam lpparam) {
-		XposedHelpers.findAndHookMethod("com.tencent.wcdb.database.SQLiteDatabase", lpparam.classLoader, "insertWithOnConflict", String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
+		XposedHelpers.findAndHookMethod(HookParams.getInstance().SQLiteDatabaseClassName, lpparam.classLoader, HookParams.getInstance().SQLiteDatabaseUpdateMethod, String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
 			@SuppressLint("CommitPrefEdits")
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) {
@@ -48,15 +47,6 @@ public class MessageHook implements IPlugin {
 //						b.a(this.a, contentValues);
 //					}
 					}
-				} catch (Error | Exception e) {
-					XLog.e("错误：" + e.toString());
-				}
-			}
-			
-			@Override
-			protected void afterHookedMethod(MethodHookParam param) {
-				try {
-				
 				} catch (Error | Exception e) {
 					XLog.e("错误：" + e.toString());
 				}

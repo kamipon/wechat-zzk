@@ -31,16 +31,19 @@ public class EventHandler {
 		}
 		XLog.d("开始调用发送消息 类型:" + str);
 
-		List<MessageBean> sendMessageQueue = MessageStorage.getSendMessageQueue();
-		MessageBean messageBean = new MessageBean();
-		messageBean.setFriendWxId("wxid_pcxj1zyjpc5n21");
-		messageBean.setContent("7.9号信息");
-		messageBean.setType(1);
-		sendMessageQueue.add(messageBean);
-		MessageStorage.setSendMessageQueque(sendMessageQueue);
+//		List<MessageBean> sendMessageQueue = MessageStorage.getSendMessageQueue();
+//		MessageBean messageBean = new MessageBean();
+//		messageBean.setFriendWxId("wxid_pcxj1zyjpc5n21");
+//		messageBean.setContent("7.9号信息");
+//		messageBean.setType(1);
+//		sendMessageQueue.add(messageBean);
+//		MessageStorage.setSendMessageQueque(sendMessageQueue);
 
-		Intent intent = new Intent("MyAction");
+		Intent intent = new Intent("WxAction");
 		intent.putExtra("act", "send_message");
+		intent.putExtra("friendWxId", "wxid_pcxj1zyjpc5n21");
+		intent.putExtra("content", "7.10日");
+		intent.putExtra("type", 1);
 		context.sendBroadcast(intent);
 		
 		Toast toast = Toast.makeText(context, "开始调用发送消息 类型:" + str, Toast.LENGTH_SHORT);

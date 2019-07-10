@@ -49,54 +49,33 @@ public class Main implements IXposedHookLoadPackage {
 	public void handleLoadPackage(final LoadPackageParam lpparam) {
 		
 		try {
+			
 			if (lpparam.packageName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
+				//Only hook important process
+				String processName = lpparam.processName;
+				if (!processName.equals(HookParams.WECHAT_PACKAGE_NAME) &&
+						!processName.equals(HookParams.WECHAT_PACKAGE_NAME + ":tools")
+				) {
+					return;
+				}
 				XposedHelpers.findAndHookMethod(ContextWrapper.class, "attachBaseContext", Context.class, new XC_MethodHook() {
 					@Override
 					protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
 						super.afterHookedMethod(param);
 						Context context = (Context) param.args[0];
-						String processName = lpparam.processName;
-						//Only hook important process
-						if (!processName.equals(HookParams.WECHAT_PACKAGE_NAME) &&
-								!processName.equals(HookParams.WECHAT_PACKAGE_NAME + ":tools")
-						) {
-							return;
-						}
 						String versionName = getVersionName(context, HookParams.WECHAT_PACKAGE_NAME);
 						if (!HookParams.hasInstance()) {
 							XLog.e("Found wechat version:" + versionName);
 							SearchClasses.init(context, lpparam, versionName);
 							loadPlugins(lpparam);
-							
 						}
 					}
 				});
-				XposedHelpers.findAndHookMethod(Application.class, "onCreate", new XC_MethodHook() {
-					public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-						super.afterHookedMethod(methodHookParam);
-						if (lpparam.isFirstApplication) {
-							Application application = (Application) methodHookParam.thisObject;
-							
-							StaticDepot.wxLpparam = lpparam;
-							StaticDepot.wxLpparam.classLoader = application.getClassLoader();
-							
-							IntentFilter intentFilter = new IntentFilter("MyAction");
-							StaticDepot.acceptReceiver = new AcceptReceiver();
-							application.registerReceiver(StaticDepot.acceptReceiver, intentFilter);
-						}
-					}
-				});
-				XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
-					public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-						super.afterHookedMethod(methodHookParam);
-						if (StaticDepot.activity == null) {
-							StaticDepot.activity = (Activity) methodHookParam.thisObject;
-							XLog.d("mActivity is reset success!");
-						}
-					}
-				});
+				
+				if (lpparam.isFirstApplication && processName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
+					StaticDepot.init(lpparam);
+				}
 			}
-			
 		} catch (Error | Exception e) {
 			XLog.e("错误:" + e.getMessage());
 			e.printStackTrace();

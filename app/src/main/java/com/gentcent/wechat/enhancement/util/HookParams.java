@@ -39,6 +39,11 @@ public class HookParams {
     public boolean hasTimingIdentifier = true;
     public String versionName;
     public int versionCode;
+    
+    public String sendMessageClassName = "com.tencent.mm.ah.p";
+    public String sendMessageStaticObject = "fej";
+    public String sendMessageParamClassName = "com.tencent.mm.modelmulti.h";
+    public String sendMessageMethodName = "d";
 
     private static HookParams instance = null;
 
