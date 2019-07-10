@@ -1,15 +1,13 @@
 package com.gentcent.wechat.enhancement;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
-import android.widget.Toast;
 
 import com.gentcent.wechat.enhancement.bean.MessageBean;
 import com.gentcent.wechat.enhancement.util.HookParams;
-import com.gentcent.wechat.enhancement.util.MessageStorage;
-import com.gentcent.wechat.enhancement.util.StaticDepot;
-import com.gentcent.wechat.enhancement.util.ThreadPoolUtils;
+import com.gentcent.wechat.enhancement.util.SendManager;
 import com.gentcent.wechat.enhancement.util.XLog;
 import com.gentcent.wechat.enhancement.wcdb.DecryptUtils;
 import com.gentcent.wechat.enhancement.wcdb.FileUtils;
@@ -18,9 +16,11 @@ import com.gentcent.wechat.enhancement.wcdb.ShellUtils;
 import com.threekilogram.objectbus.bus.ObjectBus;
 
 import java.io.File;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-
-import de.robv.android.xposed.XposedHelpers;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @author zuozhi
@@ -28,43 +28,65 @@ import de.robv.android.xposed.XposedHelpers;
  */
 public class EventHandler {
 	
-	public static void sendMessage(int type){
+	/**
+	 * 发送消息
+	 *
+	 * @param type 消息类型
+	 */
+	public static void sendMessage(int type) {
 		Context context = MyApplication.getAppContext();
-		String str = "unknown";
-		if(type==1){
-			str = "文本消息";
+		XLog.d("添加至消息队列 类型:" + type);
+		
+		MessageBean messageBean = new MessageBean();
+		messageBean.setFriendWxId("wxid_pcxj1zyjpc5n21");	//测试数据
+		messageBean.setContent("有点饿啊");	//测试数据
+		messageBean.setType(1);	//测试数据
+		SendManager.addToQueque(messageBean);
+		//添加至消息队列
+		sendBroad(context);
+	}
+	
+	/**
+	 * 发送广播，传递消息队列
+	 */
+	private static void sendBroad(final Context context) {
+		int quequeSize = SendManager.getQuequeSize();
+		if(quequeSize>0 && !SendManager.isLock()){
+			SendManager.lock();
+			List<MessageBean> list = new ArrayList<>(SendManager.getQueque());
+			SendManager.clearQueque();
+			
+			Intent intent = new Intent("WxAction");
+			intent.putExtra("act", "send_message");
+			intent.putExtra("msgQueue", (Serializable)list);
+			context.sendBroadcast(intent);
+			XLog.d("发送消息 | 个数："+quequeSize);
+			
+			//发送完成后再次执行，直到消息队列为空为止
+			TimerTask task = new TimerTask() {
+				@Override
+				public void run() {
+					SendManager.unLock();
+					sendBroad(context);
+				}
+			};
+			new Timer().schedule(task, HookParams.SEND_TIME_INTERVAL * (quequeSize + 1));
 		}
-		XLog.d("开始调用发送消息 类型:" + str);
-
-//		List<MessageBean> sendMessageQueue = MessageStorage.getSendMessageQueue();
-//		MessageBean messageBean = new MessageBean();
-//		messageBean.setFriendWxId("wxid_pcxj1zyjpc5n21");
-//		messageBean.setContent("7.9号信息");
-//		messageBean.setType(1);
-//		sendMessageQueue.add(messageBean);
-//		MessageStorage.setSendMessageQueque(sendMessageQueue);
-
-		Intent intent = new Intent("WxAction");
-		intent.putExtra("act", "send_message");
-		intent.putExtra("friendWxId", "wxid_pcxj1zyjpc5n21");
-		intent.putExtra("content", "7.10日");
-		intent.putExtra("type", 1);
-		context.sendBroadcast(intent);
-		
-		Toast toast = Toast.makeText(context, "开始调用发送消息 类型:" + str, Toast.LENGTH_SHORT);
-		toast.show();
-		
 	}
 	
 	
-	
-	public static final String WX_ROOT_PATH = "/data/data/com.tencent.mm/";
+	/**
+	 * 读取微信数据库
+	 */
+	@SuppressLint("SdCardPath")
+	private static final String WX_ROOT_PATH = "/data/data/com.tencent.mm/";
 	private static final String WX_DB_DIR_PATH = WX_ROOT_PATH + "MicroMsg";
 	private static final String WX_DB_FILE_NAME = "EnMicroMsg.db";
 	private static String mCurrApkPath = Environment.getExternalStorageDirectory().getPath() + "/";
 	private static final String COPY_WX_DATA_DB = "wx_data.db";
 	private static String copyFilePath = mCurrApkPath + COPY_WX_DATA_DB;
-	public static void getWcdb(final Context mContext){
+	
+	public static void getWcdb(final Context mContext) {
 		try {
 			ObjectBus.newList().toPool(new Runnable() {
 				@Override

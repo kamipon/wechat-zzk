@@ -4,6 +4,7 @@ public class HookParams {
     public static final String SAVE_WECHAT_ENHANCEMENT_CONFIG = "wechat.intent.action.SAVE_WECHAT_ENHANCEMENT_CONFIG";
     public static final String WECHAT_ENHANCEMENT_CONFIG_NAME = "wechat_enhancement_config";
     public static final String WECHAT_PACKAGE_NAME = "com.tencent.mm";
+    public static int SEND_TIME_INTERVAL = 1000; //发送消息的时间间隔
     public static final int VERSION_CODE = 46; //大版本变动时候才需要修改
 
     public String SQLiteDatabaseClassName = "com.tencent.wcdb.database.SQLiteDatabase";
