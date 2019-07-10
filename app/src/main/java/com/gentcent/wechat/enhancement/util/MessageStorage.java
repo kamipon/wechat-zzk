@@ -9,6 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,6 +17,10 @@ import java.util.List;
  * @since 2019-07-08
  */
 public class MessageStorage {
+	
+	//发送消息的队列
+	public static List<MessageBean> sendMessageQueue = new ArrayList();
+	
 	//发送消息的队列
 	public static List<MessageBean> getSendMessageQueue(){
 		String sendMessageQueueStr = MyHelper.readLine("sendMessageQueue");

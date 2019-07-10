@@ -6,7 +6,10 @@ import android.os.Environment;
 import android.widget.Toast;
 
 import com.gentcent.wechat.enhancement.bean.MessageBean;
+import com.gentcent.wechat.enhancement.util.HookParams;
 import com.gentcent.wechat.enhancement.util.MessageStorage;
+import com.gentcent.wechat.enhancement.util.StaticDepot;
+import com.gentcent.wechat.enhancement.util.ThreadPoolUtils;
 import com.gentcent.wechat.enhancement.util.XLog;
 import com.gentcent.wechat.enhancement.wcdb.DecryptUtils;
 import com.gentcent.wechat.enhancement.wcdb.FileUtils;
@@ -16,6 +19,8 @@ import com.threekilogram.objectbus.bus.ObjectBus;
 
 import java.io.File;
 import java.util.List;
+
+import de.robv.android.xposed.XposedHelpers;
 
 /**
  * @author zuozhi

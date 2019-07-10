@@ -16,13 +16,12 @@ public class MessageHook implements IPlugin {
 	
 	@Override
 	public void hook(final XC_LoadPackage.LoadPackageParam lpparam) {
-		XposedHelpers.findAndHookMethod(HookParams.getInstance().SQLiteDatabaseClassName, lpparam.classLoader, HookParams.getInstance().SQLiteDatabaseUpdateMethod, String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
+		XposedHelpers.findAndHookMethod(HookParams.getInstance().SQLiteDatabaseClassName, lpparam.classLoader, HookParams.getInstance().SQLiteDatabaseInsertWithOnConflictMethod, String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
 			@SuppressLint("CommitPrefEdits")
 			@Override
 			protected void beforeHookedMethod(MethodHookParam param) {
 				try {
 					String str = (String) param.args[0];
-					XLog.e(str);
 //				if (str.equals("fmessage_conversation")) {
 //				}
 					if (param.args[2] != null) {

@@ -32,6 +32,7 @@ public class StaticDepot {
 					IntentFilter intentFilter = new IntentFilter("WxAction");
 					StaticDepot.wxReceiver = new WxReceiver();
 					application.registerReceiver(StaticDepot.wxReceiver, intentFilter);
+					XLog.d("初始化广播接收器");
 				}
 			}
 		});
