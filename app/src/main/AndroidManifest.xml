@@ -64,7 +64,7 @@
             android:value="@string/app_desc" />
         <meta-data
             android:name="xposedminversion"
-            android:value="82" />
+            android:value="50" />
 
         <receiver
             android:name=".util.ConfigReceiver"
