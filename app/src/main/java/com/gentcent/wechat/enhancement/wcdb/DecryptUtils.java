@@ -2,6 +2,7 @@ package com.gentcent.wechat.enhancement.wcdb;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
@@ -15,6 +16,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -83,14 +85,31 @@ public class DecryptUtils {
 		}
 	}
 	
-	
 	/**
 	 * 获取手机的imei码
 	 */
 	@SuppressLint({"HardwareIds", "MissingPermission"})
 	public static String initPhoneIMEI(Context mContext) {
-		TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-		return telephonyManager.getDeviceId();
+		try {
+			TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+			if (Build.VERSION.SDK_INT >= 26) {
+				return telephonyManager.getImei();
+			}
+			if (Build.VERSION.SDK_INT >= 21) {
+				Method declaredMethod = telephonyManager.getClass().getDeclaredMethod("getImei");
+				declaredMethod.setAccessible(true);
+				String str = (String) declaredMethod.invoke(telephonyManager);
+				if (str != null) {
+					return str;
+				}
+			}
+			String deviceId = telephonyManager.getDeviceId();
+			return (deviceId == null || deviceId.length() != 15) ? "" : deviceId;
+		} catch (Exception e2) {
+			e2.printStackTrace();
+			XLog.e("getIMEI: " + e2);
+		}
+		return null;
 	}
 	
 	

@@ -1,6 +1,7 @@
 package com.gentcent.wechat.enhancement;
 
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Application;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import com.gentcent.wechat.enhancement.util.HookParams;
 import com.gentcent.wechat.enhancement.util.MyHelper;
+import com.gentcent.wechat.enhancement.util.PermissionUtil;
 import com.gentcent.wechat.enhancement.util.SearchClasses;
 import com.gentcent.wechat.enhancement.util.XLog;
 import com.gentcent.wechat.enhancement.wcdb.DecryptUtils;

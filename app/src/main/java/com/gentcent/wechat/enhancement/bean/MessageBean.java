@@ -1,8 +1,5 @@
 package com.gentcent.wechat.enhancement.bean;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.gentcent.wechat.enhancement.MyApplication;
 import com.gentcent.wechat.enhancement.wcdb.DecryptUtils;
 

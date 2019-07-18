@@ -39,7 +39,7 @@ public class EventHandler {
 		
 		MessageBean messageBean = new MessageBean();
 		messageBean.setFriendWxId("wxid_pcxj1zyjpc5n21");	//测试数据
-		messageBean.setContent("有点饿啊");	//测试数据
+		messageBean.setContent("吃什么");	//测试数据
 		messageBean.setType(1);	//测试数据
 		SendManager.addToQueque(messageBean);
 		//添加至消息队列
