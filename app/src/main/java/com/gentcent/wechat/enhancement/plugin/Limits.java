@@ -22,7 +22,7 @@ import java.util.List;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
-import com.gentcent.wechat.enhancement.PreferencesUtils;
+import com.gentcent.wechat.enhancement.util.PreferencesUtil;
 import com.gentcent.wechat.enhancement.util.HookParams;
 
 import static com.gentcent.zzk.xped.XposedBridge.log;
@@ -36,7 +36,7 @@ public class Limits implements IPlugin {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) {
                 try {
-                    if (!PreferencesUtils.isBreakLimit())
+                    if (!PreferencesUtil.isBreakLimit())
                         return;
                     Activity activity = (Activity) param.thisObject;
                     String className = activity.getClass().getName();
@@ -74,7 +74,7 @@ public class Limits implements IPlugin {
             protected void afterHookedMethod(MethodHookParam param) {
 
                 try {
-                    if (!PreferencesUtils.isBreakLimit())
+                    if (!PreferencesUtil.isBreakLimit())
                         return;
 
 
@@ -136,7 +136,7 @@ public class Limits implements IPlugin {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) {
                 try {
-                    if (!PreferencesUtils.isBreakLimit())
+                    if (!PreferencesUtil.isBreakLimit())
                         return;
                     int requestCode = (int) param.args[0];
                     int resultCode = (int) param.args[1];
@@ -157,7 +157,7 @@ public class Limits implements IPlugin {
             @Override
             protected void beforeHookedMethod(XC_MethodHook.MethodHookParam param) {
                 try {
-                    if (!PreferencesUtils.isBreakLimit())
+                    if (!PreferencesUtil.isBreakLimit())
                         return;
                     param.setResult(false);
                 } catch (Error | Exception e) {

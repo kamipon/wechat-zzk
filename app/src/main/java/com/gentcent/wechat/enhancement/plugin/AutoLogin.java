@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
-import com.gentcent.wechat.enhancement.PreferencesUtils;
+import com.gentcent.wechat.enhancement.util.PreferencesUtil;
 import com.gentcent.wechat.enhancement.util.HookParams;
 
 
@@ -20,7 +20,7 @@ public class AutoLogin implements IPlugin {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) {
                 try {
-                    if (!PreferencesUtils.isAutoLogin())
+                    if (!PreferencesUtil.isAutoLogin())
                         return;
                     if (!(param.thisObject instanceof Activity)) {
                         return;

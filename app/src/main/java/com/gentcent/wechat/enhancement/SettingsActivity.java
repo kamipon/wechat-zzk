@@ -1,22 +1,17 @@
 package com.gentcent.wechat.enhancement;
 
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.Preference;
@@ -27,17 +22,9 @@ import android.widget.Toast;
 
 import com.gentcent.wechat.enhancement.util.HookParams;
 import com.gentcent.wechat.enhancement.util.MyHelper;
-import com.gentcent.wechat.enhancement.util.PermissionUtil;
 import com.gentcent.wechat.enhancement.util.SearchClasses;
-import com.gentcent.wechat.enhancement.util.XLog;
-import com.gentcent.wechat.enhancement.wcdb.DecryptUtils;
-import com.gentcent.wechat.enhancement.wcdb.FileUtils;
-import com.gentcent.wechat.enhancement.wcdb.Md5Utils;
-import com.gentcent.wechat.enhancement.wcdb.ShellUtils;
 import com.google.gson.Gson;
-import com.threekilogram.objectbus.bus.ObjectBus;
 
-import java.io.File;
 import java.lang.reflect.Method;
 
 import dalvik.system.PathClassLoader;

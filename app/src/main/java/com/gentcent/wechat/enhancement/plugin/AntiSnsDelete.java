@@ -7,7 +7,7 @@ import java.util.Arrays;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
-import com.gentcent.wechat.enhancement.PreferencesUtils;
+import com.gentcent.wechat.enhancement.util.PreferencesUtil;
 import com.gentcent.wechat.enhancement.util.HookParams;
 
 import static java.util.Arrays.copyOfRange;
@@ -21,7 +21,7 @@ public class AntiSnsDelete implements IPlugin {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) {
                 try {
-                    if (!PreferencesUtils.isAntiSnsDelete()) {
+                    if (!PreferencesUtil.isAntiSnsDelete()) {
                         return;
                     }
 

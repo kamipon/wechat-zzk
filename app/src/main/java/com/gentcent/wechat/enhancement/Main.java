@@ -49,24 +49,24 @@ public class Main implements IXposedHookLoadPackage {
 				XposedHelpers.findAndHookMethod(ContextWrapper.class, "attachBaseContext", Context.class, new XC_MethodHook() {
 					@Override
 					protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-						super.afterHookedMethod(param);
-						Context context = (Context) param.args[0];
-						String versionName = getVersionName(context, HookParams.WECHAT_PACKAGE_NAME);
-						//Only hook important process
-						String processName = lpparam.processName;
-						if (!processName.equals(HookParams.WECHAT_PACKAGE_NAME) &&
-								!processName.equals(HookParams.WECHAT_PACKAGE_NAME + ":tools")
-						) {
-							return;
-						}
-						if (!HookParams.hasInstance()) {
-							XLog.e("Found wechat version:" + versionName);
-							SearchClasses.init(context, lpparam, versionName);
-							loadPlugins(lpparam);
-						}
-						if (lpparam.isFirstApplication && processName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
-							StaticDepot.init(lpparam);
-						}
+					super.afterHookedMethod(param);
+					Context context = (Context) param.args[0];
+					String versionName = getVersionName(context, HookParams.WECHAT_PACKAGE_NAME);
+					//Only hook important process
+					String processName = lpparam.processName;
+					if (!processName.equals(HookParams.WECHAT_PACKAGE_NAME) &&
+							!processName.equals(HookParams.WECHAT_PACKAGE_NAME + ":tools")
+					) {
+						return;
+					}
+					if (!HookParams.hasInstance()) {
+						XLog.e("Found wechat version:" + versionName);
+						SearchClasses.init(context, lpparam, versionName);
+						loadPlugins(lpparam);
+					}
+					if (StaticDepot.isInitComplete == false && processName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
+						StaticDepot.init(lpparam);
+					}
 					}
 				});
 			}

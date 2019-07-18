@@ -15,6 +15,7 @@ import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.*;
  * @since 2019-07-09
  */
 public class StaticDepot {
+	public static boolean isInitComplete = false;
 	public static Activity activity;
 	public static LoadPackageParam wxLpparam;
 	public static WxReceiver wxReceiver;
@@ -45,6 +46,6 @@ public class StaticDepot {
 				}
 			}
 		});
-		
+		isInitComplete = true;
 	}
 }

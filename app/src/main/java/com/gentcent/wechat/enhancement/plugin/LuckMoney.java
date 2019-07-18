@@ -22,7 +22,7 @@ import java.util.List;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
-import com.gentcent.wechat.enhancement.PreferencesUtils;
+import com.gentcent.wechat.enhancement.util.PreferencesUtil;
 import com.gentcent.wechat.enhancement.util.HookParams;
 import com.gentcent.wechat.enhancement.util.XmlToJson;
 
@@ -97,7 +97,7 @@ public class LuckMoney implements IPlugin {
             @Override
             protected void afterHookedMethod(MethodHookParam param) {
                 try {
-                    if (PreferencesUtils.quickOpen()) {
+                    if (PreferencesUtil.quickOpen()) {
                         Button button = (Button) findFirstFieldByExactType(param.thisObject.getClass(), Button.class).get(param.thisObject);
                         if (button.isShown() && button.isClickable()) {
                             button.performClick();
@@ -112,7 +112,7 @@ public class LuckMoney implements IPlugin {
             @Override
             protected void afterHookedMethod(MethodHookParam param) {
                 try {
-                    if (PreferencesUtils.showWechatId()) {
+                    if (PreferencesUtil.showWechatId()) {
                         Activity activity = (Activity) param.thisObject;
                         ClipboardManager cmb = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
                         String wechatId = activity.getIntent().getStringExtra("Contact_User");
@@ -128,7 +128,7 @@ public class LuckMoney implements IPlugin {
             @Override
             protected void afterHookedMethod(MethodHookParam param) {
                 try {
-                    if (PreferencesUtils.showWechatId()) {
+                    if (PreferencesUtil.showWechatId()) {
                         Activity activity = (Activity) param.thisObject;
                         String wechatId = activity.getIntent().getStringExtra("RoomInfo_Id");
                         ClipboardManager cmb = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -143,7 +143,7 @@ public class LuckMoney implements IPlugin {
     }
 
     private void handleLuckyMoney(ContentValues contentValues, XC_LoadPackage.LoadPackageParam lpparam) throws XmlPullParserException, IOException, JSONException {
-        if (!PreferencesUtils.open()) {
+        if (!PreferencesUtil.open()) {
             return;
         }
 
@@ -154,7 +154,7 @@ public class LuckMoney implements IPlugin {
 
         String talker = contentValues.getAsString("talker");
 
-        String blackList = PreferencesUtils.blackList();
+        String blackList = PreferencesUtil.blackList();
         if (!isEmpty(blackList)) {
             for (String wechatId : blackList.split(",")) {
                 if (talker.equals(wechatId.trim())) {
@@ -164,11 +164,11 @@ public class LuckMoney implements IPlugin {
         }
 
         int isSend = contentValues.getAsInteger("isSend");
-        if (PreferencesUtils.notSelf() && isSend != 0) {
+        if (PreferencesUtil.notSelf() && isSend != 0) {
             return;
         }
 
-        if (PreferencesUtils.notWhisper() && !isGroupTalk(talker)) {
+        if (PreferencesUtil.notWhisper() && !isGroupTalk(talker)) {
             return;
         }
 
@@ -184,7 +184,7 @@ public class LuckMoney implements IPlugin {
         JSONObject wcpayinfo = new XmlToJson.Builder(content).build()
                 .getJSONObject("msg").getJSONObject("appmsg").getJSONObject("wcpayinfo");
         String senderTitle = wcpayinfo.getString("sendertitle");
-        String notContainsWords = PreferencesUtils.notContains();
+        String notContainsWords = PreferencesUtil.notContains();
         if (!isEmpty(notContainsWords)) {
             for (String word : notContainsWords.split(",")) {
                 if (senderTitle.contains(word)) {
@@ -217,7 +217,7 @@ public class LuckMoney implements IPlugin {
     }
 
     private void handleTransfer(ContentValues contentValues, XC_LoadPackage.LoadPackageParam lpparam) throws IOException, XmlPullParserException, PackageManager.NameNotFoundException, InterruptedException, JSONException {
-        if (!PreferencesUtils.receiveTransfer()) {
+        if (!PreferencesUtil.receiveTransfer()) {
             return;
         }
         JSONObject wcpayinfo = new XmlToJson.Builder(contentValues.getAsString("content")).build()
@@ -240,14 +240,14 @@ public class LuckMoney implements IPlugin {
         String talker = contentValues.getAsString("talker");
 
         Class getTransferRequestClass = XposedHelpers.findClass(HookParams.getInstance().GetTransferRequestClassName, lpparam.classLoader);
-        callMethod(requestCaller, HookParams.getInstance().RequestCallerMethod, newInstance(getTransferRequestClass, transactionId, transferId, 0, "confirm", talker, invalidtime), 0);
+        callMethod(requestCaller, HookParams.getInstance().RequestCallerMethod, newInstance(getTransferRequestClass, transactionId, transferId, 0, "confirm", talker, invalidtime), getDelayTime());
     }
 
 
     private int getDelayTime() {
         int delayTime = 0;
-        if (PreferencesUtils.delay()) {
-            delayTime = getRandom(PreferencesUtils.delayMin(), PreferencesUtils.delayMax());
+        if (PreferencesUtil.delay()) {
+            delayTime = getRandom(PreferencesUtil.delayMin(), PreferencesUtil.delayMax());
         }
         return delayTime;
     }
