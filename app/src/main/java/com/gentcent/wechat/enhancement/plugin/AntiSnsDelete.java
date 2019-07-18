@@ -4,9 +4,9 @@ import android.content.ContentValues;
 
 import java.util.Arrays;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import com.gentcent.zzk.xped.XC_MethodHook;
+import com.gentcent.zzk.xped.XposedHelpers;
+import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
 import com.gentcent.wechat.enhancement.PreferencesUtils;
 import com.gentcent.wechat.enhancement.util.HookParams;
 

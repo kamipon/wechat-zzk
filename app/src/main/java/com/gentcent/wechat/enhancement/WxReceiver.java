@@ -12,7 +12,7 @@ import com.gentcent.wechat.enhancement.util.XLog;
 
 import java.util.List;
 
-import de.robv.android.xposed.XposedHelpers;
+import com.gentcent.zzk.xped.XposedHelpers;
 
 public class WxReceiver extends BroadcastReceiver {
 	

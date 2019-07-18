@@ -18,10 +18,7 @@ public class ConfigReceiver extends BroadcastReceiver {
             boolean hasExtras = extras != null;
             if (HookParams.SAVE_WECHAT_ENHANCEMENT_CONFIG.equals(action)) {
                 if (hasExtras) {
-                    SharedPreferences.Editor editor = context.getSharedPreferences(HookParams.WECHAT_ENHANCEMENT_CONFIG_NAME, Context.MODE_WORLD_READABLE).edit();
-                    editor.clear();
-                    editor.putString("params", extras.getString("params"));
-                    editor.commit();
+                    MyHelper.writeLine("params",extras.getString("params"));
                 }
             }
         } catch (Error | Exception e) {

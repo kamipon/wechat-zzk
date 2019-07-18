@@ -7,9 +7,9 @@ import android.content.ContentValues;
 import com.gentcent.wechat.enhancement.util.HookParams;
 import com.gentcent.wechat.enhancement.util.XLog;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import com.gentcent.zzk.xped.XC_MethodHook;
+import com.gentcent.zzk.xped.XposedHelpers;
+import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
 
 
 public class MessageHook implements IPlugin {
@@ -55,11 +55,25 @@ public class MessageHook implements IPlugin {
 	}
 	
 	private void log(ContentValues contentValues) {
-		//1：纯文本消息
+		/*
+			1：纯文本消息
+			3：图片
+			34：语音
+			42：名片
+			47：表情
+			48：指定定位
+			49：文件、卡片信息
+			50：视屏通话 content：voip_content_video
+			50：语音通话 content：voip_content_voice
+			436207665：红包
+			419430449：转账
+			-1879048186：共享实时位置
+			10000：提示字体
+		 */
 		int type = contentValues.getAsInteger("type");
 		//0：接受 , 1：发送
 		int isSend = contentValues.getAsInteger("isSend");
-		//信息ID ,递增
+		//信息ID , 递增
 		long msgId = contentValues.getAsLong("msgId");
 		//发送者ID
 		String talker = contentValues.getAsString("talker");

@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import de.robv.android.xposed.XposedBridge;
+import com.gentcent.zzk.xped.XposedBridge;
 
 public final class ReflectionUtil {
 
@@ -24,7 +24,7 @@ public final class ReflectionUtil {
 
     static {
         try {
-            Class.forName("de.robv.android.xposed.XposedBridge");
+            Class.forName("com.gentcent.zzk.xped.XposedBridge");
             xposedExist = true;
         } catch (ClassNotFoundException e) {
             xposedExist = false;

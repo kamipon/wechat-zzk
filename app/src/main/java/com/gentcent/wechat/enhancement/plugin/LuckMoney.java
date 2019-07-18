@@ -19,19 +19,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import com.gentcent.zzk.xped.XC_MethodHook;
+import com.gentcent.zzk.xped.XposedHelpers;
+import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
 import com.gentcent.wechat.enhancement.PreferencesUtils;
 import com.gentcent.wechat.enhancement.util.HookParams;
 import com.gentcent.wechat.enhancement.util.XmlToJson;
 
 import static android.text.TextUtils.isEmpty;
 import static android.widget.Toast.LENGTH_LONG;
-import static de.robv.android.xposed.XposedHelpers.callMethod;
-import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
-import static de.robv.android.xposed.XposedHelpers.findFirstFieldByExactType;
-import static de.robv.android.xposed.XposedHelpers.newInstance;
+import static com.gentcent.zzk.xped.XposedHelpers.callMethod;
+import static com.gentcent.zzk.xped.XposedHelpers.callStaticMethod;
+import static com.gentcent.zzk.xped.XposedHelpers.findFirstFieldByExactType;
+import static com.gentcent.zzk.xped.XposedHelpers.newInstance;
 
 
 public class LuckMoney implements IPlugin {

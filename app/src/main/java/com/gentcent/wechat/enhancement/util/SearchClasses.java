@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import com.gentcent.zzk.xped.XSharedPreferences;
+import com.gentcent.zzk.xped.XposedHelpers;
+import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
 import com.gentcent.wechat.enhancement.Main;
 
 import static com.gentcent.wechat.enhancement.util.ReflectionUtil.log;
@@ -212,8 +212,7 @@ public class SearchClasses {
 
     private static boolean loadConfig(XC_LoadPackage.LoadPackageParam lpparam, String curVersionName) {
         try {
-            SharedPreferences pref = getPreferencesInstance();
-            HookParams hp = new Gson().fromJson(pref.getString("params", ""), HookParams.class);
+            HookParams hp = new Gson().fromJson(MyHelper.readLine("params",""), HookParams.class);
 
             if (hp == null
                     || !hp.versionName.equals(curVersionName)

@@ -19,13 +19,13 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import com.gentcent.zzk.xped.XC_MethodHook;
+import com.gentcent.zzk.xped.XposedHelpers;
+import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
 import com.gentcent.wechat.enhancement.PreferencesUtils;
 import com.gentcent.wechat.enhancement.util.HookParams;
 
-import static de.robv.android.xposed.XposedBridge.log;
+import static com.gentcent.zzk.xped.XposedBridge.log;
 
 
 public class Limits implements IPlugin {

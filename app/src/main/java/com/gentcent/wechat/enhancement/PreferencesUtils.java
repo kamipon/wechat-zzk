@@ -1,15 +1,7 @@
 package com.gentcent.wechat.enhancement;
 
 
-import android.content.SharedPreferences;
-
-import com.gentcent.wechat.enhancement.bean.MessageBean;
-import com.gentcent.wechat.enhancement.util.XLog;
-import com.gentcent.wechat.enhancement.wcdb.GsonUtils;
-
-import java.util.List;
-
-import de.robv.android.xposed.XSharedPreferences;
+import com.gentcent.zzk.xped.XSharedPreferences;
 
 public class PreferencesUtils {
 
@@ -25,24 +17,12 @@ public class PreferencesUtils {
         return instance;
     }
     
-    public static List<MessageBean> getSendMessageQueue() {
-        String sendMessageQueueStr = getInstance().getString("sendMessageQueue", "[]");
-        XLog.d("getSendMessageQueue:"+sendMessageQueueStr);
-        return GsonUtils.GsonToList(sendMessageQueueStr, MessageBean.class);
-    }
-    
-    public static void clearSendMessageQueue() {
-        SharedPreferences.Editor edit = getInstance().edit();
-        edit.clear();
-        edit.commit();
-    }
-
     public static boolean open() {
-        return getInstance().getBoolean("open", false);
+        return getInstance().getBoolean("open", true);
     }
 
     public static boolean notSelf() {
-        return getInstance().getBoolean("not_self", false);
+        return getInstance().getBoolean("not_self", true);
     }
 
     public static boolean notWhisper() {
@@ -54,15 +34,15 @@ public class PreferencesUtils {
     }
 
     public static boolean delay() {
-        return getInstance().getBoolean("delay", false);
+        return getInstance().getBoolean("delay", true);
     }
 
     public static int delayMin() {
-        return getInstance().getInt("delay_min", 0);
+        return getInstance().getInt("delay_min", 2000);
     }
 
     public static int delayMax() {
-        return getInstance().getInt("delay_max", 0);
+        return getInstance().getInt("delay_max", 5000);
     }
 
     public static boolean receiveTransfer() {
@@ -70,11 +50,11 @@ public class PreferencesUtils {
     }
 
     public static boolean quickOpen() {
-        return getInstance().getBoolean("quick_open", true);
+        return getInstance().getBoolean("quick_open", false);
     }
 
     public static boolean showWechatId() {
-        return getInstance().getBoolean("show_wechat_id", false);
+        return getInstance().getBoolean("show_wechat_id", true);
     }
 
     public static String blackList() {
@@ -82,23 +62,23 @@ public class PreferencesUtils {
     }
 
     public static boolean isAntiRevoke() {
-        return getInstance().getBoolean("is_anti_revoke", false);
+        return getInstance().getBoolean("is_anti_revoke", true);
     }
 
     public static boolean isAntiSnsDelete() {
-        return getInstance().getBoolean("is_anti_sns_delete", false);
+        return getInstance().getBoolean("is_anti_sns_delete", true);
     }
 
     public static boolean isADBlock() {
-        return getInstance().getBoolean("is_ad_block", false);
+        return getInstance().getBoolean("is_ad_block", true);
     }
 
     public static boolean isAutoLogin() {
-        return getInstance().getBoolean("is_auto_login", false);
+        return getInstance().getBoolean("is_auto_login", true);
     }
 
     public static boolean isBreakLimit() {
-        return getInstance().getBoolean("is_break_limit", false);
+        return getInstance().getBoolean("is_break_limit", true);
     }
 
 }

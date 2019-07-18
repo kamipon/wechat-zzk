@@ -1,10 +1,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/other_setting">
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="show_icon"
-            android:title="@string/pref_show_icon" />
-
         <Preference
             android:key="generate"
             android:title="@string/generate" />
@@ -112,16 +107,16 @@
 
 
 
-    <PreferenceCategory android:title="@string/about">
-        <Preference
-            android:key="author"
-            android:summary="gentcent"
-            android:title="@string/author" />
-        <Preference
-            android:key="author"
-            android:summary="veryyoung, Gh0u1L5, wuxiaosu"
-            android:title="@string/acknowledgements" />
+    <!--<PreferenceCategory android:title="@string/about">-->
+        <!--<Preference-->
+            <!--android:key="author"-->
+            <!--android:summary="gentcent"-->
+            <!--android:title="@string/author" />-->
+        <!--<Preference-->
+            <!--android:key="author"-->
+            <!--android:summary="veryyoung, Gh0u1L5, wuxiaosu"-->
+            <!--android:title="@string/acknowledgements" />-->
 
-    </PreferenceCategory>
+    <!--</PreferenceCategory>-->
 
 </PreferenceScreen>

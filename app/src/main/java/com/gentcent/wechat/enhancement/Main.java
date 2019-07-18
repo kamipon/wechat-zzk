@@ -19,12 +19,12 @@ import com.gentcent.wechat.enhancement.util.SearchClasses;
 import com.gentcent.wechat.enhancement.util.StaticDepot;
 import com.gentcent.wechat.enhancement.util.XLog;
 
-import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
+import com.gentcent.zzk.xped.IXposedHookLoadPackage;
+import com.gentcent.zzk.xped.XC_MethodHook;
+import com.gentcent.zzk.xped.XposedHelpers;
+import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
-import static de.robv.android.xposed.XposedBridge.log;
+import static com.gentcent.zzk.xped.XposedBridge.log;
 
 
 public class Main implements IXposedHookLoadPackage {

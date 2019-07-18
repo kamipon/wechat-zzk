@@ -82,8 +82,8 @@ public class MyHelper {
 	 * @param fileName 文件名
 	 * @return 文件第一行
 	 */
-	public static String readLine(String fileName) {
-		return readFileAtFristLine(SDCARD_PATH, fileName, "");
+	public static String readLine(String fileName , String defaultVal) {
+		return readFileAtFristLine(SDCARD_PATH, fileName, defaultVal);
 	}
 	
 	/**
@@ -122,6 +122,7 @@ public class MyHelper {
 	 * @param content  内容
 	 */
 	public static void writeLine(String fileName, String content){
+		delete(fileName);
 		writeOneLineFile(SDCARD_PATH, fileName, content);
 	}
 	

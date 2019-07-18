@@ -25,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.gentcent.wechat.enhancement.util.HookParams;
+import com.gentcent.wechat.enhancement.util.MyHelper;
 import com.gentcent.wechat.enhancement.util.SearchClasses;
 import com.gentcent.wechat.enhancement.util.XLog;
 import com.gentcent.wechat.enhancement.wcdb.DecryptUtils;
@@ -73,28 +74,17 @@ public class SettingsActivity extends AppCompatActivity {
 			getPreferenceManager().setSharedPreferencesMode(MODE_WORLD_READABLE);
 			addPreferencesFromResource(R.xml.pref_setting);
 			
-			Preference reset = findPreference("author");
-			reset.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-				@Override
-				public boolean onPreferenceClick(Preference pref) {
-					Intent intent = new Intent();
-					intent.setAction("android.intent.action.VIEW");
-					intent.setData(Uri.parse("https://github.com/gentcentCN"));
-					startActivity(intent);
-					return true;
-				}
-			});
-			
-			Preference show_icon = findPreference("show_icon");
-			show_icon.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object isChecked) {
-					PackageManager packageManager = getActivity().getPackageManager();
-					int status = (boolean) isChecked ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
-					packageManager.setComponentEnabledSetting(new ComponentName(getActivity(), "me.gentcent.wechat.enhancement.SettingsActivity_Alias"), status, PackageManager.DONT_KILL_APP);
-					return true;
-				}
-			});
+//			Preference reset = findPreference("author");
+//			reset.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+//				@Override
+//				public boolean onPreferenceClick(Preference pref) {
+//					Intent intent = new Intent();
+//					intent.setAction("android.intent.action.VIEW");
+//					intent.setData(Uri.parse("https://github.com/gentcentCN"));
+//					startActivity(intent);
+//					return true;
+//				}
+//			});
 			
 			Preference repair = findPreference("repair");
 			repair.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -141,11 +131,7 @@ public class SettingsActivity extends AppCompatActivity {
 								SearchClasses.generateConfig(wechatApk, wxClassLoader, packageInfo.versionName);
 								
 								String config = new Gson().toJson(HookParams.getInstance());
-								SharedPreferences.Editor editor = context.getSharedPreferences(HookParams.WECHAT_ENHANCEMENT_CONFIG_NAME, Context.MODE_WORLD_READABLE).edit();
-								editor.clear();
-								editor.putString("params", config);
-								editor.commit();
-								
+								MyHelper.writeLine("params", config);
 								success = true;
 								
 							} catch (Throwable e) {
