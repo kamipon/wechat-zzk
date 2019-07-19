@@ -161,6 +161,15 @@ public class SettingsActivity extends AppCompatActivity {
 					return true;
 				}
 			});
+			
+			Preference addFriend = findPreference("add_friend");
+			addFriend.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+				@Override
+				public boolean onPreferenceClick(Preference pref) {
+					EventHandler.addFriend();
+					return true;
+				}
+			});
 		}
 		
 		

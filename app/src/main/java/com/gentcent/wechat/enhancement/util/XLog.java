@@ -1,5 +1,6 @@
 package com.gentcent.wechat.enhancement.util;
 
+import android.os.Bundle;
 import android.util.Log;
 
 /**
@@ -205,5 +206,13 @@ public class XLog {
 		for (int i = 0; i < indent; i++) {
 			sb.append('\t');
 		}
+	}
+	
+	public static String logBundle(Bundle bundle) {
+		StringBuffer stringBuffer = new StringBuffer();
+		for (String key : bundle.keySet()) {
+			stringBuffer.append("Key=" + key + ", content=" + bundle.get(key) + "\n");
+		}
+		return stringBuffer.toString();
 	}
 }

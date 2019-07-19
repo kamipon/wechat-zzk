@@ -38,4 +38,5 @@
     <string name="generating">正在生成配置…</string>
     <string name="send_message">发消息</string>
     <string name="getWcdb">获取微信数据</string>
+    <string name="add_friend">添加好友</string>
 </resources>

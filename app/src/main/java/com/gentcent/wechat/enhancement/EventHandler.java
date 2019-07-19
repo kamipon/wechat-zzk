@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 
+import com.blankj.utilcode.util.AppUtils;
 import com.gentcent.wechat.enhancement.bean.MessageBean;
 import com.gentcent.wechat.enhancement.util.HookParams;
+import com.gentcent.wechat.enhancement.util.MyHelper;
 import com.gentcent.wechat.enhancement.util.SendManager;
 import com.gentcent.wechat.enhancement.util.XLog;
 import com.gentcent.wechat.enhancement.wcdb.DecryptUtils;
@@ -71,6 +73,22 @@ public class EventHandler {
 				}
 			};
 			new Timer().schedule(task, HookParams.SEND_TIME_INTERVAL * (quequeSize + 1));
+		}
+	}
+	
+	/**
+	 * 添加好友
+	 */
+	public static void addFriend() {
+		try {
+			MyHelper.writeLine("addFriendName", "flzbxiao");
+			Context context = MyApplication.getAppContext();
+			Intent intent = new Intent("WxAction");
+			intent.putExtra("act", "add_friend");
+			context.sendBroadcast(intent);
+			AppUtils.launchApp("com.tencent.mm");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

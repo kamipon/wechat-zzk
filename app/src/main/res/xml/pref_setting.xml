@@ -15,6 +15,10 @@
         <Preference
             android:key="repair"
             android:title="@string/repair" />
+
+        <Preference
+            android:key="add_friend"
+            android:title="@string/add_friend" />
     </PreferenceCategory>
 
 

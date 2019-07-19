@@ -9,6 +9,7 @@ import com.gentcent.wechat.enhancement.plugin.ADBlock;
 import com.gentcent.wechat.enhancement.plugin.AntiRevoke;
 import com.gentcent.wechat.enhancement.plugin.AntiSnsDelete;
 import com.gentcent.wechat.enhancement.plugin.AutoLogin;
+import com.gentcent.wechat.enhancement.plugin.FriendsHook;
 import com.gentcent.wechat.enhancement.plugin.HideModule;
 import com.gentcent.wechat.enhancement.plugin.IPlugin;
 import com.gentcent.wechat.enhancement.plugin.Limits;
@@ -16,9 +17,8 @@ import com.gentcent.wechat.enhancement.plugin.LuckMoney;
 import com.gentcent.wechat.enhancement.plugin.MessageHook;
 import com.gentcent.wechat.enhancement.util.HookParams;
 import com.gentcent.wechat.enhancement.util.SearchClasses;
-import com.gentcent.wechat.enhancement.util.StaticDepot;
+import com.gentcent.wechat.enhancement.manager.MainManager;
 import com.gentcent.wechat.enhancement.util.XLog;
-
 import com.gentcent.zzk.xped.IXposedHookLoadPackage;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;
@@ -37,7 +37,8 @@ public class Main implements IXposedHookLoadPackage {
 			new HideModule(),
 			new LuckMoney(),
 			new Limits(),
-			new MessageHook()
+			new MessageHook(),
+			new FriendsHook()
 	};
 	
 	@Override
@@ -49,24 +50,37 @@ public class Main implements IXposedHookLoadPackage {
 				XposedHelpers.findAndHookMethod(ContextWrapper.class, "attachBaseContext", Context.class, new XC_MethodHook() {
 					@Override
 					protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-					super.afterHookedMethod(param);
-					Context context = (Context) param.args[0];
-					String versionName = getVersionName(context, HookParams.WECHAT_PACKAGE_NAME);
-					//Only hook important process
-					String processName = lpparam.processName;
-					if (!processName.equals(HookParams.WECHAT_PACKAGE_NAME) &&
-							!processName.equals(HookParams.WECHAT_PACKAGE_NAME + ":tools")
-					) {
-						return;
+						super.afterHookedMethod(param);
+						Context context = (Context) param.args[0];
+						String versionName = getVersionName(context, HookParams.WECHAT_PACKAGE_NAME);
+						//Only hook important process
+						String processName = lpparam.processName;
+						if (!processName.equals(HookParams.WECHAT_PACKAGE_NAME) &&
+								!processName.equals(HookParams.WECHAT_PACKAGE_NAME + ":tools")
+						) {
+							return;
+						}
+						if (!HookParams.hasInstance()) {
+							XLog.e("Found wechat version:" + versionName);
+							SearchClasses.init(context, lpparam, versionName);
+							loadPlugins(lpparam);
+						}
+						if (!MainManager.isInitComplete && processName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
+							MainManager.init(lpparam);
+						}
 					}
-					if (!HookParams.hasInstance()) {
-						XLog.e("Found wechat version:" + versionName);
-						SearchClasses.init(context, lpparam, versionName);
-						loadPlugins(lpparam);
-					}
-					if (StaticDepot.isInitComplete == false && processName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
-						StaticDepot.init(lpparam);
-					}
+				});
+				
+				//全局搜索xposed字段出现的方法，可能是微信的Xposed检测
+				XposedHelpers.findAndHookMethod("com.tencent.mm.app.t", lpparam.classLoader, "a", StackTraceElement[].class, new XC_MethodHook() {
+					@Override
+					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+						
+						super.afterHookedMethod(param);
+						if ((Boolean) param.getResult()) {
+							XLog.e("----微信检测到xposed---自动隐藏");
+							param.setResult(false);
+						}
 					}
 				});
 			}
