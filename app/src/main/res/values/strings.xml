@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">微信增强</string>
-    <string name="app_desc">抢红包，防撤回，去广告</string>
+    <string name="app_name">增长客</string>
+    <string name="app_desc">增长客</string>
     <string name="pref_open">抢红包</string>
     <string name="pref_not_self">自己发的不抢</string>
     <string name="pref_delay">延时抢红包</string>
@@ -36,7 +36,13 @@
     <string name="generate_success">生成配置成功</string>
     <string name="generate_failed">生成配置失败</string>
     <string name="generating">正在生成配置…</string>
-    <string name="send_message">发消息</string>
+    <string name="send_message">发送消息</string>
     <string name="getWcdb">获取微信数据</string>
     <string name="add_friend">添加好友</string>
+    <string name="send_message_hint">请输入微信号/手机号/QQ号</string>
+    <string name="send_message_target_id">微信ID</string>
+    <string name="send_message_content">信息内容</string>
+    <string name="add_friend_hint">微信号/手机号/QQ号</string>
+    <string name="init">初始化</string>
+    <string name="hello_text">打招呼信息</string>
 </resources>
