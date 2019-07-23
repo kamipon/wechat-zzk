@@ -1,6 +1,7 @@
 package com.gentcent.wechat.zzk.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -111,7 +112,7 @@ public class MyHelper {
 			}
 			return defaultVal;
 		} catch (Exception e) {
-			XLog.e("GetString error is " + e.getMessage());
+			XLog.e("GetString error is " + Log.getStackTraceString(e));
 			return defaultVal;
 		}
 	}
@@ -147,7 +148,7 @@ public class MyHelper {
 					return;
 				} catch (IOException e) {
 					e.printStackTrace();
-					XLog.e("SetString key is " + fileName + " error is " + e.getMessage());;
+					XLog.e("SetString key is " + fileName + " error is " + Log.getStackTraceString(e));;
 				}
 			} catch (Exception e2) {
 				bufferedWriter = bufferedWriter2;

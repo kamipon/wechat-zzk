@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.gentcent.wechat.zzk.util.XLog;
 
@@ -56,7 +57,7 @@ public class DecryptUtils {
 			XLog.e("initDbPassword:  " + password);
 			return password;
 		} catch (Exception e) {
-			XLog.e("initDbPassword:  " + e.getMessage());
+			XLog.e("initDbPasswo rd:  " + Log.getStackTraceString(e));
 		}
 		return "";
 	}

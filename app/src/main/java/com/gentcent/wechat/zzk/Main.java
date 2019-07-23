@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
+import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.IntentUtils;
+import com.blankj.utilcode.util.Utils;
 import com.gentcent.wechat.zzk.plugin.ADBlock;
 import com.gentcent.wechat.zzk.plugin.AntiRevoke;
 import com.gentcent.wechat.zzk.plugin.AntiSnsDelete;
@@ -15,6 +19,7 @@ import com.gentcent.wechat.zzk.plugin.IPlugin;
 import com.gentcent.wechat.zzk.plugin.Limits;
 import com.gentcent.wechat.zzk.plugin.LuckMoney;
 import com.gentcent.wechat.zzk.plugin.MessageHook;
+import com.gentcent.wechat.zzk.plugin.SnsHook;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.SearchClasses;
 import com.gentcent.wechat.zzk.manager.MainManager;
@@ -38,14 +43,14 @@ public class Main implements IXposedHookLoadPackage {
 			new LuckMoney(),
 			new Limits(),
 			new MessageHook(),
-			new FriendsHook()
+			new FriendsHook(),
+			new SnsHook()
 	};
 	
 	@Override
 	public void handleLoadPackage(final LoadPackageParam lpparam) {
 		
 		try {
-			
 			if (lpparam.packageName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
 				XposedHelpers.findAndHookMethod(ContextWrapper.class, "attachBaseContext", Context.class, new XC_MethodHook() {
 					@Override
@@ -61,12 +66,16 @@ public class Main implements IXposedHookLoadPackage {
 							return;
 						}
 						if (!HookParams.hasInstance()) {
-							XLog.e("Found wechat version:" + versionName);
+							XLog.d("Found wechat version:" + versionName);
 							SearchClasses.init(context, lpparam, versionName);
 							loadPlugins(lpparam);
 						}
-						if (!MainManager.isInitComplete && processName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
+						if (!MainManager.isInitComplete()) {
 							MainManager.init(lpparam);
+							try {
+								AppUtils.launchApp(HookParams.WECHAT_PACKAGE_NAME);
+							} catch (Exception ignored) {
+							}
 						}
 					}
 				});
@@ -78,14 +87,14 @@ public class Main implements IXposedHookLoadPackage {
 						
 						super.afterHookedMethod(param);
 						if ((Boolean) param.getResult()) {
-							XLog.e("----微信检测到xposed---自动隐藏");
 							param.setResult(false);
+							XLog.d("--###--微信检测到xposed(已经自动隐藏)--###--");
 						}
 					}
 				});
 			}
 		} catch (Error | Exception e) {
-			XLog.e("错误:" + e.getMessage());
+			XLog.e("错误:" + Log.getStackTraceString(e));
 			e.printStackTrace();
 		}
 	}
@@ -106,7 +115,8 @@ public class Main implements IXposedHookLoadPackage {
 			try {
 				plugin.hook(lpparam);
 			} catch (Error | Exception e) {
-				log("loadPlugins error" + e);
+				if (!"name == null".equals(e.getMessage()))
+					XLog.e("错误:" + Log.getStackTraceString(e));
 			}
 		}
 	}

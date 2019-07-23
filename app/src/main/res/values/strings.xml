@@ -45,4 +45,9 @@
     <string name="add_friend_hint">微信号/手机号/QQ号</string>
     <string name="init">初始化</string>
     <string name="hello_text">打招呼信息</string>
+    <string name="get_app_list">获取所有已安装App信息</string>
+    <string name="uninstall_XposedCheck">卸载XposedCheck</string>
+    <string name="install_XposedCheck">安装XposedCheck</string>
+    <string name="sns_text">朋友圈文本</string>
+    <string name="send_sns">发送朋友圈</string>
 </resources>

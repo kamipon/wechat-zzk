@@ -1,5 +1,6 @@
 package com.gentcent.wechat.zzk;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -12,11 +13,17 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.SDCardUtils;
 import com.gentcent.wechat.zzk.bean.MessageBean;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.SearchClasses;
+import com.gentcent.wechat.zzk.util.XLog;
 import com.google.gson.Gson;
+
+import java.io.File;
+import java.util.List;
 
 import dalvik.system.PathClassLoader;
 
@@ -60,6 +67,16 @@ public class MainActivity extends AppCompatActivity {
 		MyHelper.writeLine("addFriendHelloText", helloText);
 		
 		EventHandler.addFriend(id);
+	}
+	
+	/**
+	 * 发送朋友圈
+	 * @param view 代表被点击的视图
+	 */
+	public void sendSns(View view){
+		EditText editText = findViewById(R.id.sns_text);
+		String snsJson = editText.getText().toString();
+		EventHandler.sendSns(snsJson);
 	}
 	
 	/**
@@ -117,7 +134,38 @@ public class MainActivity extends AppCompatActivity {
 				});
 			}
 		}, "generate-config").start();
-		
+	}
+	
+	/**
+	 * 获取所有已安装App信息
+	 * @param view 代表被点击的视图
+	 */
+	public void getAppList(View view){
+		List<AppUtils.AppInfo> appsInfo = AppUtils.getAppsInfo();
+		Toast.makeText(getApplication(), "已输出日志", Toast.LENGTH_SHORT).show();
+		for (AppUtils.AppInfo appInfo : appsInfo) {
+			String name = appInfo.getName();
+			String packageName = appInfo.getPackageName();
+			String versionName = appInfo.getVersionName();
+			XLog.d("name: "+name +"  packageName: "+packageName+"  versionName: "+ versionName);
+		}
+	}
+	
+	/**
+	 * 安装app
+	 * @param view 代表被点击的视图
+	 */
+	@SuppressLint("SdCardPath")
+	public void installXposedCkeck(View view){
+		AppUtils.installApp(new File("/sdcard/XposedCheck.apk"));
+	}
+	
+	/**
+	 * 卸载app
+	 * @param view 代表被点击的视图
+	 */
+	public void uninstallXposedCkeck(View view){
+		AppUtils.uninstallApp("com.ssrj.xposedcheck");
 	}
 	
 	

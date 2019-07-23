@@ -3,6 +3,7 @@ package com.gentcent.wechat.zzk.plugin;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 
@@ -52,7 +53,7 @@ public class FriendsHook implements IPlugin {
 									}
 								});
 							} catch (Exception e) {
-								XLog.d("SayHiWithSnsPermissionUI  error" + e.getMessage());
+								XLog.d("SayHiWithSnsPermissionUI  error" + Log.getStackTraceString(e));
 							}
 						}
 					}

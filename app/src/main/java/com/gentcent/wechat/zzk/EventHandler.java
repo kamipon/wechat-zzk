@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
+import android.util.Log;
 
 import com.blankj.utilcode.util.AppUtils;
 import com.gentcent.wechat.zzk.bean.MessageBean;
+import com.gentcent.wechat.zzk.bean.SnsBean;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.SendManager;
 import com.gentcent.wechat.zzk.util.XLog;
@@ -83,6 +85,21 @@ public class EventHandler {
 		}
 	}
 	
+	/**
+	 * 发送朋友圈
+	 */
+	public static void sendSns(String snsJson) {
+		try {
+			XLog.d("发送朋友圈");
+			Context context = MyApplication.getAppContext();
+			Intent intent = new Intent("WxAction");
+			intent.putExtra("act", "send_sns");
+			intent.putExtra("snsJson", snsJson);
+			context.sendBroadcast(intent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * 读取微信数据库
@@ -119,7 +136,7 @@ public class EventHandler {
 						XLog.e("path:  " + copyFilePath);
 						XLog.e("path:  " + password);
 					} catch (Exception e) {
-						XLog.e("path:  " + e.getMessage());
+						XLog.e("path:  " + Log.getStackTraceString(e));
 						e.printStackTrace();
 					}
 				}

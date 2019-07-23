@@ -1,5 +1,7 @@
 package com.gentcent.wechat.zzk.wcdb;
 
+import android.util.Log;
+
 import com.gentcent.wechat.zzk.util.XLog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -76,7 +78,7 @@ public class GsonUtils {
 				lst.add(gson.fromJson(elem, cls));
 			}
 		} catch (Exception e) {
-			XLog.e("GsonToListError"+e.getMessage());
+			XLog.e("GsonToListError"+ Log.getStackTraceString(e));
 		}
 		return lst;
 	}
