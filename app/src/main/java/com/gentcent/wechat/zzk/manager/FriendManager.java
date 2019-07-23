@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.ObjectUtils;
 import com.gentcent.wechat.zzk.plugin.FriendsHook;
+import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.XC_MethodHook;
@@ -28,7 +29,7 @@ public class FriendManager {
 	
 	public static void searchFriendHook(XC_LoadPackage.LoadPackageParam lpparam){
 		try {
-			XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass("com.tencent.mm.plugin.fts.ui.FTSMainUI"), "onCreate", Bundle.class, new XC_MethodHook() {
+			XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass(HookParams.FTSMainUI), "onCreate", Bundle.class, new XC_MethodHook() {
 				protected void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
 					if (FriendManager.activity == null) {
@@ -39,7 +40,7 @@ public class FriendManager {
 					}
 				}
 			});
-			XposedHelpers.findAndHookMethod("com.tencent.mm.ui.widget.a.c", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
+			XposedHelpers.findAndHookMethod(HookParams.FTSMainUI2, lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
 				protected void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
 					if (FriendManager.isMyTask) {
@@ -57,8 +58,8 @@ public class FriendManager {
 					}
 				}
 			});
-			Class loadClass = lpparam.classLoader.loadClass("com.tencent.mm.protocal.protobuf.bsk");
-			XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass("com.tencent.mm.model.j"), "a", Intent.class, loadClass, Integer.TYPE, new XC_MethodHook() {
+			Class loadClass = lpparam.classLoader.loadClass(HookParams.FTSMainUI3);
+			XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass(HookParams.FTSMainUI4), "a", Intent.class, loadClass, Integer.TYPE, new XC_MethodHook() {
 				protected void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
 					if (FriendManager.isMyTask) {
@@ -67,7 +68,7 @@ public class FriendManager {
 					}
 				}
 			});
-			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.profile.ui.SayHiWithSnsPermissionUI", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
+			XposedHelpers.findAndHookMethod(HookParams.sayHiWithSnsPermissionUI, lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
 				protected void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
 					if (FriendManager.isMyTask) {

@@ -26,8 +26,8 @@ public class WxReceiver extends BroadcastReceiver {
 		try {
 			String act = intent.getStringExtra("act");
 			if (act != null) {
-				// 发送消息
 				if (act.equals("send_message")) {
+					// 发送消息
 					final List<MessageBean> msgQueue = (List<MessageBean>) intent.getSerializableExtra("msgQueue");
 					ThreadPoolUtils tp = ThreadPoolUtils.getInstance();
 					tp.run(new Runnable() {
@@ -41,19 +41,19 @@ public class WxReceiver extends BroadcastReceiver {
 										String friendWxId = messageBean.getFriendWxId();
 										String content = messageBean.getContent();
 										int type = messageBean.getType();
-										Class aClass = XposedHelpers.findClass(HookParams.getInstance().sendMessageParamClassName, MainManager.wxLpparam.classLoader);
+										Class aClass = XposedHelpers.findClass(HookParams.sendMessageParamClassName, MainManager.wxLpparam.classLoader);
 										Object param = XposedHelpers.newInstance(aClass, friendWxId, content, type);
 										//调用方法
-										final Class bClass = XposedHelpers.findClass(HookParams.getInstance().sendMessageClassName, MainManager.wxLpparam.classLoader);
-										final Object staticObject = XposedHelpers.getStaticObjectField(bClass, HookParams.getInstance().sendMessageStaticObject);
-										Object callMethod = XposedHelpers.callMethod(staticObject, HookParams.getInstance().sendMessageMethodName, param);
+										final Class bClass = XposedHelpers.findClass(HookParams.sendMessageClassName, MainManager.wxLpparam.classLoader);
+										final Object staticObject = XposedHelpers.getStaticObjectField(bClass, HookParams.sendMessageStaticObject);
+										Object callMethod = XposedHelpers.callMethod(staticObject, HookParams.sendMessageMethodName, param);
 										XLog.e("发送成功:" + (Boolean) callMethod);
 									}
 								}.run();
 								try {
 									Thread.sleep(HookParams.SEND_TIME_INTERVAL);
 								} catch (InterruptedException e) {
-									XLog.e("发送消息线程休眠出错："+ Log.getStackTraceString(e));
+									XLog.e("发送消息线程休眠错误："+ Log.getStackTraceString(e));
 									e.printStackTrace();
 								}
 							}

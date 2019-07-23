@@ -42,10 +42,27 @@ public class HookParams {
     public String versionName;
     public int versionCode;
     
-    public String sendMessageClassName = "com.tencent.mm.ah.p";
-    public String sendMessageStaticObject = "fej";
-    public String sendMessageParamClassName = "com.tencent.mm.modelmulti.h";
-    public String sendMessageMethodName = "d";
+    //消息
+    public static String sendMessageClassName = "com.tencent.mm.ah.p";
+    public static String sendMessageStaticObject = "fej";
+    public static String sendMessageParamClassName = "com.tencent.mm.modelmulti.h";
+    public static String sendMessageMethodName = "d";
+    
+    //好友
+    public static String sayHiWithSnsPermissionUI = "com.tencent.mm.plugin.profile.ui.SayHiWithSnsPermissionUI";
+    public static String sayHiWithSnsPermissionUIInnerClass6 = "com.tencent.mm.plugin.profile.ui.SayHiWithSnsPermissionUI$6";
+    public static String sayHiWithSnsPermissionUIFieldName = "oLC";
+    public static String ContactInfoUI = "com.tencent.mm.plugin.profile.ui.ContactInfoUI";
+    public static String ContactInfoUIFieldName = "oHt";
+    public static String ContactInfoUIMethodName = "EF";
+    public static String ContactInfoUIMethodArgs = "contact_profile_add_contact";
+    public static String FTSMainUI = "com.tencent.mm.plugin.fts.ui.FTSMainUI";
+    public static String FTSMainUI2 = "com.tencent.mm.ui.widget.a.c";
+    public static String FTSMainUI3 = "com.tencent.mm.protocal.protobuf.bsk";
+    public static String FTSMainUI4 = "com.tencent.mm.model.j";
+    
+    
+    //朋友圈
 
     private static HookParams instance = null;
 
