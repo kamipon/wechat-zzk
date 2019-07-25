@@ -1,4 +1,4 @@
-package com.gentcent.wechat.zzk.util;
+package com.gentcent.wechat.zzk.manager;
 
 import com.gentcent.wechat.zzk.bean.MessageBean;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * @author zuozhi
  * @since 2019-07-08
  */
-public class SendManager {
+public class SendMessageManager {
 	
 	//发送消息的队列
 	private static List<MessageBean> sendMessageQueue = new ArrayList<>();

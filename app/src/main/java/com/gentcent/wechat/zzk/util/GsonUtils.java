@@ -1,4 +1,4 @@
-package com.gentcent.wechat.zzk.wcdb;
+package com.gentcent.wechat.zzk.util;
 
 import android.util.Log;
 

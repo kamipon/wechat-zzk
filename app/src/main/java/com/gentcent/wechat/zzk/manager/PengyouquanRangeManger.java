@@ -34,7 +34,7 @@ public class PengyouquanRangeManger {
             intent.putExtra("Ktag_range_index", this.Ktag_range_index);
             intent.putExtra("Klabel_name_list", this.Klabel_name_list);
             intent.putExtra("Kother_user_name_list", this.Kother_user_name_list);
-            XposedHelpers.callMethod(activity, "onActivityResult", new Object[]{Integer.valueOf(5), Integer.valueOf(-1), intent});
+            XposedHelpers.callMethod(activity, "onActivityResult", 5, -1, intent);
         }
     }
 

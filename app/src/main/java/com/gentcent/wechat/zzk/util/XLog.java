@@ -32,7 +32,7 @@ public class XLog {
 //				return tag.toString();
 //			}
 //		}
-		return "Xposed";
+		return "zzk";
 	}
 	
 	/**

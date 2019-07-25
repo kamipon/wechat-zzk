@@ -7,8 +7,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.blankj.utilcode.util.AppUtils;
-import com.blankj.utilcode.util.IntentUtils;
-import com.blankj.utilcode.util.Utils;
+import com.gentcent.wechat.zzk.manager.MainManager;
 import com.gentcent.wechat.zzk.plugin.ADBlock;
 import com.gentcent.wechat.zzk.plugin.AntiRevoke;
 import com.gentcent.wechat.zzk.plugin.AntiSnsDelete;
@@ -19,17 +18,14 @@ import com.gentcent.wechat.zzk.plugin.IPlugin;
 import com.gentcent.wechat.zzk.plugin.Limits;
 import com.gentcent.wechat.zzk.plugin.LuckMoney;
 import com.gentcent.wechat.zzk.plugin.MessageHook;
-import com.gentcent.wechat.zzk.plugin.SnsHook;
+import com.gentcent.wechat.zzk.plugin.SendSnsHook;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.SearchClasses;
-import com.gentcent.wechat.zzk.manager.MainManager;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.IXposedHookLoadPackage;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
-
-import static com.gentcent.zzk.xped.XposedBridge.log;
 
 
 public class Main implements IXposedHookLoadPackage {
@@ -44,7 +40,7 @@ public class Main implements IXposedHookLoadPackage {
 			new Limits(),
 			new MessageHook(),
 			new FriendsHook(),
-			new SnsHook()
+			new SendSnsHook()
 	};
 	
 	@Override
@@ -66,7 +62,7 @@ public class Main implements IXposedHookLoadPackage {
 							return;
 						}
 						if (!HookParams.hasInstance()) {
-							XLog.d("Found wechat version:" + versionName);
+							XLog.d("Found wechat version:" + versionName + " " + lpparam.processName);
 							SearchClasses.init(context, lpparam, versionName);
 							loadPlugins(lpparam);
 						}

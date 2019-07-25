@@ -22,23 +22,23 @@ public class MainManager {
 	public static LoadPackageParam wxLpparam;
 	public static WxReceiver wxReceiver;
 	
-	public static void init (final LoadPackageParam lpparam){
+	public static void init(final LoadPackageParam lpparam) {
 		XposedHelpers.findAndHookMethod(Application.class, "onCreate", new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
 				if (lpparam.isFirstApplication) {
 					Application application = (Application) methodHookParam.thisObject;
 					
-					if(MainManager.wxLpparam==null){
+					if (MainManager.wxLpparam == null) {
 						MainManager.wxLpparam = lpparam;
 						MainManager.wxLpparam.classLoader = application.getClassLoader();
-						XLog.d("wxLpparam is reset success!");
+						XLog.d("wxLpparam is reset success!  " + lpparam.processName);
 					}
-					if(MainManager.wxReceiver==null && lpparam.processName.equals(HookParams.WECHAT_PACKAGE_NAME)){
+					if (MainManager.wxReceiver == null && lpparam.processName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
 						IntentFilter intentFilter = new IntentFilter("WxAction");
 						MainManager.wxReceiver = new WxReceiver();
 						application.registerReceiver(MainManager.wxReceiver, intentFilter);
-						XLog.d("wxReceiver is reset success!");
+						XLog.d("wxReceiver is reset success!  " + lpparam.processName);
 					}
 				}
 			}
@@ -46,9 +46,9 @@ public class MainManager {
 		XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
-				if (MainManager.activity == null && methodHookParam.thisObject!= null) {
+				if (MainManager.activity == null && methodHookParam.thisObject != null) {
 					MainManager.activity = (Activity) methodHookParam.thisObject;
-					XLog.d("mActivity is reset success!");
+					XLog.d("mActivity is reset success!  " + lpparam.processName);
 				}
 			}
 		});
@@ -57,14 +57,14 @@ public class MainManager {
 	/**
 	 * 判断是否初始化完成
 	 */
-	public static boolean isInitComplete(){
-		if(MainManager.activity == null){
+	public static boolean isInitComplete() {
+		if (MainManager.activity == null) {
 			return false;
 		}
-		if(MainManager.wxLpparam == null){
+		if (MainManager.wxLpparam == null) {
 			return false;
 		}
-		if(MainManager.wxReceiver == null){
+		if (MainManager.wxReceiver == null) {
 			return false;
 		}
 		return true;

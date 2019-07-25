@@ -60,9 +60,12 @@ public class HookParams {
     public static String FTSMainUI2 = "com.tencent.mm.ui.widget.a.c";
     public static String FTSMainUI3 = "com.tencent.mm.protocal.protobuf.bsk";
     public static String FTSMainUI4 = "com.tencent.mm.model.j";
-    
+    public static String FTSMainUIMethodName = "c";
     
     //朋友圈
+    public static String SnsUploadUI = "com.tencent.mm.plugin.sns.ui.SnsUploadUI";
+    public static String VideoCompressUI = "com.tencent.mm.plugin.mmsight.segment.VideoCompressUI";
+    public static String SnsTimeLineUI = "com.tencent.mm.plugin.sns.ui.SnsTimeLineUI";
 
     private static HookParams instance = null;
 

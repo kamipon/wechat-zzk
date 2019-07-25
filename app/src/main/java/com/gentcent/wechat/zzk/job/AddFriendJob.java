@@ -10,6 +10,7 @@ import com.birbit.android.jobqueue.Params;
 import com.birbit.android.jobqueue.RetryConstraint;
 import com.gentcent.wechat.zzk.manager.FriendManager;
 import com.gentcent.wechat.zzk.manager.MainManager;
+import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.XposedHelpers;
 
@@ -20,14 +21,15 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 /**
  * 添加好友
+ *
  * @author zuozhi
  * @since 2019-07-19
  */
 public class AddFriendJob extends Job {
 	private static String TAG = "AddFriendJob:  ";
 	private static final int PRIORITY = 5000;
-	private int mDelay;	//单位秒
-	private String mFriendId;	//好友id
+	private int mDelay;    //单位秒
+	private String mFriendId;    //好友id
 	private ArrayList<String> mFriends;
 	
 	
@@ -40,24 +42,30 @@ public class AddFriendJob extends Job {
 	
 	@Override
 	public void onAdded() {
-		XLog.d(TAG+"add on "+new Date().toLocaleString());
+		XLog.d(TAG + "add on " + new Date().toLocaleString());
 	}
 	
 	@Override
-	public void onRun(){
-		try{
-			XLog.d(TAG+"add_friend");
+	public void onRun() {
+		try {
 			Intent intent2 = new Intent();
-			intent2.setClassName("com.tencent.mm", "com.tencent.mm.plugin.fts.ui.FTSMainUI");
+			intent2.setClassName(HookParams.WECHAT_PACKAGE_NAME, HookParams.FTSMainUI);
 			intent2.setFlags(FLAG_ACTIVITY_NEW_TASK);
 			MainManager.activity.startActivity(intent2);
-			XLog.d(TAG+"跳转到FTSMainUI SUCCESS");
-			XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.plugin.fts.ui.FTSMainUI"), "c", FriendManager.activity, mFriendId);
-			XLog.d(TAG+"callStaticMethod | FTSMainUI");
+			XLog.d(TAG + "跳转到FTSMainUI SUCCESS");
+			XLog.d(TAG + "FriendManager.activity:  " + FriendManager.activity);
+			if (FriendManager.activity != null) {
+				XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass(HookParams.FTSMainUI), HookParams.FTSMainUIMethodName, FriendManager.activity, mFriendId);
+				XLog.d(TAG + "callStaticMethod | FTSMainUI");
+			} else {
+				Thread.sleep(mDelay * 1000);
+				onRun();
+				return;
+			}
 			Thread.sleep(mDelay * 1000);
 		} catch (Exception e) {
 			e.printStackTrace();
-			XLog.e(TAG+"错误:" + Log.getStackTraceString(e));
+			XLog.e(TAG + "错误:" + Log.getStackTraceString(e));
 		}
 	}
 	

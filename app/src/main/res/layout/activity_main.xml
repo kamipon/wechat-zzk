@@ -69,6 +69,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!--android:text="{'AddWatermark':false,'ArticleImage':'','ArticleTitle':'','ArticleUrl':'','Content':'ceshi[偷笑]','Images':[],'LookFriendWxIdList':[],'LookUpType':0,'Remind':'','SelfComment':'','Type':1,'Video':''}"-->
+        <!--android:text="{'AddWatermark':false,'ArticleImage':'','ArticleTitle':'','ArticleUrl':'','Content':'测试朋友圈','Images':['http://qiniu.shenshoukeji.net/bf864b91bdc04ca3b63af6663bd1ba44.png','https://cdn2.jianshu.io/assets/web/web-note-ad-side-banner-22096669b4c4b91c3b9266894e951aef.png'],'LookFriendWxIdList':[],'LookUpType':0,'Remind':'','SelfComment':'首次评论','Type':2,'Video':''}"-->
+        <!--android:text="{'AddWatermark':false,'ArticleImage':'','ArticleTitle':'','ArticleUrl':'','Content':'ship','Images':[],'LookFriendWxIdList':[],'LookUpType':0,'Remind':'','SelfComment':'','Type':3,'Video':'http://qiniu.shenshoukeji.net/e8d533c27d774fe696eb3498440d700d.mp4'}"-->
+        <!--android:text="{'AddWatermark':false,'ArticleImage':'http://qiniu.shenshoukeji.net/22102e9824e040598b548f70f5d8c667.png','ArticleTitle':'百度一下','ArticleUrl':'http://www.baidu.com','Content':'lianjie','Images':[],'LookFriendWxIdList':[],'LookUpType':0,'Remind':'','SelfComment':'','Type':4,'Video':''}-->
+
         <EditText
             android:id="@+id/sns_text"
             android:layout_width="match_parent"
@@ -76,8 +81,8 @@
             android:layout_marginTop="20dp"
             android:hint="@string/sns_text"
             android:inputType="textMultiLine"
-            android:text="{'AddWatermark':false,'ArticleImage':'','ArticleTitle':'','ArticleUrl':'','Content':'测试朋友圈','Images':['http://qiniu.shenshoukeji.net/bf864b91bdc04ca3b63af6663bd1ba44.png','https://cdn2.jianshu.io/assets/web/web-note-ad-side-banner-22096669b4c4b91c3b9266894e951aef.png'],'LookFriendWxIdList':[],'LookUpType':0,'Remind':'','SelfComment':'首次评论','Type':2,'Video':''}"
             android:maxLines="10"
+            android:text="{'AddWatermark':false,'ArticleImage':'','ArticleTitle':'','ArticleUrl':'','Content':'测试朋友圈','Images':['http://qiniu.shenshoukeji.net/bf864b91bdc04ca3b63af6663bd1ba44.png','https://cdn2.jianshu.io/assets/web/web-note-ad-side-banner-22096669b4c4b91c3b9266894e951aef.png'],'LookFriendWxIdList':[],'LookUpType':0,'Remind':'','SelfComment':'首次评论','Type':2,'Video':''}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

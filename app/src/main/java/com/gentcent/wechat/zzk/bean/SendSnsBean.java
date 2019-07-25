@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @author zuozhi
  * @since 2019-07-22
  */
-public class SnsBean implements Serializable {
+public class SendSnsBean implements Serializable {
 	/*
 	1:	纯文本
 	2:	带图片

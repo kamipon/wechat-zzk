@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.birbit.android.jobqueue.JobManager;
 import com.gentcent.wechat.zzk.bean.MessageBean;
-import com.gentcent.wechat.zzk.bean.SnsBean;
+import com.gentcent.wechat.zzk.bean.SendSnsBean;
 import com.gentcent.wechat.zzk.job.AddFriendJob;
 import com.gentcent.wechat.zzk.job.SendSnsJob;
 import com.gentcent.wechat.zzk.job.TaskManager;
@@ -15,7 +15,8 @@ import com.gentcent.wechat.zzk.manager.MainManager;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
-import com.gentcent.wechat.zzk.wcdb.GsonUtils;
+import com.gentcent.wechat.zzk.util.GsonUtils;
+import com.gentcent.wechat.zzk.wcdb.SyncInfoDao;
 import com.gentcent.zzk.xped.XposedHelpers;
 
 import java.util.List;
@@ -68,10 +69,15 @@ public class WxReceiver extends BroadcastReceiver {
 					//发送朋友圈
 					String snsJson = intent.getStringExtra("snsJson");
 					XLog.d("snsJson:  "+snsJson);
-					SnsBean snsBean = GsonUtils.GsonToBean(snsJson, SnsBean.class);
+					SendSnsBean snsBean = GsonUtils.GsonToBean(snsJson, SendSnsBean.class);
 					JobManager jobManager = TaskManager.getInstance().getJobManager();
 					if(jobManager==null) return;
-					jobManager.addJobInBackground(new SendSnsJob(10,snsBean));
+					jobManager.addJobInBackground(new SendSnsJob(25,snsBean));
+				}else if(act.equals("sync_info")){
+					//同步信息
+					XLog.d("同步信息");
+					SyncInfoDao.syncInfo();
+					
 				}
 			}
 		} catch (Exception e) {
