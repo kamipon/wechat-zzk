@@ -1,7 +1,6 @@
 package com.gentcent.wechat.zzk.bean;
 
-import com.gentcent.wechat.zzk.MyApplication;
-import com.gentcent.wechat.zzk.wcdb.DecryptUtils;
+import com.blankj.utilcode.util.PhoneUtils;
 
 import java.io.Serializable;
 
@@ -10,7 +9,7 @@ import java.io.Serializable;
  * @since 2019-07-01
  */
 public class MessageBean implements Serializable {
-	private String DeviceIMEI = DecryptUtils.initPhoneIMEI(MyApplication.getAppContext());
+	private String DeviceIMEI = PhoneUtils.getIMEI();
 	private String MyWxId;
 	private String FriendWxId;
 	private String Content;

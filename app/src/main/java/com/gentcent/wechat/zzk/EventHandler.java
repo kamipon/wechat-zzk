@@ -4,13 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.gentcent.wechat.zzk.bean.MessageBean;
-import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.manager.SendMessageManager;
+import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.XLog;
-import com.gentcent.wechat.zzk.wcdb.DecryptUtils;
-import com.gentcent.wechat.zzk.wcdb.FileUtils;
-import com.gentcent.wechat.zzk.wcdb.Md5Utils;
-import com.gentcent.wechat.zzk.wcdb.ShellUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;

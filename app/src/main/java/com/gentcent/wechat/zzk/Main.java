@@ -19,6 +19,7 @@ import com.gentcent.wechat.zzk.plugin.Limits;
 import com.gentcent.wechat.zzk.plugin.LuckMoney;
 import com.gentcent.wechat.zzk.plugin.MessageHook;
 import com.gentcent.wechat.zzk.plugin.SendSnsHook;
+import com.gentcent.wechat.zzk.plugin.SnsHook;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.SearchClasses;
 import com.gentcent.wechat.zzk.util.XLog;
@@ -40,7 +41,8 @@ public class Main implements IXposedHookLoadPackage {
 			new Limits(),
 			new MessageHook(),
 			new FriendsHook(),
-			new SendSnsHook()
+			new SendSnsHook(),
+			new SnsHook()
 	};
 	
 	@Override
@@ -69,7 +71,9 @@ public class Main implements IXposedHookLoadPackage {
 						if (!MainManager.isInitComplete()) {
 							MainManager.init(lpparam);
 							try {
-								AppUtils.launchApp(HookParams.WECHAT_PACKAGE_NAME);
+								if(processName.equals(HookParams.WECHAT_PACKAGE_NAME)){
+									AppUtils.launchApp(HookParams.WECHAT_PACKAGE_NAME);
+								}
 							} catch (Exception ignored) {
 							}
 						}

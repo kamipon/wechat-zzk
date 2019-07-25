@@ -1,12 +1,9 @@
 package com.gentcent.wechat.zzk.wcdb;
 
-import android.content.Context;
 import android.database.Cursor;
 
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
-
-import net.sqlcipher.database.SQLiteDatabase;
 
 /**
  * @author zuozhi
@@ -23,6 +20,7 @@ public class SyncInfoDao {
 				getRcontact();
 				getChatRoom();
 				getMessage();
+				DecryptPasw.initDbPassword();
 			}
 		});
 	}

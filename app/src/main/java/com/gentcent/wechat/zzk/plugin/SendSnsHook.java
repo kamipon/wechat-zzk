@@ -6,10 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.gentcent.wechat.zzk.manager.MainManager;
 import com.gentcent.wechat.zzk.manager.PengyouquanRangeManger;
+import com.gentcent.wechat.zzk.manager.SnsManager;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
@@ -117,6 +121,19 @@ public class SendSnsHook implements IPlugin {
 				}
 			}
 		});
+		
+//		XposedHelpers.findAndHookMethod(HookParams.SnsTimeLineUI, lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
+//			public void beforeHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+//				super.beforeHookedMethod(methodHookParam);
+//				final Activity activity = (Activity) methodHookParam.thisObject;
+//				Intent intent = activity.getIntent();
+//				boolean zzk = intent.getBooleanExtra("zzk", false);
+//				if(zzk){
+//					String comment = intent.getStringExtra("comment");
+//
+//				}
+//			}
+//		});
 	}
 	
 	/**
@@ -136,15 +153,16 @@ public class SendSnsHook implements IPlugin {
 	/**
 	 * 跳转至朋友圈+首次评论
 	 *
-	 * @param str 评论内容
+	 * @param selfComment 评论内容
 	 */
-	private static void goSnsTimeLine(String str) {
+	private static void goSnsTimeLine(String selfComment) {
 		try {
 			Intent intent = new Intent();
 			intent.setClassName(HookParams.WECHAT_PACKAGE_NAME, HookParams.SnsTimeLineUI);
-			intent.putExtra("comment", str);
+			intent.putExtra("comment", selfComment);
 			intent.putExtra("zzk", true);
 			MainManager.activity.startActivity(intent);
+			SnsManager.SelfCommend = selfComment;
 		} catch (Exception e) {
 			XLog.d("执行界面操作失败：" + Log.getStackTraceString(e));
 		}

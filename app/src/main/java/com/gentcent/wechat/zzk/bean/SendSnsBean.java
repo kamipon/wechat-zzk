@@ -14,21 +14,23 @@ public class SendSnsBean implements Serializable {
 	1:	纯文本
 	2:	带图片
 	3:	带视屏
-	4:	文章（分享链接）
+	4:	链接
 	 */
 	private int Type;
-	//是否添加水印
-	private boolean AddWatermark;
-	//文章图片
+	//2 图片
+	private ArrayList<String> Images;
+	//3 视屏
+	private String Video;
+	//4 链接图片
 	private String ArticleImage;
-	//文章标题
+	//4 链接标题
 	private String ArticleTitle;
-	//文章链接
+	//4 链接链接
 	private String ArticleUrl;
 	//内容
 	private String Content;
-	//图片
-	private ArrayList<String> Images;
+	//是否添加水印
+	private boolean AddWatermark;
 	//允许查看的好友
 	private ArrayList<String> LookFriendWxIdList;
 	//TODO:？ 不知道是啥
@@ -37,8 +39,7 @@ public class SendSnsBean implements Serializable {
 	private String Remind;
 	//首次评论
 	private String SelfComment;
-	//视屏
-	private String Video;
+	
 	
 	public boolean isAddWatermark() {
 		return AddWatermark;
