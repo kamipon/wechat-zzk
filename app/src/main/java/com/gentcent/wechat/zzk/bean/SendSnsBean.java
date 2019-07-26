@@ -31,11 +31,11 @@ public class SendSnsBean implements Serializable {
 	private String Content;
 	//是否添加水印
 	private boolean AddWatermark;
-	//允许查看的好友
+	//指定好友
 	private ArrayList<String> LookFriendWxIdList;
-	//TODO:？ 不知道是啥
+	//0：公开  2:指定好友可以看  3:指定好友不能看
 	private int LookUpType;
-	//@好友
+	//@好友	弃用
 	private String Remind;
 	//首次评论
 	private String SelfComment;

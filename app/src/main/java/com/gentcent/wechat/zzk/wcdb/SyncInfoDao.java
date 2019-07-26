@@ -2,8 +2,13 @@ package com.gentcent.wechat.zzk.wcdb;
 
 import android.database.Cursor;
 
+import com.gentcent.wechat.zzk.bean.SnsContentItemBean;
+import com.gentcent.wechat.zzk.manager.MainManager;
+import com.gentcent.wechat.zzk.manager.SnsManager;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
+
+import java.util.List;
 
 /**
  * @author zuozhi
@@ -21,8 +26,25 @@ public class SyncInfoDao {
 				getChatRoom();
 				getMessage();
 				DecryptPasw.initDbPassword();
+				getSnsData();
 			}
 		});
+	}
+	
+	/**
+	 * 获取朋友圈数据
+	 */
+	private static void getSnsData() {
+		List<SnsContentItemBean> selfAllDatas = SnsManager.getSelfAllDatas(MainManager.wxLpparam);
+		XLog.d("openWxDb:  " + "自己的朋友圈数据=====================================================================================");
+		for (SnsContentItemBean selfAllData : selfAllDatas) {
+			XLog.e(selfAllData.toString());
+		}
+		List<SnsContentItemBean> allDatas = SnsManager.getAllDatas(MainManager.wxLpparam);
+		XLog.d("openWxDb:  " + "所有的朋友圈数据=====================================================================================");
+		for (SnsContentItemBean allData : allDatas) {
+			XLog.e(allData.toString());
+		}
 	}
 	
 	/**

@@ -69,6 +69,7 @@ public class SnsHook implements IPlugin {
 //											if (snsContentItemBean.getType() == 1 && ObjectUtils.isNotEmpty((Collection) snsContentItemBean.getImages()) && ObjectUtils.isNotEmpty((CharSequence) snsContentItemBean.getSnsID())) {
 //												CopySnsStrategy.postSnsStrategy(snsContentItemBean.getSnsID(), snsContentItemBean.getImages(), snsContentItemBean.getContent());
 //											}
+											SnsHook.mList.clear();
 										}
 									}, 1000, TimeUnit.MILLISECONDS);
 								}

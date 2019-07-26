@@ -1,12 +1,19 @@
 package com.gentcent.wechat.zzk.bean;
 
 public class SnsCommentBean {
+	//接受者微信昵称
 	private String BeReviewedNickName;
+	//接受者微信ID
 	private String BeReviewedWxid;
+	//id
 	private String CommentId;
+	//内容
 	private String CommentText;
+	//发送者微信昵称
 	private String NickName;
+	//时间戳
 	private long Timestamp;
+	//发送者微信ID
 	private String Wxid;
 	
 	public String getBeReviewedNickName() {

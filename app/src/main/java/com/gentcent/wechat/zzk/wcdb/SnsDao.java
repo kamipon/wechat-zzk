@@ -40,7 +40,7 @@ public class SnsDao {
 	 * 获取自己的朋友圈的RowId
 	 */
 	public static List<String> getMyFriendGroupRowids() {
-		String sql = "select rowid  from SnsInfo  where userName=\"" + UserDao.b(MainManager.wxLpparam) + "\"";
+		String sql = "select rowid  from SnsInfo  where userName=\"" + UserDao.getMyWxidByWXMethod(MainManager.wxLpparam) + "\"";
 		Cursor c1 = WcdbHolder.excute(sql, "SnsMicroMsg.db");
 		List<String> list = new ArrayList<>();
 		if (c1 == null) {

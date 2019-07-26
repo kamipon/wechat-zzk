@@ -24,7 +24,6 @@ public class UserDao {
 		String myName = "";
 		while (c1.moveToNext()) {
 			myName = c1.getString(c1.getColumnIndex("value"));
-			XLog.d(TAG + "getMyName: " + myName);
 		}
 		c1.close();
 		return myName;
@@ -36,16 +35,16 @@ public class UserDao {
 	public static String getMyWxid() {
 		String myWxid = "";
 		String result = "";
-		Cursor a2 = WcdbHolder.excute("select value from userinfo where id='2'");
-		if (ObjectUtils.isNotEmpty((Object) a2)) {
-			while (a2.moveToNext()) {
-				myWxid = a2.getString(a2.getColumnIndex("value"));
+		Cursor c1 = WcdbHolder.excute("select value from userinfo where id='2'");
+		if (ObjectUtils.isNotEmpty((Object) c1)) {
+			while (c1.moveToNext()) {
+				myWxid = c1.getString(c1.getColumnIndex("value"));
 			}
 		} else {
 			XLog.d("getSelfWxid user_ID is empty");
 		}
-		if (a2 != null) {
-			a2.close();
+		if (c1 != null) {
+			c1.close();
 		}
 		if (ObjectUtils.isNotEmpty((CharSequence) myWxid)) {
 			MyHelper.writeLine("myWechatID", myWxid);
@@ -54,21 +53,19 @@ public class UserDao {
 		if (TextUtils.isEmpty(result)) {
 			result = MyHelper.readLine("myWechatID", "");
 		}
-		XLog.d("我的微信ID: " + result);
 		return result;
 	}
 	
 	/**
-	 * 获取？？的微信ID
+	 * 获取自己微信ID（通过微信内部调用）
 	 */
-	public static String b(XC_LoadPackage.LoadPackageParam lpparam) {
+	public static String getMyWxidByWXMethod(XC_LoadPackage.LoadPackageParam lpparam) {
 		String wxid = "";
 		try {
 			wxid = (String) XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.model.q"), "Wt");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		XLog.d("HToolsUSERNAME :" + wxid);
 		return wxid;
 	}
 	

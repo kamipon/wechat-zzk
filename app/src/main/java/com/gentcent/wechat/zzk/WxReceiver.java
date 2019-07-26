@@ -77,7 +77,6 @@ public class WxReceiver extends BroadcastReceiver {
 					//同步信息
 					XLog.d("同步信息");
 					SyncInfoDao.syncInfo();
-					
 				}
 			}
 		} catch (Exception e) {

@@ -5,7 +5,9 @@ import android.content.Intent;
 
 import com.gentcent.zzk.xped.XposedHelpers;
 
-
+/**
+ * 设置朋友圈查看权限
+ */
 public class PengyouquanRangeManger {
     private static final int requestCode = 5;
     private static final int resultCode = -1;
@@ -13,10 +15,10 @@ public class PengyouquanRangeManger {
     String Kother_user_name_list;
     int Ktag_range_index;
 
-    public PengyouquanRangeManger(int i, String str, String str2) {
-        this.Ktag_range_index = i;
-        this.Klabel_name_list = str;
-        this.Kother_user_name_list = str2;
+    public PengyouquanRangeManger(int Ktag_range_index, String Klabel_name_list, String Kother_user_name_list) {
+        this.Ktag_range_index = Ktag_range_index;
+        this.Klabel_name_list = Klabel_name_list;
+        this.Kother_user_name_list = Kother_user_name_list;
     }
 
     public void addRange(Activity activity) {

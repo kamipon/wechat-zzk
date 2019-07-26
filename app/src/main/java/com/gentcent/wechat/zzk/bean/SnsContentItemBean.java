@@ -21,29 +21,27 @@ public class SnsContentItemBean {
 	private String ArticleTitle;
 	//4 链接地址
 	private String ArticleUrl;
-	//
+	//指定好友
 	private LinkedList<String> ChooseFriends = new LinkedList<>();
 	//评论
 	private LinkedList<SnsCommentBean> Commentlist = new LinkedList<>();
 	//文本内容
 	private String Content;
-	//
-	private boolean DelayLike;
-	//
+	//是否公开
 	private boolean IsPublic;
-	//
+	//是否指定好友可以看
 	private boolean IsSee;
 	//点赞
 	private LinkedList<SnsLikeBean> Likelist = new LinkedList<>();
-	//
+	//0：公开  2:指定好友可以看  3:指定好友不能看
 	private int LookUpType;
 	//所有者的昵称
 	private String NickName;
-	//
+	//是否自己点赞自己
 	private boolean SelfLike;
 	//wcdb的sbsid
 	private String SnsID;
-	//
+	//snsid
 	private String SnsWxid;
 	//时间戳
 	private long Timestamp;
@@ -94,14 +92,6 @@ public class SnsContentItemBean {
 	
 	public void setContent(String content) {
 		Content = content;
-	}
-	
-	public boolean isDelayLike() {
-		return DelayLike;
-	}
-	
-	public void setDelayLike(boolean delayLike) {
-		DelayLike = delayLike;
 	}
 	
 	public List<String> getImages() {
@@ -209,7 +199,6 @@ public class SnsContentItemBean {
 				", ChooseFriends=" + ChooseFriends +
 				", Commentlist=" + Commentlist +
 				", Content='" + Content + '\'' +
-				", DelayLike=" + DelayLike +
 				", Images=" + Images +
 				", IsPublic=" + IsPublic +
 				", IsSee=" + IsSee +

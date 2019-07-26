@@ -1,10 +1,8 @@
 package com.gentcent.wechat.zzk.manager;
 
-import android.app.Activity;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.bean.SnsCommentBean;
 import com.gentcent.wechat.zzk.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.bean.SnsLikeBean;
@@ -32,6 +30,13 @@ public class SnsManager {
 	private static final String CONTEXT_KEY = "1";
 	private static final String WAKE_TYPE_KEY = "2";
 	public static String SelfCommend = "";
+	
+	/**
+	 * 获得所有朋友圈数据
+	 */
+	public static List<SnsContentItemBean> getAllDatas(LoadPackageParam lpparam) {
+		return getSnsContentItemBeanList_By_Rowids(lpparam, SnsDao.getSnsRowids());
+	}
 	
 	/**
 	 * 获得自己的所有朋友圈数据
@@ -325,7 +330,7 @@ public class SnsManager {
 	}
 	
 	/**
-	 * 封装成后台的SnsContentItemBean
+	 * 封装成自己的SnsContentItemBean
 	 *
 	 * @param wSnsContentBean 微信朋友圈对象
 	 * @param rowId           微信数据库的RowID

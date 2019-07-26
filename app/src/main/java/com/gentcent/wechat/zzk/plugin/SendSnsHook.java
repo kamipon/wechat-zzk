@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import com.gentcent.wechat.zzk.manager.MainManager;
@@ -20,8 +17,11 @@ import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
+import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 
@@ -30,6 +30,20 @@ public class SendSnsHook implements IPlugin {
 	
 	@Override
 	public void hook(final XC_LoadPackage.LoadPackageParam lpparam) {
+		
+		XposedHelpers.findAndHookMethod(HookParams.SnsTimeLineUI, lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
+			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+				final Activity activity = (Activity) methodHookParam.thisObject;
+				if (activity.getIntent().getBooleanExtra("sendComplete", false)) {
+					new Timer().schedule(new TimerTask() {
+						public void run() {
+							activity.finish();
+						}
+					}, 10000);
+				}
+				
+			}
+		});
 		
 		final String[] selfComment = {""};
 		XposedHelpers.findAndHookMethod(HookParams.SnsUploadUI, lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
@@ -114,26 +128,13 @@ public class SendSnsHook implements IPlugin {
 				if (activity != null && activity.getIntent().getBooleanExtra("snsfriendsnsuploadui", false)) {
 					XLog.d("SnsUploadUI onDestroy ");
 					if (TextUtils.isEmpty(selfComment[0])) {
-//						goSnsTimeLine();
+						goSnsTimeLine();
 					} else {
 						goSnsTimeLine(selfComment[0]);
 					}
 				}
 			}
 		});
-		
-//		XposedHelpers.findAndHookMethod(HookParams.SnsTimeLineUI, lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
-//			public void beforeHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-//				super.beforeHookedMethod(methodHookParam);
-//				final Activity activity = (Activity) methodHookParam.thisObject;
-//				Intent intent = activity.getIntent();
-//				boolean zzk = intent.getBooleanExtra("zzk", false);
-//				if(zzk){
-//					String comment = intent.getStringExtra("comment");
-//
-//				}
-//			}
-//		});
 	}
 	
 	/**
@@ -144,6 +145,7 @@ public class SendSnsHook implements IPlugin {
 			Intent intent = new Intent();
 			intent.setClassName(HookParams.WECHAT_PACKAGE_NAME, HookParams.SnsTimeLineUI);
 			intent.putExtra("zzk", true);
+			intent.putExtra("sendComplete", true);
 			MainManager.activity.startActivity(intent);
 		} catch (Exception e) {
 			XLog.d("执行界面操作失败：" + Log.getStackTraceString(e));
@@ -161,6 +163,7 @@ public class SendSnsHook implements IPlugin {
 			intent.setClassName(HookParams.WECHAT_PACKAGE_NAME, HookParams.SnsTimeLineUI);
 			intent.putExtra("comment", selfComment);
 			intent.putExtra("zzk", true);
+			intent.putExtra("sendComplete", true);
 			MainManager.activity.startActivity(intent);
 			SnsManager.SelfCommend = selfComment;
 		} catch (Exception e) {
