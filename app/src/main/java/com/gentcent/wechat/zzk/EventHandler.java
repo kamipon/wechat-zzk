@@ -3,14 +3,16 @@ package com.gentcent.wechat.zzk;
 import android.content.Context;
 import android.content.Intent;
 
-import com.gentcent.wechat.zzk.bean.MessageBean;
+import com.gentcent.wechat.zzk.bean.SendMessageBean;
 import com.gentcent.wechat.zzk.manager.SendMessageManager;
+import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.XLog;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,10 +25,11 @@ public class EventHandler {
 	/**
 	 * 发送消息
 	 */
-	public static void sendMessage(MessageBean messageBean) {
+	public static void sendMessage(String jsonStr) {
 		Context context = MyApplication.getAppContext();
-		XLog.d("添加至消息队列 类型:" + messageBean.getType());
-		SendMessageManager.addToQueque(messageBean);
+		SendMessageBean sendMessageBean = GsonUtils.GsonToBean(jsonStr, SendMessageBean.class);
+		XLog.d("添加至消息队列 类型:" + sendMessageBean.getType());
+		SendMessageManager.addToQueque(sendMessageBean);
 		//添加至消息队列
 		sendBroad(context);
 	}
@@ -38,7 +41,7 @@ public class EventHandler {
 		int quequeSize = SendMessageManager.getQuequeSize();
 		if(quequeSize>0 && !SendMessageManager.isLock()){
 			SendMessageManager.lock();
-			List<MessageBean> list = new ArrayList<>(SendMessageManager.getQueque());
+			List<SendMessageBean> list = new ArrayList<>(SendMessageManager.getQueque());
 			SendMessageManager.clearQueque();
 			
 			Intent intent = new Intent("WxAction");
@@ -62,12 +65,17 @@ public class EventHandler {
 	/**
 	 * 添加好友
 	 */
-	public static void addFriend(String id) {
+	public static void addFriend(String jsonStr) {
 		try {
+			Map<String, Object> map = GsonUtils.GsonToMaps(jsonStr);
+			String helloText = (String) map.get("helloText");
+			String addFriendName = (String) map.get("addFriendName");
+			
 			Context context = MyApplication.getAppContext();
 			Intent intent = new Intent("WxAction");
 			intent.putExtra("act", "add_friend");
-			intent.putExtra("addFriendName", id);
+			intent.putExtra("addFriendName", addFriendName);
+			intent.putExtra("helloText", helloText);
 			context.sendBroadcast(intent);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -93,7 +101,7 @@ public class EventHandler {
 	/**
 	 * 读取微信数据库
 	 */
-	public static void getWcdb() {
+	public static void syncInfo() {
 		try {
 			XLog.d("读取微信数据库");
 			Context context = MyApplication.getAppContext();

@@ -14,7 +14,7 @@ import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
  * @since 2019-07-25
  */
 public class UserDao {
-	private final static String TAG = "UserDao:  ";
+	private static final String TAG = "UserDao:  ";
 	
 	/**
 	 * 获取自己的微信昵称

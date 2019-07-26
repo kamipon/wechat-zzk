@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author zuozhi
  * @since 2019-07-01
  */
-public class MessageBean implements Serializable {
+public class SendMessageBean implements Serializable {
 	private String DeviceIMEI = PhoneUtils.getIMEI();
 	private String MyWxId;
 	private String FriendWxId;
@@ -24,7 +24,7 @@ public class MessageBean implements Serializable {
 	private String ChatroomMemberWxId;
 	private String ServiceGuid;
 	
-	public MessageBean() {
+	public SendMessageBean() {
 	}
 	
 	public String getDeviceIMEI() {

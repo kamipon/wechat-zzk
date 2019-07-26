@@ -192,6 +192,7 @@ public class FriendsHook implements IPlugin {
 							editText.postDelayed(new Runnable() {
 								public void run() {
 									editText.setText(MyHelper.readLine("addFriendHelloText", ""));
+									MyHelper.delete("addFriendHelloText");
 								}
 							}, 200);
 						}

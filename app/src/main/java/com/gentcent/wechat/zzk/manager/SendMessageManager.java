@@ -1,6 +1,6 @@
 package com.gentcent.wechat.zzk.manager;
 
-import com.gentcent.wechat.zzk.bean.MessageBean;
+import com.gentcent.wechat.zzk.bean.SendMessageBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 public class SendMessageManager {
 	
 	//发送消息的队列
-	private static List<MessageBean> sendMessageQueue = new ArrayList<>();
+	private static List<SendMessageBean> sendMessageQueue = new ArrayList<>();
 	
 	//是否上锁
 	private static boolean isLock = false;
@@ -41,14 +41,14 @@ public class SendMessageManager {
 	/**
 	 * 添加消息到队列
 	 */
-	public static boolean addToQueque(MessageBean mb){
+	public static boolean addToQueque(SendMessageBean mb){
 		return sendMessageQueue.add(mb);
 	}
 	
 	/**
 	 * 获取消息队列
 	 */
-	public static List<MessageBean> getQueque(){
+	public static List<SendMessageBean> getQueque(){
 		return sendMessageQueue;
 	}
 	

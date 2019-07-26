@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.birbit.android.jobqueue.JobManager;
-import com.gentcent.wechat.zzk.bean.MessageBean;
+import com.gentcent.wechat.zzk.bean.SendMessageBean;
 import com.gentcent.wechat.zzk.bean.SendSnsBean;
 import com.gentcent.wechat.zzk.job.AddFriendJob;
 import com.gentcent.wechat.zzk.job.SendSnsJob;
@@ -29,12 +29,12 @@ public class WxReceiver extends BroadcastReceiver {
 			if (act != null) {
 				if (act.equals("send_message")) {
 					// 发送消息
-					final List<MessageBean> msgQueue = (List<MessageBean>) intent.getSerializableExtra("msgQueue");
+					final List<SendMessageBean> msgQueue = (List<SendMessageBean>) intent.getSerializableExtra("msgQueue");
 					ThreadPoolUtils tp = ThreadPoolUtils.getInstance();
 					tp.run(new Runnable() {
 						@Override
 						public void run() {
-							for (final MessageBean messageBean: msgQueue) {
+							for (final SendMessageBean messageBean : msgQueue) {
 								new Runnable() {
 									@Override
 									public void run() {
@@ -54,26 +54,26 @@ public class WxReceiver extends BroadcastReceiver {
 								try {
 									Thread.sleep(HookParams.SEND_TIME_INTERVAL);
 								} catch (InterruptedException e) {
-									XLog.e("发送消息线程休眠错误："+ Log.getStackTraceString(e));
+									XLog.e("发送消息线程休眠错误：" + Log.getStackTraceString(e));
 									e.printStackTrace();
 								}
 							}
 						}
 					});
-				}else if(act.equals("add_friend")){
+				} else if (act.equals("add_friend")) {
 					//添加好友
+					String addFriendName = intent.getStringExtra("addFriendName");
+					String helloText = intent.getStringExtra("helloText");
 					JobManager jobManager = TaskManager.getInstance().getJobManager();
-					if(jobManager==null) return;
-					jobManager.addJobInBackground(new AddFriendJob(10,intent.getStringExtra("addFriendName"),null));
-				}else if(act.equals("send_sns")){
+					jobManager.addJobInBackground(new AddFriendJob(10, addFriendName, helloText, null));
+				} else if (act.equals("send_sns")) {
 					//发送朋友圈
 					String snsJson = intent.getStringExtra("snsJson");
-					XLog.d("snsJson:  "+snsJson);
+					XLog.d("snsJson:  " + snsJson);
 					SendSnsBean snsBean = GsonUtils.GsonToBean(snsJson, SendSnsBean.class);
 					JobManager jobManager = TaskManager.getInstance().getJobManager();
-					if(jobManager==null) return;
-					jobManager.addJobInBackground(new SendSnsJob(25,snsBean));
-				}else if(act.equals("sync_info")){
+					jobManager.addJobInBackground(new SendSnsJob(25, snsBean));
+				} else if (act.equals("sync_info")) {
 					//同步信息
 					XLog.d("同步信息");
 					SyncInfoDao.syncInfo();

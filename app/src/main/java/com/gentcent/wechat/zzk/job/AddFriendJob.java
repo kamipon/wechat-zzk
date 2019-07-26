@@ -11,6 +11,7 @@ import com.birbit.android.jobqueue.RetryConstraint;
 import com.gentcent.wechat.zzk.manager.FriendManager;
 import com.gentcent.wechat.zzk.manager.MainManager;
 import com.gentcent.wechat.zzk.util.HookParams;
+import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.XposedHelpers;
 
@@ -30,10 +31,11 @@ public class AddFriendJob extends Job {
 	private static final int PRIORITY = 5000;
 	private int mDelay;    //单位秒
 	private String mFriendId;    //好友id
+	private String helloText;    //打招呼信息
 	private ArrayList<String> mFriends;
 	
 	
-	public AddFriendJob(int mDelay, String mFriendId, ArrayList<String> mFriends) {
+	public AddFriendJob(int mDelay, String mFriendId, String helloText, ArrayList<String> mFriends) {
 		super(new Params(PRIORITY).persist());
 		this.mDelay = mDelay;
 		this.mFriendId = mFriendId;
@@ -48,6 +50,9 @@ public class AddFriendJob extends Job {
 	@Override
 	public void onRun() {
 		try {
+			//添加好友打招呼语句
+			MyHelper.writeLine("addFriendHelloText", helloText);
+			
 			Intent intent2 = new Intent();
 			intent2.setClassName(HookParams.WECHAT_PACKAGE_NAME, HookParams.FTSMainUI);
 			intent2.setFlags(FLAG_ACTIVITY_NEW_TASK);
