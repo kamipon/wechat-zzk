@@ -9,19 +9,39 @@ import java.io.Serializable;
  * @since 2019-07-01
  */
 public class SendMessageBean implements Serializable {
+	//手机imei
 	private String DeviceIMEI = PhoneUtils.getIMEI();
+	//我的微信id
 	private String MyWxId;
+	//好友的微信id
 	private String FriendWxId;
+	//发送的消息内容
 	private String Content;
+	//TODO:?
 	private int Pos;
+	/**
+	 * 消息类型
+	 * 0:文本
+	 * 1：图片
+	 * 2：语音
+	 * 3：视频
+	 * 7：链接
+	 */
 	private int Type;
 	private int Interval;
+	//链接图片
 	private String LinkImg;
+	//链接标题
 	private String LinkTitle;
+	//链接描述
 	private String LinkDescription;
+	//链接地址
 	private String LinkUrl;
+	//文件名
 	private String FileName;
+	
 	private String ChatroomMemberWxId;
+	//TODO:服务器ID
 	private String ServiceGuid;
 	
 	public SendMessageBean() {

@@ -3,6 +3,7 @@ package com.gentcent.wechat.zzk;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -35,6 +36,14 @@ public class MainActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// 这是前提——你的app至少运行了一个service。这里表示当进程不在前台时，马上开启一个service
+		Intent intent = new Intent(this, MyService.class);
+		startService(intent);
 	}
 	
 	/**

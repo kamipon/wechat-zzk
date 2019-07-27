@@ -11,9 +11,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
-    <!-- Optional. Required for location feature -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- Optional. Required for location feature -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 用于开启 debug 版本的应用在 6.0 系统上的层叠窗口权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -25,13 +23,21 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name="com.gentcent.wechat.zzk.MyApplication"
+        android:name=".MyApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
+            android:name=".AssistService"
+            android:enabled="true"
+            android:exported="true"></service>
 
         <activity
-            android:name="com.gentcent.wechat.zzk.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,39 +57,35 @@
             android:value="50" />
 
         <receiver
-            android:name="com.gentcent.wechat.zzk.util.ConfigReceiver"
+            android:name=".util.ConfigReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="wechat.intent.action.SAVE_WECHAT_ENHANCEMENT_CONFIG" />
             </intent-filter>
-        </receiver>
-
-        <!-- 注册继承JCommonService的服务 -->
-        <service android:name=".JService"
+        </receiver> <!-- 注册继承JCommonService的服务 -->
+        <service
+            android:name=".jpush.JpushService"
             android:enabled="true"
             android:exported="false"
             android:process=":pushcore">
             <intent-filter>
                 <action android:name="cn.jiguang.user.service.action" />
             </intent-filter>
-        </service>
-
-        <!-- 替换原生极光推送接收器 -->
+        </service> <!-- 替换原生极光推送接收器 -->
         <receiver
-            android:name=".JReceiver"
-            android:exported="false"
-            android:enabled="true">
+            android:name=".jpush.JpushReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
-                <action android:name="cn.jpush.android.intent.REGISTRATION" /> <!--Required  用户注册SDK的intent-->
-                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" /> <!--Required  用户接收SDK消息的intent-->
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> <!--Required  用户接收SDK通知栏信息的intent-->
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> <!--Required  用户打开自定义通知栏的intent-->
-                <action android:name="cn.jpush.android.intent.CONNECTION" /><!-- 接收网络变化 连接/断开 since 1.6.3 -->
+                <action android:name="cn.jpush.android.intent.REGISTRATION" /> <!-- Required  用户注册SDK的intent -->
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" /> <!-- Required  用户接收SDK消息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> <!-- Required  用户接收SDK通知栏信息的intent -->
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> <!-- Required  用户打开自定义通知栏的intent -->
+                <action android:name="cn.jpush.android.intent.CONNECTION" /> <!-- 接收网络变化 连接/断开 since 1.6.3 -->
                 <category android:name="com.gentcent.wechat.zzk" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

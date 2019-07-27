@@ -1,8 +1,9 @@
-package com.gentcent.wechat.zzk;
+package com.gentcent.wechat.zzk.jpush;
 
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.gentcent.wechat.zzk.EventHandler;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 
@@ -18,7 +19,7 @@ import cn.jpush.android.service.JPushMessageReceiver;
  * @author zuozhi
  * @since 2019-07-26
  */
-public class JReceiver extends JPushMessageReceiver {
+public class JpushReceiver extends JPushMessageReceiver {
 	private static final String TAG = "JReceiver:  ";
 	
 	/**
@@ -27,7 +28,13 @@ public class JReceiver extends JPushMessageReceiver {
 	@Override
 	public void onConnected(Context context, boolean b) {
 		super.onConnected(context, b);
-		XLog.e(TAG + "onConnected");
+		XLog.e(TAG + "onConnected " + b);
+		
+		//重连
+		if (!b) {
+			JPushInterface.init(context);
+			JPushInterface.onResume(context);
+		}
 	}
 	
 	/**
@@ -37,11 +44,6 @@ public class JReceiver extends JPushMessageReceiver {
 	public void onRegister(Context context, String s) {
 		super.onRegister(context, s);
 		XLog.e(TAG + "onRegister" + s);
-		// 一般登录之后调用此方法设置别名
-		// sequence 用来标识一次操作的唯一性(退出登录时根据此参数删除别名)
-		// alias 设置有效的别名
-		// 有效的别名组成：字母（区分大小写）、数字、下划线、汉字、特殊字符@!#$&*+=.|。限制：alias 命名长度限制为 40 字节。
-		JPushInterface.setAlias(context, 10086, "device_001");
 	}
 	
 	/**
@@ -50,7 +52,22 @@ public class JReceiver extends JPushMessageReceiver {
 	@Override
 	public void onAliasOperatorResult(Context context, JPushMessage jPushMessage) {
 		super.onAliasOperatorResult(context, jPushMessage);
-		XLog.e(TAG + jPushMessage.toString());
+//		String alias = jPushMessage.getAlias();
+//		boolean needAlias = TextUtils.isEmpty(alias);
+//		XLog.e(TAG + "need set alias " + needAlias + " alias is : " + alias);
+//		if (needAlias) {
+//			boolean connectionState = JPushInterface.getConnectionState(context);
+//			XLog.e(TAG + "jPushState : " + connectionState);
+//			if (connectionState) {
+//				XLog.e(TAG + "setAlias is : device_002");
+//				JPushInterface.setAlias(context, 1, "device_002");
+//			}else{
+//				XLog.e("Jpush重连");
+//				JPushInterface.init(context);
+//				JPushInterface.onResume(context);
+//				JPushInterface.setAlias(context, 1, "device_002");
+//			}
+//		}
 	}
 	
 	/**
@@ -83,10 +100,7 @@ public class JReceiver extends JPushMessageReceiver {
 	@Override
 	public void onMessage(Context context, CustomMessage customMessage) {
 		super.onMessage(context, customMessage);
-		if(TextUtils.isEmpty(customMessage.extra)){
-			XLog.d("act: null | Message: " + customMessage.message);
-			return;
-		}
+		
 		Map<String, Object> extra = GsonUtils.GsonToMaps(customMessage.extra);
 		String act = (String) extra.get("act");
 		String jsonStr = customMessage.message;
@@ -100,8 +114,8 @@ public class JReceiver extends JPushMessageReceiver {
 			EventHandler.sendSns(jsonStr);
 		} else if ("sync_info".equals(act)) {
 			EventHandler.syncInfo();
-		}else{
-		
+		} else {
+			XLog.e("not found act: null | Message: " + customMessage.message);
 		}
 	}
 	
