@@ -100,7 +100,6 @@ public class JpushReceiver extends JPushMessageReceiver {
 	@Override
 	public void onMessage(Context context, CustomMessage customMessage) {
 		super.onMessage(context, customMessage);
-		
 		Map<String, Object> extra = GsonUtils.GsonToMaps(customMessage.extra);
 		String act = (String) extra.get("act");
 		String jsonStr = customMessage.message;
