@@ -43,9 +43,9 @@ public class HookParams {
     public int versionCode;
     
     //消息
-    public static String sendMessageClassName = "com.tencent.mm.ah.p";
-    public static String sendMessageStaticObject = "fej";
-    public static String sendMessageParamClassName = "com.tencent.mm.modelmulti.h";
+    public static String sendMessageClass1 = "com.tencent.mm.modelmulti.h";
+    public static String sendMessageClass2 = "com.tencent.mm.ah.p";
+    public static String sendMessageStaticField = "fej";
     public static String sendMessageMethodName = "d";
     
     //好友

@@ -9,7 +9,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.gentcent.wechat.zzk.manager.MainManager;
-import com.gentcent.wechat.zzk.manager.PengyouquanRangeManger;
+import com.gentcent.wechat.zzk.manager.SnsRangeManger;
 import com.gentcent.wechat.zzk.manager.SnsManager;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
@@ -17,7 +17,6 @@ import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
-import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -209,7 +208,7 @@ public class SendSnsHook implements IPlugin {
 			stringBuffer.deleteCharAt(stringBuffer.length() - 1);
 		}
 		XLog.d("setWhoSeeSns" + stringBuffer.toString());
-		new PengyouquanRangeManger(i, "", stringBuffer.toString()).addRange(activity);
+		new SnsRangeManger(i, "", stringBuffer.toString()).addRange(activity);
 	}
 	
 }

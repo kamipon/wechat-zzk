@@ -27,40 +27,46 @@ public class EventHandler {
 	 */
 	public static void sendMessage(String jsonStr) {
 		Context context = MyApplication.getAppContext();
-		SendMessageBean sendMessageBean = GsonUtils.GsonToBean(jsonStr, SendMessageBean.class);
-		XLog.d("添加至消息队列 类型:" + sendMessageBean.getType());
-		SendMessageManager.addToQueque(sendMessageBean);
-		//添加至消息队列
-		sendBroad(context);
+		Intent intent = new Intent("WxAction");
+		intent.putExtra("act", "send_message");
+		intent.putExtra("sendmsgbean", jsonStr);
+		context.sendBroadcast(intent);
+		
+//		Context context = MyApplication.getAppContext();
+//		SendMessageBean sendMessageBean = GsonUtils.GsonToBean(jsonStr, SendMessageBean.class);
+//		XLog.d("添加至消息队列 类型:" + sendMessageBean.getType());
+//		SendMessageManager.addToQueque(sendMessageBean);
+//		//添加至消息队列
+//		sendBroad(context);
 	}
 	
 	/**
 	 * 发送广播，传递消息队列
 	 */
-	private static void sendBroad(final Context context) {
-		int quequeSize = SendMessageManager.getQuequeSize();
-		if(quequeSize>0 && !SendMessageManager.isLock()){
-			SendMessageManager.lock();
-			List<SendMessageBean> list = new ArrayList<>(SendMessageManager.getQueque());
-			SendMessageManager.clearQueque();
-			
-			Intent intent = new Intent("WxAction");
-			intent.putExtra("act", "send_message");
-			intent.putExtra("msgQueue", (Serializable)list);
-			context.sendBroadcast(intent);
-			XLog.d("发送消息 | 个数："+quequeSize);
-			
-			//发送完成后再次执行，直到消息队列为空为止
-			TimerTask task = new TimerTask() {
-				@Override
-				public void run() {
-					SendMessageManager.unLock();
-					sendBroad(context);
-				}
-			};
-			new Timer().schedule(task, HookParams.SEND_TIME_INTERVAL * (quequeSize + 1));
-		}
-	}
+//	private static void sendBroad(final Context context) {
+//		int quequeSize = SendMessageManager.getQuequeSize();
+//		if(quequeSize>0 && !SendMessageManager.isLock()){
+//			SendMessageManager.lock();
+//			List<SendMessageBean> list = new ArrayList<>(SendMessageManager.getQueque());
+//			SendMessageManager.clearQueque();
+//
+//			Intent intent = new Intent("WxAction");
+//			intent.putExtra("act", "send_message");
+//			intent.putExtra("msgQueue", (Serializable)list);
+//			context.sendBroadcast(intent);
+//			XLog.d("发送消息 | 个数："+quequeSize);
+//
+//			//发送完成后再次执行，直到消息队列为空为止
+//			TimerTask task = new TimerTask() {
+//				@Override
+//				public void run() {
+//					SendMessageManager.unLock();
+//					sendBroad(context);
+//				}
+//			};
+//			new Timer().schedule(task, HookParams.SEND_TIME_INTERVAL * (quequeSize + 1));
+//		}
+//	}
 	
 	/**
 	 * 添加好友

@@ -1,7 +1,6 @@
 package com.gentcent.wechat.zzk.jpush;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.gentcent.wechat.zzk.EventHandler;
 import com.gentcent.wechat.zzk.util.GsonUtils;

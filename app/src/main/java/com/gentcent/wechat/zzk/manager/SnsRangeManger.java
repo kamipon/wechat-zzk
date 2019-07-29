@@ -8,14 +8,14 @@ import com.gentcent.zzk.xped.XposedHelpers;
 /**
  * 设置朋友圈查看权限
  */
-public class PengyouquanRangeManger {
+public class SnsRangeManger {
     private static final int requestCode = 5;
     private static final int resultCode = -1;
     String Klabel_name_list;
     String Kother_user_name_list;
     int Ktag_range_index;
 
-    public PengyouquanRangeManger(int Ktag_range_index, String Klabel_name_list, String Kother_user_name_list) {
+    public SnsRangeManger(int Ktag_range_index, String Klabel_name_list, String Kother_user_name_list) {
         this.Ktag_range_index = Ktag_range_index;
         this.Klabel_name_list = Klabel_name_list;
         this.Kother_user_name_list = Kother_user_name_list;

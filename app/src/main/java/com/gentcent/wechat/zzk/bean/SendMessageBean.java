@@ -26,6 +26,8 @@ public class SendMessageBean implements Serializable {
 	 * 2：语音
 	 * 3：视频
 	 * 7：链接
+	 * 8：文件
+	 * 9：群聊
 	 */
 	private int Type;
 	private int Interval;

@@ -10,8 +10,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
-import com.gentcent.wechat.zzk.util.XLog;
-
 /**
  * 保持app常驻系统内存
  * @author zuozhi
