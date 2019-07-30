@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Calendar;
 
 /**
  * @author zuozhi
@@ -18,6 +19,21 @@ import java.io.OutputStreamWriter;
  */
 public class MyHelper {
 	public static String SDCARD_PATH = "/sdcard/more-chat/";
+	
+	/**
+	 * 获取文件名
+	 */
+	public static String getName(String path) {
+		int index = path.lastIndexOf(".");
+		return System.currentTimeMillis() + path.substring(index);
+	}
+	
+	/**
+	 * 获取今天的文件夹
+	 */
+	public static String getDir(String dir) {
+		return SDCARD_PATH + dir + "/" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+	}
 	
 	/**
 	 * 初始化文件夹
@@ -83,7 +99,7 @@ public class MyHelper {
 	 * @param fileName 文件名
 	 * @return 文件第一行
 	 */
-	public static String readLine(String fileName , String defaultVal) {
+	public static String readLine(String fileName, String defaultVal) {
 		return readFileAtFristLine(SDCARD_PATH, fileName, defaultVal);
 	}
 	
@@ -119,10 +135,11 @@ public class MyHelper {
 	
 	/**
 	 * 写入文件(单行)
+	 *
 	 * @param fileName 文件名
 	 * @param content  内容
 	 */
-	public static void writeLine(String fileName, String content){
+	public static void writeLine(String fileName, String content) {
 		delete(fileName);
 		writeOneLineFile(SDCARD_PATH, fileName, content);
 	}
@@ -148,19 +165,22 @@ public class MyHelper {
 					return;
 				} catch (IOException e) {
 					e.printStackTrace();
-					XLog.e("SetString key is " + fileName + " error is " + Log.getStackTraceString(e));;
+					XLog.e("SetString key is " + fileName + " error is " + Log.getStackTraceString(e));
+					;
 				}
 			} catch (Exception e2) {
 				bufferedWriter = bufferedWriter2;
 				try {
 					e2.printStackTrace();
-					XLog.e("SetString key is " + fileName + " error is " + e2.getMessage());;
+					XLog.e("SetString key is " + fileName + " error is " + e2.getMessage());
+					;
 				} catch (Throwable th) {
 					try {
 						bufferedWriter.close();
 					} catch (IOException e3) {
 						e3.printStackTrace();
-						XLog.e("SetString key is " + fileName + " error is " + e3.getMessage());;
+						XLog.e("SetString key is " + fileName + " error is " + e3.getMessage());
+						;
 					}
 					throw th;
 				}
@@ -170,13 +190,15 @@ public class MyHelper {
 			}
 		} catch (Exception e4) {
 			e4.printStackTrace();
-			XLog.e("SetString key is " + fileName + " error is " + e4.getMessage());;
+			XLog.e("SetString key is " + fileName + " error is " + e4.getMessage());
+			;
 			if (bufferedWriter == null) {
 				try {
 					bufferedWriter.close();
 				} catch (IOException e5) {
 					e5.printStackTrace();
-					XLog.e("SetString key is " + fileName + " error is " + e5.getMessage());;
+					XLog.e("SetString key is " + fileName + " error is " + e5.getMessage());
+					;
 				}
 			}
 		}
@@ -185,13 +207,12 @@ public class MyHelper {
 	
 	/**
 	 * 复制单个文件
+	 *
 	 * @param source 来源路径
 	 * @param target 目标路径
 	 */
 	public static void copyFile(String source, String target) {
 		try {
-			source = SDCARD_PATH + source;
-			target = SDCARD_PATH + target;
 			if (new File(source).exists()) {
 				FileInputStream fileInputStream = new FileInputStream(source);
 				FileOutputStream fileOutputStream = new FileOutputStream(target);

@@ -71,6 +71,15 @@ public class HookParams {
     public static String send_img_class6_return_method = "a";
     public static String send_img_class7 = "com.tencent.mm.as.i";
     public static String send_img_class7_method = "a";
+    //语音
+    public static String send_voice_class1 = "com.tencent.mm.modelvoice.f";;
+    public static String send_voice_class2 = "com.tencent.mm.modelvoice.q";
+    public static String send_voice_class2_method1 = "uo";
+    public static String send_voice_class2_method2 = "T";
+    public static String send_voice_class2_method3 = "o";
+    public static String send_voice_class3 = "com.tencent.mm.ah.p";
+    public static String send_voice_class3_attribute = "fej";
+    public static String send_voice_class3_method = "d";
     
     //好友
     public static String sayHiWithSnsPermissionUI = "com.tencent.mm.plugin.profile.ui.SayHiWithSnsPermissionUI";

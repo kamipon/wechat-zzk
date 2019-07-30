@@ -38,6 +38,7 @@ public class WxReceiver extends BroadcastReceiver {
 								break;
 							}
 							case 2: {    //语音
+								SendMessageManager.sendVoice(sendMsgBean);
 								break;
 							}
 							case 3: {    //视频

@@ -60,7 +60,7 @@ public class SendMessageManager {
 			ThreadPoolUtils.getInstance().run(new Runnable() {
 				@Override
 				public void run() {
-					DownloadUtil.get().download(url, MyHelper.SDCARD_PATH + "/message", name, new DownloadUtil.OnDownloadListener() {
+					DownloadUtil.get().download(url, MyHelper.getDir("message"), MyHelper.getName(url), new DownloadUtil.OnDownloadListener() {
 						@Override
 						public void onDownloadSuccess(File file) {
 							String absolutePath = file.getAbsolutePath();
@@ -109,7 +109,7 @@ public class SendMessageManager {
 			ThreadPoolUtils.getInstance().run(new Runnable() {
 				@Override
 				public void run() {
-					DownloadUtil.get().download(url, MyHelper.SDCARD_PATH + "/message", name, new DownloadUtil.OnDownloadListener() {
+					DownloadUtil.get().download(url, MyHelper.getDir("message"), MyHelper.getName(url), new DownloadUtil.OnDownloadListener() {
 						@Override
 						public void onDownloadSuccess(File file) {
 							String absolutePath = file.getAbsolutePath();
