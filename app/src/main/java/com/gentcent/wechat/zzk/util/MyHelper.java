@@ -217,11 +217,9 @@ public class MyHelper {
 				FileInputStream fileInputStream = new FileInputStream(source);
 				FileOutputStream fileOutputStream = new FileOutputStream(target);
 				byte[] bArr = new byte[1444];
-				int i = 0;
 				while (true) {
 					int read = fileInputStream.read(bArr);
 					if (read != -1) {
-						i += read;
 						fileOutputStream.write(bArr, 0, read);
 					} else {
 						fileInputStream.close();
@@ -230,8 +228,7 @@ public class MyHelper {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("复制单个文件操作出错");
-			e.printStackTrace();
+			XLog.e("复制单个文件操作出错" + Log.getStackTraceString(e));
 		}
 	}
 	
