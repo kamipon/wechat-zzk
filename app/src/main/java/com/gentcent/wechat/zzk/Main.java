@@ -26,6 +26,8 @@ import com.gentcent.wechat.zzk.util.SearchClasses;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.IXposedHookLoadPackage;
 import com.gentcent.zzk.xped.XC_MethodHook;
+import com.gentcent.zzk.xped.XC_MethodReplacement;
+import com.gentcent.zzk.xped.XposedBridge;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
@@ -81,15 +83,26 @@ public class Main implements IXposedHookLoadPackage {
 					}
 				});
 				
+				//防止发语音闪退
+				XposedHelpers.findAndHookConstructor(HookParams.send_voice_class1, lpparam.classLoader, String.class, int.class, new XC_MethodReplacement() {
+					@Override
+					protected Object replaceHookedMethod(MethodHookParam methodHookParam) {
+						try {
+							XposedBridge.invokeOriginalMethod(methodHookParam.method, methodHookParam.thisObject, methodHookParam.args);
+						} catch (Exception ignored) {
+						}
+						return null;
+					}
+				});
+				
 				//全局搜索xposed字段出现的方法，可能是微信的Xposed检测
 				XposedHelpers.findAndHookMethod("com.tencent.mm.app.t", lpparam.classLoader, "a", StackTraceElement[].class, new XC_MethodHook() {
 					@Override
 					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-						
 						super.afterHookedMethod(param);
 						if ((Boolean) param.getResult()) {
 							param.setResult(false);
-							XLog.d("--###--微信检测到xposed(已经自动隐藏)--###--");
+							XLog.e(" ### 微信检测到xposed(已经自动隐藏) ### ");
 						}
 					}
 				});

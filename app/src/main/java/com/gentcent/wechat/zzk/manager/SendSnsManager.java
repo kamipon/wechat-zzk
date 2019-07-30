@@ -146,7 +146,7 @@ public class SendSnsManager {
 		//先把图片下载到本地
 		final String url = snsBean.getImages().get(i);
 		String name = url.substring(url.lastIndexOf("/"));
-		DownloadUtil.get().download(url, MyHelper.getDir("sns"), MyHelper.getDir("url"), new DownloadUtil.OnDownloadListener() {
+		DownloadUtil.get().download(url, MyHelper.getDir("sns"), MyHelper.getName("url"), new DownloadUtil.OnDownloadListener() {
 			@Override
 			public void onDownloadSuccess(File file) {
 				XLog.d(TAG + "下载图片:" + url);

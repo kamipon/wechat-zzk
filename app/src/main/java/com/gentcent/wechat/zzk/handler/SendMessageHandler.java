@@ -148,10 +148,10 @@ public class SendMessageHandler {
 		Object localObject = null;
 		try {
 			localObject = modelvoice_f.getDeclaredConstructor(String.class).newInstance(str);
-			XLog.d("localObject:" + localObject);
 		} catch (Exception e) {
 			XLog.e("发送语音 error: " + Log.getStackTraceString(e));
 		}
+		XLog.d("localObject:" + localObject);
 		Object nNew = XposedHelpers.getStaticObjectField(XposedHelpers.findClass(HookParams.send_voice_class3, MainManager.wxLpparam.classLoader), HookParams.send_voice_class3_attribute);
 		XLog.d("nNew:" + nNew);
 		XposedHelpers.callMethod(nNew, HookParams.send_voice_class3_method, localObject);
