@@ -4,7 +4,7 @@ import android.database.Cursor;
 
 import com.gentcent.wechat.zzk.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.manager.MainManager;
-import com.gentcent.wechat.zzk.manager.SnsManager;
+import com.gentcent.wechat.zzk.handler.SnsHandler;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 
@@ -35,12 +35,12 @@ public class SyncInfoDao {
 	 * 获取朋友圈数据
 	 */
 	private static void getSnsData() {
-		List<SnsContentItemBean> selfAllDatas = SnsManager.getSelfAllDatas(MainManager.wxLpparam);
+		List<SnsContentItemBean> selfAllDatas = SnsHandler.getSelfAllDatas(MainManager.wxLpparam);
 		XLog.d("openWxDb:  " + "自己的朋友圈数据=====================================================================================");
 		for (SnsContentItemBean selfAllData : selfAllDatas) {
 			XLog.e(selfAllData.toString());
 		}
-		List<SnsContentItemBean> allDatas = SnsManager.getAllDatas(MainManager.wxLpparam);
+		List<SnsContentItemBean> allDatas = SnsHandler.getAllDatas(MainManager.wxLpparam);
 		XLog.d("openWxDb:  " + "所有的朋友圈数据=====================================================================================");
 		for (SnsContentItemBean allData : allDatas) {
 			XLog.e(allData.toString());

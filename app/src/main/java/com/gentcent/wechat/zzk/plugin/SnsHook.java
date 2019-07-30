@@ -7,14 +7,13 @@ import com.blankj.utilcode.util.PhoneUtils;
 import com.gentcent.wechat.zzk.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.bean.SnsSelfListBean;
 import com.gentcent.wechat.zzk.manager.MainManager;
-import com.gentcent.wechat.zzk.manager.SnsManager;
+import com.gentcent.wechat.zzk.handler.SnsHandler;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +44,7 @@ public class SnsHook implements IPlugin {
 					long intValue = (long) (Integer) XposedHelpers.getObjectField(XposedHelpers.callMethod(result, "cmi"), "ozl");
 					long j = intValue - SnsHook.mSnsStartTime;
 					if (j >= 0) {
-						final SnsContentItemBean snsContentItemBean = SnsManager.getSnsContentItemBean(lpparam, result, "");
+						final SnsContentItemBean snsContentItemBean = SnsHandler.getSnsContentItemBean(lpparam, result, "");
 						if (snsContentItemBean == null) {
 							XLog.d("hookNewSns bean is null");
 						} else if (TextUtils.equals(snsContentItemBean.getSnsWxid(), UserDao.getMyWxid())) {
@@ -96,11 +95,11 @@ public class SnsHook implements IPlugin {
 	}
 	
 	public static void selfCommend(String snsId) {
-		XLog.d("SelfCommend is " + SnsManager.SelfCommend + " snsId is " + snsId);
-		if (!TextUtils.isEmpty(SnsManager.SelfCommend) && !TextUtils.isEmpty(snsId)) {
-			XLog.d("开始首次评论：" + SnsManager.SelfCommend);
-			SnsManager.makeComment_Append_By_SnsID(MainManager.wxLpparam, snsId, SnsManager.SelfCommend);
-			SnsManager.SelfCommend = "";
+		XLog.d("SelfCommend is " + SnsHandler.SelfCommend + " snsId is " + snsId);
+		if (!TextUtils.isEmpty(SnsHandler.SelfCommend) && !TextUtils.isEmpty(snsId)) {
+			XLog.d("开始首次评论：" + SnsHandler.SelfCommend);
+			SnsHandler.makeComment_Append_By_SnsID(MainManager.wxLpparam, snsId, SnsHandler.SelfCommend);
+			SnsHandler.SelfCommend = "";
 		}
 	}
 

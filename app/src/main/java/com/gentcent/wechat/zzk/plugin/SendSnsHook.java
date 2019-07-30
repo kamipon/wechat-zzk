@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.gentcent.wechat.zzk.manager.MainManager;
 import com.gentcent.wechat.zzk.manager.SnsRangeManger;
-import com.gentcent.wechat.zzk.manager.SnsManager;
+import com.gentcent.wechat.zzk.handler.SnsHandler;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
@@ -164,7 +164,7 @@ public class SendSnsHook implements IPlugin {
 			intent.putExtra("zzk", true);
 			intent.putExtra("sendComplete", true);
 			MainManager.activity.startActivity(intent);
-			SnsManager.SelfCommend = selfComment;
+			SnsHandler.SelfCommend = selfComment;
 		} catch (Exception e) {
 			XLog.d("执行界面操作失败：" + Log.getStackTraceString(e));
 		}

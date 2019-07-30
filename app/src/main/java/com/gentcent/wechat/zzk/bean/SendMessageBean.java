@@ -22,7 +22,7 @@ public class SendMessageBean implements Serializable {
 	/**
 	 * 消息类型
 	 * 0:文本
-	 * 1：图片
+	 * 1：图片（.gif和其他）
 	 * 2：语音
 	 * 3：视频
 	 * 7：链接

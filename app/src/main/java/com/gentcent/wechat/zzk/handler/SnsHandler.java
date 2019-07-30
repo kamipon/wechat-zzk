@@ -1,4 +1,4 @@
-package com.gentcent.wechat.zzk.manager;
+package com.gentcent.wechat.zzk.handler;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,7 +22,7 @@ import java.util.Map;
  * @author zuozhi
  * @since 2019-07-25
  */
-public class SnsManager {
+public class SnsHandler {
 	private static final String TAG = "SnsManager:  ";
 	private static final int IMAGE = 1;
 	private static final int ARTICLE = 3;

@@ -11,6 +11,7 @@ import com.gentcent.wechat.zzk.bean.SendSnsBean;
 import com.gentcent.wechat.zzk.job.AddFriendJob;
 import com.gentcent.wechat.zzk.job.SendSnsJob;
 import com.gentcent.wechat.zzk.job.TaskManager;
+import com.gentcent.wechat.zzk.handler.SendMessageHandler;
 import com.gentcent.wechat.zzk.manager.SendMessageManager;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.XLog;
@@ -29,11 +30,11 @@ public class WxReceiver extends BroadcastReceiver {
 						SendMessageBean sendMsgBean = GsonUtils.GsonToBean(intent.getStringExtra("sendmsgbean"), SendMessageBean.class);
 						switch (sendMsgBean.getType()) {
 							case 0: {    //文本
-								SendMessageManager.sendText(sendMsgBean.getServiceGuid(), sendMsgBean.getFriendWxId(), sendMsgBean.getContent(), 1);
+								SendMessageHandler.sendText(sendMsgBean.getServiceGuid(), sendMsgBean.getFriendWxId(), sendMsgBean.getContent(), 1);
 								break;
 							}
 							case 1: {    //图片
-								
+								SendMessageManager.sendImg(sendMsgBean);
 								break;
 							}
 							case 2: {    //语音

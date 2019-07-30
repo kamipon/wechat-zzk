@@ -3,18 +3,10 @@ package com.gentcent.wechat.zzk;
 import android.content.Context;
 import android.content.Intent;
 
-import com.gentcent.wechat.zzk.bean.SendMessageBean;
-import com.gentcent.wechat.zzk.manager.SendMessageManager;
 import com.gentcent.wechat.zzk.util.GsonUtils;
-import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.XLog;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * @author zuozhi

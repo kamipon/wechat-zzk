@@ -21,6 +21,7 @@ import com.gentcent.wechat.zzk.plugin.MessageHook;
 import com.gentcent.wechat.zzk.plugin.SendSnsHook;
 import com.gentcent.wechat.zzk.plugin.SnsHook;
 import com.gentcent.wechat.zzk.util.HookParams;
+import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.SearchClasses;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.IXposedHookLoadPackage;
@@ -55,7 +56,7 @@ public class Main implements IXposedHookLoadPackage {
 					protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
 						super.afterHookedMethod(param);
 						Context context = (Context) param.args[0];
-						String versionName = getVersionName(context, HookParams.WECHAT_PACKAGE_NAME);
+						String versionName = getVersionName(context);
 						//Only hook important process
 						String processName = lpparam.processName;
 						if (!processName.equals(HookParams.WECHAT_PACKAGE_NAME) &&
@@ -71,7 +72,7 @@ public class Main implements IXposedHookLoadPackage {
 						if (!MainManager.isInitComplete()) {
 							MainManager.init(lpparam);
 							try {
-								if(processName.equals(HookParams.WECHAT_PACKAGE_NAME)){
+								if (processName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
 									AppUtils.launchApp(HookParams.WECHAT_PACKAGE_NAME);
 								}
 							} catch (Exception ignored) {
@@ -99,10 +100,11 @@ public class Main implements IXposedHookLoadPackage {
 		}
 	}
 	
-	private String getVersionName(Context context, String packageName) {
+	private String getVersionName(Context context) {
 		try {
 			PackageManager packageManager = context.getPackageManager();
-			PackageInfo packInfo = packageManager.getPackageInfo(packageName, 0);
+			PackageInfo packInfo = packageManager.getPackageInfo(HookParams.WECHAT_PACKAGE_NAME, 0);
+			MyHelper.writeLine("versionName", packInfo.versionName);
 			return packInfo.versionName;
 		} catch (PackageManager.NameNotFoundException ignored) {
 		}

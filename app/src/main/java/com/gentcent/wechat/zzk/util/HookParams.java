@@ -47,6 +47,30 @@ public class HookParams {
     public static String sendMessageClass2 = "com.tencent.mm.ah.p";
     public static String sendMessageStaticField = "fej";
     public static String sendMessageMethodName = "d";
+    //图片
+    public static String send_img_class1 = "com.tencent.mm.as.n";
+    public static String send_img_class1_method ="aeY";
+    public static String send_img_class2_method1 = "a";
+    public static String send_img_class2_method2 = "a";
+    public static String send_img_class2_ConcurrentHashMap = "fqt";
+    public static String send_img_ConcurrentHashMap_attribute1 = "fqH";
+    public static String send_img_ConcurrentHashMap_attribute2 = "foj";
+    public static String send_img_ConcurrentHashMap_attribute3 = "source";
+    public static String send_img_ConcurrentHashMap_attribute4 = "csL";
+    public static String send_img_class3 = "com.tencent.mm.pointers.PString";
+    public static String send_img_class4 = "com.tencent.mm.pointers.PInt";
+    public static String send_img_class5 = "com.tencent.mm.pointers.PInt";
+    public static String send_img_ConcurrentHashMap_attribute5 = "fqI";
+    public static String send_img_ConcurrentHashMap_attribute6 = "fqJ";
+    public static String send_img_ConcurrentHashMap_attribute7 = "ckm";
+    public static String send_img_ConcurrentHashMap_attribute8 = "fqO";
+    public static String send_img_ConcurrentHashMap_attribute9 = "fqP";
+    public static String send_img_ConcurrentHashMap_attribute10 = "fqQ";
+    public static String send_img_class6 = "com.tencent.mm.as.o";
+    public static String send_img_class6_method = "afi";
+    public static String send_img_class6_return_method = "a";
+    public static String send_img_class7 = "com.tencent.mm.as.i";
+    public static String send_img_class7_method = "a";
     
     //好友
     public static String sayHiWithSnsPermissionUI = "com.tencent.mm.plugin.profile.ui.SayHiWithSnsPermissionUI";
