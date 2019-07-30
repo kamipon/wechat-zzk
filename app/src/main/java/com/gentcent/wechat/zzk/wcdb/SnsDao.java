@@ -4,7 +4,6 @@ import android.database.Cursor;
 
 import com.gentcent.wechat.zzk.manager.MainManager;
 import com.gentcent.wechat.zzk.util.XLog;
-import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
 
 import java.util.ArrayList;
 import java.util.List;
