@@ -30,7 +30,7 @@ public class WxReceiver extends BroadcastReceiver {
 						SendMessageBean sendMsgBean = GsonUtils.GsonToBean(intent.getStringExtra("sendmsgbean"), SendMessageBean.class);
 						switch (sendMsgBean.getType()) {
 							case 0: {    //文本
-								SendMessageHandler.sendText(sendMsgBean.getServiceGuid(), sendMsgBean.getFriendWxId(), sendMsgBean.getContent(), 1);
+								SendMessageHandler.sendText(sendMsgBean);
 								break;
 							}
 							case 1: {    //图片

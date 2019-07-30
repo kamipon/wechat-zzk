@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.blankj.utilcode.util.FileUtils;
+import com.gentcent.wechat.zzk.bean.SendMessageBean;
 import com.gentcent.wechat.zzk.manager.MainManager;
 import com.gentcent.wechat.zzk.manager.SendMessageManager;
 import com.gentcent.wechat.zzk.util.HookParams;
@@ -49,8 +50,12 @@ public class SendMessageHandler {
 	/**
 	 * 发送纯文本消息
 	 */
-	public static void sendText(final String serviceGuid, final String friendWxId, final String Content, final int type) {
+	public static void sendText(SendMessageBean sendMsgBean) {
 		try {
+			final String serviceGuid = sendMsgBean.getServiceGuid();
+			final String friendWxId = sendMsgBean.getFriendWxId();
+			final String Content = sendMsgBean.getContent();
+			final int type = 1;
 			XLog.d("发送文本消息");
 			ClassLoader clsLoader = MainManager.wxLpparam.classLoader;
 			init(clsLoader);
