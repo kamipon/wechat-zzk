@@ -54,20 +54,20 @@ public class SendMessageManager {
 	 */
 	public static void sendMessage(final SendMessageBean sm) {
 		String url = null;
-		String extName = null;
+		String name = null;
 		int type = sm.getType();
 		if (type == 0) {
 			sendMessageDispatcher(sm, null);
 			return;
 		} else if (type == 1 || type == 2 || type == 3) {
 			url = sm.getContent();
-			extName = getExtName(url);
+			name = MyHelper.getName(url);
 		} else if (type == 7) {
 			url = sm.getLinkImg();
-			extName = getExtName(url);
+			name = MyHelper.getName(url);
 		} else if (type == 8) {
 			url = sm.getContent();
-			extName = url.substring(url.lastIndexOf('/') + 1);
+			name = url.substring(url.lastIndexOf('/') + 1);
 		} else {
 			XLog.e("未知消息类型：" + type);
 		}
@@ -76,13 +76,13 @@ public class SendMessageManager {
 		try {
 			assert url != null;
 			XLog.d("下载文件:" + url);
-			XLog.d("文件扩展名:" + extName);
+			XLog.d("文件扩展名:" + name);
 			final String finalUrl = url;
-			final String finalExtName = extName;
+			final String finalName = name;
 			ThreadPoolUtils.getInstance().run(new Runnable() {
 				@Override
 				public void run() {
-					DownloadUtil.get().download(finalUrl, MyHelper.getDir("message"), MyHelper.getName(finalExtName), new DownloadUtil.OnDownloadListener() {
+					DownloadUtil.get().download(finalUrl, MyHelper.getDir("message"), finalName, new DownloadUtil.OnDownloadListener() {
 						@Override
 						public void onDownloadSuccess(File file) {
 							String absolutePath = file.getAbsolutePath();

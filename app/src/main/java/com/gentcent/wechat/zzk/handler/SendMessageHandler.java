@@ -231,8 +231,7 @@ public class SendMessageHandler {
 			} else {
 				XposedHelpers.setObjectField(newInstance2, "title", fileName);
 			}
-			String str5 = "fileName";
-			XposedHelpers.setObjectField(newInstance2, str5, (String) XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.sdk.platformtools.bp"), "fx", new Object[]{file.length()}));
+			XposedHelpers.setObjectField(newInstance2, "description", (String) XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.sdk.platformtools.bp"), "fx", new Object[]{file.length()}));
 			SendMessageManager.a(serviceGuid, new Runnable() {
 				public void run() {
 					try {
