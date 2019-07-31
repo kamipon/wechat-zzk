@@ -1,5 +1,6 @@
 package com.gentcent.wechat.zzk.manager;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.media.MediaPlayer;
@@ -28,24 +29,23 @@ import java.util.HashMap;
  * @since 2019-07-29
  */
 public class SendMessageManager {
-	private static Object a = new Object();
-	private static Object b = new Object();
-	private static Object c = new Object();
-	private static Object d = new Object();
-	private static Object e = new Object();
-	private static Object f = new Object();
-	private static Object g = new Object();
+	private static final Object textLock = new Object();
+	private static final Object imgLock = new Object();
+	private static final Object voiceLock = new Object();
+	private static final Object videoLock = new Object();
+	private static final Object fileAndArticleLock = new Object();
+	private static final Object gifLock = new Object();
 	private static final Object mp3ToAmrLock = new Object();
-	private static HashMap<String, C0415a> h = new HashMap<>();
+	private static HashMap<String, Info> managerMap = new HashMap<>();
 	
-	public static class C0415a {
-		public String a;
-		public String b;
-		public int c;
-		public long d;
-		public long e;
-		public long f;
-		public String g;
+	public static class Info {
+		public String touser;
+		public String serviceGuid;
+		public int type;
+		public long currentTimeMillis;
+		public long msgid;
+		public long lastMsgId;
+		public String text;
 		public boolean h = false;
 	}
 	
@@ -68,6 +68,9 @@ public class SendMessageManager {
 		} else if (type == 8) {
 			url = sm.getContent();
 			name = url.substring(url.lastIndexOf('/') + 1);
+		} else if (type == 9) {
+			sendMessageDispatcher(sm, null);
+			return;
 		} else {
 			XLog.e("未知消息类型：" + type);
 		}
@@ -133,6 +136,7 @@ public class SendMessageManager {
 				}
 				break;
 			case 2:    //语音
+				assert path != null;
 				boolean b = mp3ToAmr(path);
 				if (b) {
 					SendMessageHandler.sendVoice(sm.getServiceGuid(), path, sm.getFriendWxId());
@@ -164,6 +168,9 @@ public class SendMessageManager {
 						XLog.e(Log.getStackTraceString(e));
 					}
 				}
+				break;
+			case 9:    //群聊@好友
+				SendMessageHandler.sendAppointText(sm);
 				break;
 		}
 	}
@@ -230,198 +237,238 @@ public class SendMessageManager {
 		return path.endsWith(".pic") ? ".jpg" : ext;
 	}
 	
-	public static void a(String str, Runnable runnable, int i, String str2, String str3) {
-		XLog.d("runLock serviceGuid is " + str);
-		if (TextUtils.isEmpty(str)) {
+	/**
+	 * 执行线程，并轮询查询数据库看是否成功发送
+	 *
+	 * @param serviceGuid 服务器id
+	 * @param type        类型
+	 * @param friendWxId  接受者的微信id
+	 * @param content     信息内容
+	 */
+	public static void run(String serviceGuid, Runnable runnable, int type, String friendWxId, String content) {
+		XLog.d("runLock serviceGuid is " + serviceGuid);
+		if (TextUtils.isEmpty(serviceGuid)) {
 			runnable.run();
 			return;
 		}
-		if (i == 1) {
-			synchronized (a) {
-				long a2 = a(1, str2);
-				long currentTimeMillis = System.currentTimeMillis();
-				runnable.run();
-				b(str, i, str2, str3, currentTimeMillis, a2);
+		switch (type) {
+			case 1: {
+				synchronized (textLock) {
+					long lastMsgId = getLastMsgId(1, friendWxId);
+					long currentTimeMillis = System.currentTimeMillis();
+					runnable.run();
+					normalHandle(serviceGuid, type, friendWxId, content, currentTimeMillis, lastMsgId);
+				}
+				break;
 			}
-		} else if (i == 3) {
-			synchronized (b) {
-				long a3 = a(3, str2);
-				long currentTimeMillis2 = System.currentTimeMillis();
-				runnable.run();
-				b(str, i, str2, str3, currentTimeMillis2, a3);
+			case 3: {
+				synchronized (imgLock) {
+					long lastMsgId = getLastMsgId(3, friendWxId);
+					long currentTimeMillis = System.currentTimeMillis();
+					runnable.run();
+					normalHandle(serviceGuid, type, friendWxId, content, currentTimeMillis, lastMsgId);
+				}
+				break;
 			}
-		} else if (i == 5) {
-			synchronized (f) {
-				long currentTimeMillis3 = System.currentTimeMillis();
-				long a4 = a(49, str2);
-				runnable.run();
-				a(str, i, str2, str3, currentTimeMillis3, a4);
+			case 5: {
+				synchronized (fileAndArticleLock) {
+					long lastMsgId = getLastMsgId(49, friendWxId);
+					long currentTimeMillis = System.currentTimeMillis();
+					runnable.run();
+					normalHandle(serviceGuid, 49, friendWxId, content, currentTimeMillis, lastMsgId);
+				}
+				break;
 			}
-		} else if (i == 34) {
-			synchronized (c) {
-				long currentTimeMillis4 = System.currentTimeMillis();
-				long a5 = a(34, str2);
-				runnable.run();
-				b(str, i, str2, str3, currentTimeMillis4, a5);
+			case 34: {
+				synchronized (voiceLock) {
+					long lastMsgId = getLastMsgId(34, friendWxId);
+					long currentTimeMillis = System.currentTimeMillis();
+					runnable.run();
+					normalHandle(serviceGuid, type, friendWxId, content, currentTimeMillis, lastMsgId);
+				}
+				break;
 			}
-		} else if (i == 43) {
-			synchronized (d) {
-				long a6 = a(43, str2);
-				long currentTimeMillis5 = System.currentTimeMillis();
-				runnable.run();
-				b(str, i, str2, str3, currentTimeMillis5, a6);
+			case 43: {
+				synchronized (videoLock) {
+					long lastMsgId = getLastMsgId(43, friendWxId);
+					long currentTimeMillis = System.currentTimeMillis();
+					runnable.run();
+					normalHandle(serviceGuid, type, friendWxId, content, currentTimeMillis, lastMsgId);
+				}
+				break;
 			}
-		} else if (i == 49) {
-			synchronized (f) {
-				long a7 = a(49, str2);
-				long currentTimeMillis6 = System.currentTimeMillis();
-				runnable.run();
-				b(str, i, str2, str3, currentTimeMillis6, a7);
+			case 49: {
+				synchronized (fileAndArticleLock) {
+					long lastMsgId = getLastMsgId(49, friendWxId);
+					long currentTimeMillis = System.currentTimeMillis();
+					runnable.run();
+					normalHandle(serviceGuid, type, friendWxId, content, currentTimeMillis, lastMsgId);
+				}
+				break;
 			}
-		} else if (i == 99) {
-			synchronized (g) {
-				long currentTimeMillis7 = System.currentTimeMillis();
-				long a8 = a(99, str2);
-				runnable.run();
-				c(str, i, str2, str3, currentTimeMillis7, a8);
+			case 99: {
+				synchronized (gifLock) {
+					long lastMsgId = getLastMsgId(99, friendWxId);
+					long currentTimeMillis = System.currentTimeMillis();
+					runnable.run();
+					gifHandle(serviceGuid, type, friendWxId, content, currentTimeMillis, lastMsgId);
+				}
+				break;
 			}
 		}
-		b(str2);
+		updateConversation(friendWxId);
 	}
 	
-	private static void a(String str, int i, String str2, String str3, long j, long j2) {
-		C0415a aVar = new C0415a();
-		aVar.b = str;
-		aVar.d = j;
-		aVar.a = str2;
-		aVar.c = 49;
-		aVar.f = j2;
-		aVar.g = str3;
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS");
-		StringBuilder sb = new StringBuilder();
-		sb.append("Mysned Time2: ");
-		sb.append(simpleDateFormat.format(Long.valueOf(j)));
-		XLog.d("SendManager" + sb.toString());
-		int a2 = a(i);
-		int i2 = 0;
+	/**
+	 * 正常类型消息轮询处理器 (text,img,voice,video,file,article)
+	 *
+	 * @param serviceGuid       服务器id
+	 * @param type              类型
+	 * @param friendWxId        接受者的微信id
+	 * @param content           信息内容
+	 * @param currentTimeMillis 当前毫秒数
+	 * @param lastMsgId         当前最新的msgId
+	 */
+	private static void normalHandle(String serviceGuid, int type, String friendWxId, String content, long currentTimeMillis, long lastMsgId) {
+		Info info = new Info();
+		info.serviceGuid = serviceGuid;
+		info.currentTimeMillis = currentTimeMillis;
+		info.touser = friendWxId;
+		info.type = type;
+		info.text = content;
+		info.lastMsgId = lastMsgId;
+		@SuppressLint("SimpleDateFormat") SimpleDateFormat time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS");
+		XLog.d("SendManager Mysned Time: " + time.format(currentTimeMillis));
+		int maxTime = getMaxTime(type);
+		int curTime = 0;
 		while (true) {
-			if (i2 > a2) {
+			if (curTime > maxTime) {
 				break;
 			}
 			try {
 				Thread.sleep(50);
-			} catch (InterruptedException e2) {
-				e2.printStackTrace();
+			} catch (InterruptedException e) {
+				XLog.e("normalHandle" + Log.getStackTraceString(e));
 			}
-			i2 += 50;
-			long e3 = e(aVar);
-			if (e3 != 0) {
-				aVar.e = e3;
-				c(aVar);
+			curTime += 50;
+			long msgId = getCurMsgId(info);
+			if (msgId != 0) {
+				info.msgid = msgId;
+				addToMap(info);
 				break;
 			}
 		}
-		StringBuilder sb2 = new StringBuilder();
-		sb2.append("Mysned info.msgid =");
-		sb2.append(aVar.e);
-		sb2.append(" text :");
-		sb2.append(str3);
-		XLog.d("SendManager" + sb2.toString());
+		XLog.d("SendManager Mysned info.msgid =" + info.msgid + " text :" + content);
 	}
 	
-	private static void b(String str, int i, String str2, String str3, long j, long j2) {
-		C0415a aVar = new C0415a();
-		aVar.b = str;
-		aVar.d = j;
-		aVar.a = str2;
-		aVar.c = i;
-		aVar.g = str3;
-		aVar.f = j2;
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS");
-		XLog.d("SendManager Mysned Time2: " + simpleDateFormat.format(Long.valueOf(j)));
-		int a2 = a(i);
-		int i2 = 0;
+	/**
+	 * GIF类型消息轮询处理器
+	 *
+	 * @param serviceGuid       服务器id
+	 * @param type              类型
+	 * @param friendWxId        接受者的微信id
+	 * @param content           信息内容
+	 * @param currentTimeMillis 当前毫秒数
+	 * @param lastMsgId         当前最新的msgId
+	 */
+	private static void gifHandle(String serviceGuid, int type, String friendWxId, String content, long currentTimeMillis, long lastMsgId) {
+		Info info = new Info();
+		info.serviceGuid = serviceGuid;
+		info.currentTimeMillis = currentTimeMillis;
+		info.touser = friendWxId;
+		info.type = type;
+		info.lastMsgId = lastMsgId;
+		info.text = content;
+		@SuppressLint("SimpleDateFormat") SimpleDateFormat time = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS");
+		XLog.d("SendManager" + " Mysned Time2: " + time.format(currentTimeMillis) + " serviceGuid is " + serviceGuid);
+		int maxTime = getMaxTime(type);
+		int curTime = 0;
 		while (true) {
-			if (i2 > a2) {
+			if (curTime > maxTime) {
 				break;
 			}
 			try {
 				Thread.sleep(50);
-			} catch (InterruptedException e2) {
-				e2.printStackTrace();
+			} catch (InterruptedException e) {
+				XLog.e("gifHandle" + Log.getStackTraceString(e));
 			}
-			i2 += 50;
-			long e3 = e(aVar);
-			if (e3 != 0) {
-				aVar.e = e3;
-				c(aVar);
+			curTime += 50;
+			long msgId = getGifCurMsgId(info);
+			if (msgId != 0) {
+				info.msgid = msgId;
+				addToMap(info);
 				break;
 			}
 		}
-		XLog.d("SendManager Mysned info.msgid =" + aVar.e + " text :" + str3);
+		XLog.d("SendManager" + "addMessage_gif Mysned info.msgid =" + info.msgid + " text :" + content);
 	}
 	
-	private static void c(String str, int i, String str2, String str3, long j, long j2) {
-		C0415a aVar = new C0415a();
-		aVar.b = str;
-		aVar.d = j;
-		aVar.a = str2;
-		aVar.c = i;
-		aVar.f = j2;
-		aVar.g = str3;
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss:SSS");
-		StringBuilder sb = new StringBuilder();
-		sb.append("Mysned Time2: ");
-		sb.append(simpleDateFormat.format(Long.valueOf(j)));
-		sb.append(" serviceGuid is ");
-		sb.append(str);
-		XLog.d("SendManager" + sb.toString());
-		int a2 = a(i);
-		int i2 = 0;
-		while (true) {
-			if (i2 > a2) {
-				break;
+	/**
+	 * 获取定义的轮询超时时间
+	 *
+	 * @param type 类型
+	 * @return 定义的轮询超时时间
+	 */
+	private static int getMaxTime(int type) {
+		if (!(type == 1 || type == 3)) {
+			if (type == 5) {
+				return 500;
 			}
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e2) {
-				e2.printStackTrace();
-			}
-			i2 += 50;
-			long d2 = d(aVar);
-			if (d2 != 0) {
-				aVar.e = d2;
-				c(aVar);
-				break;
+			if (type != 34) {
+				return (type == 43 || type == 49) ? 1000 : type != 99 ? 0 : 1000;
 			}
 		}
-		StringBuilder sb2 = new StringBuilder();
-		sb2.append("addMessage_gif Mysned info.msgid =");
-		sb2.append(aVar.e);
-		sb2.append(" text :");
-		sb2.append(str3);
-		XLog.d("SendManager" + sb2.toString());
+		return 100;
 	}
 	
-	private static long d(C0415a aVar) {
+	/**
+	 * 吧info保存到map中
+	 *
+	 * @param info 内部的封装类
+	 */
+	private static void addToMap(Info info) {
+		if (managerMap == null) {
+			managerMap = new HashMap<>();
+		}
+		HashMap<String, Info> hashMap = managerMap;
+		hashMap.put("" + info.msgid, info);
+	}
+	
+	/**
+	 * 更新对话
+	 *
+	 * @param friendWxId 接受者的微信Id
+	 */
+	private static void updateConversation(String friendWxId) {
+		ContentValues contentValues = new ContentValues();
+		contentValues.put("unReadCount", 0);
+		contentValues.put("attrflag", 0);
+		contentValues.put("atCount", 0);
+		contentValues.put("UnReadInvite", 0);
+		contentValues.put("unReadMuteCount", 0);
+		String[] idArr = {friendWxId};
+		WcdbHolder.excute("rconversation", contentValues, "username= ?", idArr);
+		ContentValues contentValues2 = new ContentValues();
+		contentValues2.put("atCount", 0);
+		contentValues2.put("UnReadInvite", 0);
+		WcdbHolder.excute("rconversation", contentValues2, "username= ?", idArr);
+	}
+	
+	/**
+	 * 获取当前msgId（Gif）（被轮询调用）
+	 *
+	 * @param info 封装的内部类
+	 * @return 当前msgId
+	 */
+	private static long getGifCurMsgId(Info info) {
 		Cursor cursor;
 		try {
-			if (aVar.f > 0) {
-				StringBuilder sb = new StringBuilder();
-				sb.append("SELECT msgId FROM message WHERE isSend = 1 and ( type =1048625 or  type =47 ) and talker ='");
-				sb.append(aVar.a);
-				sb.append("'  and msgId > ");
-				sb.append(aVar.f);
-				sb.append(" ORDER BY msgId desc limit 1 ");
-				cursor = WcdbHolder.excute(sb.toString(), "EnMicroMsg.db");
+			if (info.lastMsgId > 0) {
+				String sql1 = "SELECT msgId FROM message WHERE isSend = 1 and ( type =1048625 or  type =47 ) and talker ='" + info.touser + "'  and msgId > " + info.lastMsgId + " ORDER BY msgId desc limit 1 ";
+				cursor = WcdbHolder.excute(sql1, "EnMicroMsg.db");
 			} else {
-				StringBuilder sb2 = new StringBuilder();
-				sb2.append("SELECT msgId FROM message WHERE isSend = 1 and ( type =1048625 or  type =47 ) and talker ='");
-				sb2.append(aVar.a);
-				sb2.append("'  and createTime>=");
-				sb2.append(aVar.d);
-				sb2.append(" ORDER BY msgId desc limit 1 ");
-				cursor = WcdbHolder.excute(sb2.toString(), "EnMicroMsg.db");
+				String sql2 = "SELECT msgId FROM message WHERE isSend = 1 and ( type =1048625 or  type =47 ) and talker ='" + info.touser + "'  and createTime>=" + info.currentTimeMillis + " ORDER BY msgId desc limit 1 ";
+				cursor = WcdbHolder.excute(sql2, "EnMicroMsg.db");
 			}
 			if (cursor == null) {
 				return 0;
@@ -433,137 +480,69 @@ public class SendMessageManager {
 			cursor.close();
 			return 0;
 		} catch (Throwable th) {
-			StringBuilder sb3 = new StringBuilder();
-			sb3.append("getCurSendId e:");
-			sb3.append(th.getMessage());
-			XLog.d("SendManager" + sb3.toString());
-			th.printStackTrace();
+			XLog.d("SendManager" + "getCurSendId msgid:" + Log.getStackTraceString(th));
 			return 0;
 		}
 	}
 	
-	private static void c(C0415a aVar) {
-		if (h == null) {
-			h = new HashMap<>();
-		}
-		HashMap<String, C0415a> hashMap = h;
-		StringBuilder sb = new StringBuilder();
-		sb.append("");
-		sb.append(aVar.e);
-		hashMap.put(sb.toString(), aVar);
-	}
-	
-	private static void b(String str) {
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("unReadCount", Integer.valueOf(0));
-		contentValues.put("attrflag", Integer.valueOf(0));
-		contentValues.put("atCount", Integer.valueOf(0));
-		contentValues.put("UnReadInvite", Integer.valueOf(0));
-		contentValues.put("unReadMuteCount", Integer.valueOf(0));
-		String[] strArr = {str};
-		WcdbHolder.excute("rconversation", contentValues, "username= ?", strArr);
-		ContentValues contentValues2 = new ContentValues();
-		contentValues2.put("atCount", Integer.valueOf(0));
-		contentValues2.put("UnReadInvite", Integer.valueOf(0));
-		WcdbHolder.excute("rconversation", contentValues2, "username= ?", strArr);
-	}
-	
-	static int a(int i) {
-		if (!(i == 1 || i == 3)) {
-			if (i == 5) {
-				return 500;
-			}
-			if (i != 34) {
-				return (i == 43 || i == 49) ? 1000 : i != 99 ? 0 : 1000;
-			}
-		}
-		return 100;
-	}
-	
-	private static long e(C0415a aVar) {
+	/**
+	 * 获取当前最新的msgId（被轮询调用）
+	 *
+	 * @param info 内部封装类
+	 * @return 当前最新的msgId
+	 */
+	private static long getCurMsgId(Info info) {
 		Cursor cursor;
 		try {
-			StringBuilder sb = new StringBuilder();
-			sb.append("Mysned getCurMsgId select info.time is ");
-			sb.append(aVar.d);
-			sb.append(" type is ");
-			sb.append(aVar.c);
-			sb.append("  info.touser is ");
-			sb.append(aVar.a);
-			sb.append("  info.lastMsgId is ");
-			sb.append(aVar.f);
-			XLog.d(sb.toString());
-			if (aVar.f > 0) {
-				StringBuilder sb2 = new StringBuilder();
-				sb2.append("SELECT msgId FROM message WHERE isSend = 1 and type =");
-				sb2.append(aVar.c);
-				sb2.append(" and talker ='");
-				sb2.append(aVar.a);
-				sb2.append("'  and msgId > ");
-				sb2.append(aVar.f);
-				sb2.append(" ORDER BY msgId desc limit 1 ");
-				cursor = WcdbHolder.excute(sb2.toString(), "EnMicroMsg.db");
+			XLog.d("Mysned getLastMsgId select info.time is " + info.currentTimeMillis + " type is " + info.type + "  info.touser is " + info.touser + "  info.lastMsgId is " + info.lastMsgId);
+			if (info.lastMsgId > 0) {
+				String sql1 = "SELECT msgId FROM message WHERE isSend = 1 and type =" + info.type + " and talker ='" + info.touser + "'  and msgId > " + info.lastMsgId + " ORDER BY msgId desc limit 1 ";
+				cursor = WcdbHolder.excute(sql1, "EnMicroMsg.db");
 			} else {
-				StringBuilder sb3 = new StringBuilder();
-				sb3.append("SELECT msgId FROM message WHERE isSend = 1 and type =");
-				sb3.append(aVar.c);
-				sb3.append(" and talker ='");
-				sb3.append(aVar.a);
-				sb3.append("'  and createTime>=");
-				sb3.append(aVar.d);
-				sb3.append(" ORDER BY msgId desc limit 1 ");
-				cursor = WcdbHolder.excute(sb3.toString(), "EnMicroMsg.db");
+				String sql2 = "SELECT msgId FROM message WHERE isSend = 1 and type =" + info.type + " and talker ='" + info.touser + "'  and createTime>=" + info.currentTimeMillis + " ORDER BY msgId desc limit 1 ";
+				cursor = WcdbHolder.excute(sql2, "EnMicroMsg.db");
 			}
 			if (cursor == null) {
-				XLog.d("getCurMsgId cur is null");
+				XLog.d("getLastMsgId cur is null");
 				return 0;
 			}
-			StringBuilder sb4 = new StringBuilder();
-			sb4.append("getCurMsgId size is ");
-			sb4.append(cursor.getCount());
-			XLog.d(sb4.toString());
+			XLog.d("getLastMsgId size is " + cursor.getCount());
 			cursor.moveToFirst();
 			if (!cursor.isAfterLast()) {
-				long j = cursor.getLong(cursor.getColumnIndex("msgId"));
-				StringBuilder sb5 = new StringBuilder();
-				sb5.append("1getCurMsgId msgId is ");
-				sb5.append(j);
-				XLog.d(sb5.toString());
-				return j;
+				long msgId = cursor.getLong(cursor.getColumnIndex("msgId"));
+				XLog.d("1getCurMsgId msgId is " + msgId);
+				return msgId;
 			}
 			cursor.close();
 			XLog.d("2getCurMsgId msgId is 000");
 			return 0;
 		} catch (Throwable th) {
-			StringBuilder sb6 = new StringBuilder();
-			sb6.append("getCurSendId e:");
-			sb6.append(th.getMessage());
-			XLog.d("SendManager" + sb6.toString());
-			th.printStackTrace();
+			XLog.d("SendManager" + " getCurSendId msgid:" + Log.getStackTraceString(th));
 			return 0;
 		}
 	}
 	
-	public static long a(int i, String str) {
-		Cursor a2 = WcdbHolder.excute("SELECT msgId FROM message ORDER BY msgId desc limit 1", "EnMicroMsg.db");
-		if (a2 == null) {
-			XLog.d("getCurMsgId cur is null");
+	/**
+	 * 查询当前最近的msgId
+	 *
+	 * @param type       类型
+	 * @param friendWxId 接受者的微信id
+	 * @return 当前最近的msgId
+	 */
+	private static long getLastMsgId(int type, String friendWxId) {
+		Cursor c1 = WcdbHolder.excute("SELECT msgId FROM message ORDER BY msgId desc limit 1", "EnMicroMsg.db");
+		if (c1 == null) {
+			XLog.d("getLastMsgId cur is null");
 			return 0;
 		}
-		StringBuilder sb = new StringBuilder();
-		sb.append("getCurMsgId size is ");
-		sb.append(a2.getCount());
-		XLog.d(sb.toString());
-		a2.moveToFirst();
-		if (a2.isAfterLast()) {
+		XLog.d("getLastMsgId size is " + c1.getCount());
+		c1.moveToFirst();
+		if (c1.isAfterLast()) {
 			return 0;
 		}
-		long j = a2.getLong(a2.getColumnIndex("msgId"));
-		StringBuilder sb2 = new StringBuilder();
-		sb2.append("1getCurMsgId msgId is ");
-		sb2.append(j);
-		XLog.d(sb2.toString());
-		return j;
+		long msgId = c1.getLong(c1.getColumnIndex("msgId"));
+		XLog.d("1getCurMsgId msgId is " + msgId);
+		return msgId;
 	}
 	
 	

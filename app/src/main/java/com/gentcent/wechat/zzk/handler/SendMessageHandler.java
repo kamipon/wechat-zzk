@@ -23,7 +23,9 @@ import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.gentcent.zzk.xped.XposedHelpers.callMethod;
@@ -76,7 +78,7 @@ public class SendMessageHandler {
 							final String[] split = friendWxId.split("\\|");
 							for (int i = 0; i < split.length; i++) {
 								final int finalI = i;
-								SendMessageManager.a(serviceGuid, new Runnable() {
+								SendMessageManager.run(serviceGuid, new Runnable() {
 									public void run() {
 										Object callMethod = callMethod(staticField, HookParams.sendMessageMethodName, newInstance(class1, split[finalI], Content, type));
 										XLog.d("sendText 发送消息成功 : " + callMethod.toString() + "  wxid " + split[finalI] + "  sleep time is 1000");
@@ -147,7 +149,7 @@ public class SendMessageHandler {
 				Class<?> model_j_a = MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.pluginsdk.model.j$a");
 				XLog.d("model_j_a:" + model_j_a);
 				final Thread thread = (Thread) XposedHelpers.newInstance(model_j, new Class[]{Context.class, List.class, Intent.class, String.class, Integer.TYPE, model_j_a}, new Object[]{MainManager.activity, null, intent, username, 1, null});
-				SendMessageManager.a(serviceGuid, new Runnable() {
+				SendMessageManager.run(serviceGuid, new Runnable() {
 					public void run() {
 						thread.start();
 					}
@@ -200,7 +202,7 @@ public class SendMessageHandler {
 			XLog.d("SendArtLinkToUserUtil sendArticl 4 ");
 			XposedHelpers.setObjectField(objectField, "ctb", newInstance2);
 			XLog.d("SendArtLinkToUserUtil sendArticl 5 serviceGuid is " + serviceGuid);
-			SendMessageManager.a(serviceGuid, new Runnable() {
+			SendMessageManager.run(serviceGuid, new Runnable() {
 				public void run() {
 					try {
 						XposedHelpers.callMethod(XposedHelpers.getStaticObjectField(lpparam.classLoader.loadClass("com.tencent.mm.sdk.b.a"), "wKm"), "m", newInstance);
@@ -232,7 +234,7 @@ public class SendMessageHandler {
 				XposedHelpers.setObjectField(newInstance2, "title", fileName);
 			}
 			XposedHelpers.setObjectField(newInstance2, "description", (String) XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.sdk.platformtools.bp"), "fx", new Object[]{file.length()}));
-			SendMessageManager.a(serviceGuid, new Runnable() {
+			SendMessageManager.run(serviceGuid, new Runnable() {
 				public void run() {
 					try {
 						XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.pluginsdk.model.app.l"), "a", newInstance2, "", "", username, 4, null);
@@ -244,6 +246,38 @@ public class SendMessageHandler {
 			XLog.d("sendfile_to_user fileName is success aha ~");
 		} catch (Throwable th) {
 			XLog.d(" FileManger  e " + Log.getStackTraceString(th));
+		}
+	}
+	
+	/**
+	 * 群聊@好友
+	 */
+	public static void sendAppointText(SendMessageBean sm) {
+		String serviceGuid = sm.getServiceGuid();
+		final String friendWxId = sm.getFriendWxId();
+		final String content = sm.getContent();
+		final String chatroomMemberWxId = sm.getChatroomMemberWxId();
+		if (!friendWxId.endsWith("@chatroom") || chatroomMemberWxId == null || chatroomMemberWxId.length() <= 0) {
+			XLog.d("SendMessage  sendTest2 参数不对！");
+			return;
+		}
+		XLog.d("sendText2 groupId is " + friendWxId + " aites is " + chatroomMemberWxId + " message is " + content);
+		try {
+			SendMessageManager.run(serviceGuid, new Runnable() {
+				public void run() {
+					try {
+						Map<String, String> map = new HashMap<>();
+						map.put("atuserlist", "<![CDATA[" + chatroomMemberWxId + "]]>");
+						Object newInstance = XposedHelpers.newInstance(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.modelmulti.h"), friendWxId, content, 1, 291, map);
+						XposedHelpers.callMethod(XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.model.av"), "Pw"), "a", newInstance, 0);
+						XLog.d("callMethod(OCB is success");
+					} catch (Exception ignored) {
+					}
+				}
+			}, 1, friendWxId, content);
+			XLog.d("sendText2 success aha ~");
+		} catch (Throwable th) {
+			XLog.d("SendMessage  sendTest2 msgid:" + Log.getStackTraceString(th));
 		}
 	}
 	
@@ -263,7 +297,7 @@ public class SendMessageHandler {
 		long length = new File(path).length();
 		XLog.d("length:" + length);
 		final Object[] objArr = {str, (int) length, 0};
-		SendMessageManager.a(serviceGuid, new Runnable() {
+		SendMessageManager.run(serviceGuid, new Runnable() {
 			public void run() {
 				boolean booleanValue = (Boolean) XposedHelpers.callStaticMethod(modelvoice_q, HookParams.send_voice_class2_method3, objArr);
 				XLog.d("boo:" + booleanValue);
@@ -308,7 +342,7 @@ public class SendMessageHandler {
 					callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.sdk.platformtools.bp"), "b", callStaticMethod);
 				}
 				setObjectField(newInstance3, "mediaObject", newInstance(lpparam.classLoader.loadClass("com.tencent.mm.opensdk.modelmsg.WXEmojiObject"), sb3));
-				SendMessageManager.a(serviceGuid, new Runnable() {
+				SendMessageManager.run(serviceGuid, new Runnable() {
 					@Override
 					public void run() {
 						try {
@@ -344,7 +378,7 @@ public class SendMessageHandler {
 				final ArrayList<String> arrayList = new ArrayList<>();
 				arrayList.add(path);
 				final Object finalObj = obj;
-				SendMessageManager.a(serviceGuid, new Runnable() {
+				SendMessageManager.run(serviceGuid, new Runnable() {
 					public void run() {
 						XposedHelpers.callMethod(finalObj, HookParams.send_img_class2_method2, arrayList, true, 0, 0, username, 2130837934);
 					}
