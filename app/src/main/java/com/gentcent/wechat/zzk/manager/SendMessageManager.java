@@ -3,9 +3,11 @@ package com.gentcent.wechat.zzk.manager;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.media.MediaPlayer;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.blankj.utilcode.util.ImageUtils;
 import com.gentcent.wechat.zzk.bean.SendMessageBean;
 import com.gentcent.wechat.zzk.handler.SendMessageHandler;
 import com.gentcent.wechat.zzk.util.DownloadUtil;
@@ -48,37 +50,44 @@ public class SendMessageManager {
 	}
 	
 	/**
-	 * 发送图片入口（下载）
+	 * 发送消息入口（入口)
 	 */
-	public static void sendImg(final SendMessageBean sendMessageBean) {
+	public static void sendMessage(final SendMessageBean sm) {
+		String url = null;
+		String extName = null;
+		int type = sm.getType();
+		if (type == 0) {
+			sendMessageDispatcher(sm, null);
+			return;
+		} else if (type == 1 || type == 2 || type == 3) {
+			url = sm.getContent();
+			extName = getExtName(url);
+		} else if (type == 7) {
+			url = sm.getLinkImg();
+			extName = getExtName(url);
+		} else if (type == 8) {
+			url = sm.getContent();
+			extName = url.substring(url.lastIndexOf('/') + 1);
+		} else {
+			XLog.e("未知消息类型：" + type);
+		}
+		
+		//先下载资源到本地
 		try {
-			XLog.d("发送图片");
-			final String extName = getExtName(sendMessageBean.getContent());
-			XLog.d("发送图片:  文件扩展名:" + extName);
-			final String url = sendMessageBean.getContent();
-			final String name = url.substring(url.lastIndexOf("/"));
+			assert url != null;
+			XLog.d("下载文件:" + url);
+			XLog.d("文件扩展名:" + extName);
+			final String finalUrl = url;
+			final String finalExtName = extName;
 			ThreadPoolUtils.getInstance().run(new Runnable() {
 				@Override
 				public void run() {
-					DownloadUtil.get().download(url, MyHelper.getDir("message"), MyHelper.getName(url), new DownloadUtil.OnDownloadListener() {
+					DownloadUtil.get().download(finalUrl, MyHelper.getDir("message"), MyHelper.getName(finalExtName), new DownloadUtil.OnDownloadListener() {
 						@Override
 						public void onDownloadSuccess(File file) {
 							String absolutePath = file.getAbsolutePath();
 							XLog.d("下载文件完成:" + absolutePath);
-							
-							String[] split = sendMessageBean.getFriendWxId().split("\\|");
-							for (String s : split) {
-								if (TextUtils.equals(extName, ".gif")) {
-									SendMessageHandler.sendGif(sendMessageBean.getServiceGuid(), s, absolutePath);
-								} else {
-									SendMessageHandler.sendImg(sendMessageBean.getServiceGuid(), s, absolutePath);
-								}
-								try {
-									Thread.sleep(1000);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}
-							}
+							sendMessageDispatcher(sm, absolutePath);
 						}
 						
 						@Override
@@ -94,60 +103,75 @@ public class SendMessageManager {
 				}
 			});
 		} catch (Exception e) {
-			XLog.d("send img Exception is " + Log.getStackTraceString(e));
+			XLog.d("download file Exception is " + Log.getStackTraceString(e));
 		}
 	}
 	
 	/**
-	 * 发送语音入口（下载）
+	 * 发送消息入口（分类器）
 	 */
-	public static void sendVoice(final SendMessageBean sendMessageBean) {
-		try {
-			XLog.d("发送语音");
-			final String url = sendMessageBean.getContent();
-			final String name = url.substring(url.lastIndexOf("/"));
-			ThreadPoolUtils.getInstance().run(new Runnable() {
-				@Override
-				public void run() {
-					DownloadUtil.get().download(url, MyHelper.getDir("message"), MyHelper.getName(url), new DownloadUtil.OnDownloadListener() {
-						@Override
-						public void onDownloadSuccess(File file) {
-							String absolutePath = file.getAbsolutePath();
-							XLog.d("下载文件完成:" + absolutePath);
-							boolean b = mp3ToAmr(absolutePath);
-							if (b) {
-								SendMessageHandler.sendVoice(sendMessageBean.getServiceGuid(), absolutePath, sendMessageBean.getFriendWxId());
-							} else {
-								XLog.e("下载音频格式不正确：" + absolutePath.substring(url.lastIndexOf(".")));
-							}
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-						
-						@Override
-						public void onDownloading(int progress) {
-						}
-						
-						@Override
-						public void onDownloadFailed(Exception e) {
-							e.printStackTrace();
-							XLog.e("下载文件出错:" + Log.getStackTraceString(e));
-						}
-					});
+	private static void sendMessageDispatcher(SendMessageBean sm, @Nullable String path) {
+		final String extName = getExtName(sm.getContent());
+		String[] split = sm.getFriendWxId().split("\\|");
+		int type = sm.getType();
+		switch (type) {
+			case 0:    //文本
+				SendMessageHandler.sendText(sm);
+				break;
+			case 1:    //图片
+				for (String username : split) {
+					if (TextUtils.equals(extName, ".gif")) {
+						SendMessageHandler.sendGif(sm.getServiceGuid(), username, path);
+					} else {
+						SendMessageHandler.sendImg(sm.getServiceGuid(), username, path);
+					}
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-			});
-		} catch (Exception e) {
-			XLog.d("send img Exception is " + Log.getStackTraceString(e));
+				break;
+			case 2:    //语音
+				boolean b = mp3ToAmr(path);
+				if (b) {
+					SendMessageHandler.sendVoice(sm.getServiceGuid(), path, sm.getFriendWxId());
+				} else {
+					XLog.e("下载音频格式不正确：" + path.substring(path.lastIndexOf(".")));
+				}
+				break;
+			case 3:    //视频
+				for (String username : split) {
+					SendMessageHandler.sendVideo(sm.getServiceGuid(), path, username);
+				}
+				break;
+			case 7:    //链接
+				for (String username : split) {
+					SendMessageHandler.sendArticle(sm, ImageUtils.getBitmap(path), username);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						XLog.e(Log.getStackTraceString(e));
+					}
+				}
+				break;
+			case 8:    //文件
+				for (String username : split) {
+					SendMessageHandler.sendFile(sm.getServiceGuid(), path, sm.getFileName(), username);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						XLog.e(Log.getStackTraceString(e));
+					}
+				}
+				break;
 		}
 	}
 	
 	/**
 	 * MP3转AMR
 	 */
-	public static boolean mp3ToAmr(String path) {
+	private static boolean mp3ToAmr(String path) {
 		if (path.toUpperCase().endsWith(".AMR")) return true;
 		if (!path.toUpperCase().endsWith(".MP3")) return false;
 		int afterDuration;

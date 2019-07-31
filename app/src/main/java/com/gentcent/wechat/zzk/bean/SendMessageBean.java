@@ -30,6 +30,7 @@ public class SendMessageBean implements Serializable {
 	 * 9：群聊
 	 */
 	private int Type;
+	//TODO:?
 	private int Interval;
 	//链接图片
 	private String LinkImg;
@@ -43,7 +44,7 @@ public class SendMessageBean implements Serializable {
 	private String FileName;
 	
 	private String ChatroomMemberWxId;
-	//TODO:服务器ID
+	//服务器ID
 	private String ServiceGuid;
 	
 	public SendMessageBean() {

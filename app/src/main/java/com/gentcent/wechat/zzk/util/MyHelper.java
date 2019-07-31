@@ -25,6 +25,7 @@ public class MyHelper {
 	 */
 	public static String getName(String path) {
 		int index = path.lastIndexOf(".");
+		index = index < 0 ? 0 : index;
 		return System.currentTimeMillis() + path.substring(index);
 	}
 	

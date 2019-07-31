@@ -28,32 +28,7 @@ public class WxReceiver extends BroadcastReceiver {
 				switch (act) {
 					case "send_message":
 						SendMessageBean sendMsgBean = GsonUtils.GsonToBean(intent.getStringExtra("sendmsgbean"), SendMessageBean.class);
-						switch (sendMsgBean.getType()) {
-							case 0: {    //文本
-								SendMessageHandler.sendText(sendMsgBean);
-								break;
-							}
-							case 1: {    //图片
-								SendMessageManager.sendImg(sendMsgBean);
-								break;
-							}
-							case 2: {    //语音
-								SendMessageManager.sendVoice(sendMsgBean);
-								break;
-							}
-							case 3: {    //视频
-								break;
-							}
-							case 7: {    //链接
-								break;
-							}
-							case 8: {    //文件
-								break;
-							}
-							case 9: {    //群聊
-								break;
-							}
-						}
+						SendMessageManager.sendMessage(sendMsgBean);
 						break;
 					case "add_friend": {
 						String addFriendName = intent.getStringExtra("addFriendName");

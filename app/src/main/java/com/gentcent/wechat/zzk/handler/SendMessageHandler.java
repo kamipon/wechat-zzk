@@ -1,6 +1,11 @@
 package com.gentcent.wechat.zzk.handler;
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.blankj.utilcode.util.FileUtils;
@@ -14,10 +19,11 @@ import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.gentcent.wechat.zzk.wcdb.WcdbHolder;
 import com.gentcent.zzk.xped.XposedHelpers;
-import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
+import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.gentcent.zzk.xped.XposedHelpers.callMethod;
@@ -129,6 +135,120 @@ public class SendMessageHandler {
 	}
 	
 	/**
+	 * 发送视频
+	 */
+	public static void sendVideo(String serviceGuid, String path, String username) {
+		try {
+			Intent intent = new Intent();
+			intent.setData(Uri.parse("file://" + path));
+			if (MainManager.activity != null) {
+				Class<?> model_j = MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.pluginsdk.model.j");
+				XLog.d("model_j:" + model_j);
+				Class<?> model_j_a = MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.pluginsdk.model.j$a");
+				XLog.d("model_j_a:" + model_j_a);
+				final Thread thread = (Thread) XposedHelpers.newInstance(model_j, new Class[]{Context.class, List.class, Intent.class, String.class, Integer.TYPE, model_j_a}, new Object[]{MainManager.activity, null, intent, username, 1, null});
+				SendMessageManager.a(serviceGuid, new Runnable() {
+					public void run() {
+						thread.start();
+					}
+				}, 43, username, path);
+				XLog.d("sendSingleVideo success send info thread start");
+				return;
+			}
+			XLog.e("sendVideo MainManager.activity==null");
+		} catch (Throwable th) {
+			XLog.e("sendVideo e:" + Log.getStackTraceString(th));
+		}
+	}
+	
+	/**
+	 * 发送链接
+	 */
+	public static void sendArticle(SendMessageBean sm, Bitmap bitmap, String username) {
+		final LoadPackageParam lpparam = MainManager.wxLpparam;
+		String serviceGuid = sm.getServiceGuid();
+		String articleUrl = sm.getLinkUrl();
+		String articleUrl2 = sm.getLinkUrl();
+		String description = sm.getLinkDescription();
+		String articleTitle = sm.getLinkTitle();
+		try {
+			XLog.d("bitmap getByteCount is " + bitmap.getByteCount());
+			final Object newInstance = XposedHelpers.newInstance(lpparam.classLoader.loadClass("com.tencent.mm.g.a.pr"));
+			XLog.d("SendArtLinkToUserUtil sendArticl 1 oo is " + newInstance);
+			Object objectField = XposedHelpers.getObjectField(newInstance, "cAT");
+			XposedHelpers.setObjectField(objectField, "appId", "");
+			XposedHelpers.setObjectField(objectField, "appName", "");
+			XLog.d("SendArtLinkToUserUtil sendArticl 2 ");
+			XposedHelpers.setObjectField(objectField, "cAU", 2);
+			XposedHelpers.setObjectField(objectField, "cAY", articleUrl);
+			XposedHelpers.setObjectField(objectField, "cAZ", articleUrl2);
+			XposedHelpers.setObjectField(objectField, "toUser", username);
+			XLog.d("SendArtLinkToUserUtil sendArticl 3 ");
+			Object newInstance2 = XposedHelpers.newInstance(lpparam.classLoader.loadClass("com.tencent.mm.opensdk.modelmsg.WXMediaMessage"));
+			XposedHelpers.setObjectField(newInstance2, "description", description);
+			XposedHelpers.setObjectField(newInstance2, "mediaTagName", null);
+			XposedHelpers.setObjectField(newInstance2, "messageAction", null);
+			XposedHelpers.setObjectField(newInstance2, "messageExt", null);
+			XposedHelpers.setObjectField(newInstance2, "sdkVer", 0);
+			XposedHelpers.setObjectField(newInstance2, "title", articleTitle);
+			if (bitmap != null) {
+				XposedHelpers.callMethod(newInstance2, "setThumbImage", bitmap);
+			}
+			Object[] objArr = {articleUrl2};
+			String str9 = "mediaObject";
+			XposedHelpers.setObjectField(newInstance2, str9, XposedHelpers.newInstance(lpparam.classLoader.loadClass("com.tencent.mm.opensdk.modelmsg.WXWebpageObject"), objArr));
+			XLog.d("SendArtLinkToUserUtil sendArticl 4 ");
+			XposedHelpers.setObjectField(objectField, "ctb", newInstance2);
+			XLog.d("SendArtLinkToUserUtil sendArticl 5 serviceGuid is " + serviceGuid);
+			SendMessageManager.a(serviceGuid, new Runnable() {
+				public void run() {
+					try {
+						XposedHelpers.callMethod(XposedHelpers.getStaticObjectField(lpparam.classLoader.loadClass("com.tencent.mm.sdk.b.a"), "wKm"), "m", newInstance);
+					} catch (Exception e) {
+						XLog.e("SendArtLinkToUserUtil sendArticl e: " + Log.getStackTraceString(e));
+					}
+				}
+			}, 5, username, articleUrl);
+		} catch (Throwable th) {
+			XLog.e("SendArtLinkToUserUtil sendArticl e: " + Log.getStackTraceString(th));
+		}
+	}
+	
+	/**
+	 * 发送文件
+	 */
+	public static void sendFile(String serviceGuid, String path, String fileName, final String username) {
+		final LoadPackageParam lpparam = MainManager.wxLpparam;
+		try {
+			XLog.d("sendfile_to_user fileName is " + fileName + " path " + path + " username " + username);
+			Object newInstance = XposedHelpers.newInstance(lpparam.classLoader.loadClass("com.tencent.mm.opensdk.modelmsg.WXFileObject"));
+			XposedHelpers.callMethod(newInstance, "setFilePath", path);
+			final Object newInstance2 = XposedHelpers.newInstance(lpparam.classLoader.loadClass("com.tencent.mm.opensdk.modelmsg.WXMediaMessage"));
+			XposedHelpers.setObjectField(newInstance2, "mediaObject", newInstance);
+			File file = new File(path);
+			if (TextUtils.isEmpty(fileName)) {
+				XposedHelpers.setObjectField(newInstance2, "title", file.getName());
+			} else {
+				XposedHelpers.setObjectField(newInstance2, "title", fileName);
+			}
+			String str5 = "fileName";
+			XposedHelpers.setObjectField(newInstance2, str5, (String) XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.sdk.platformtools.bp"), "fx", new Object[]{file.length()}));
+			SendMessageManager.a(serviceGuid, new Runnable() {
+				public void run() {
+					try {
+						XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.pluginsdk.model.app.l"), "a", newInstance2, "", "", username, 4, null);
+					} catch (Exception e) {
+						XLog.d(" FileManger  e " + Log.getStackTraceString(e));
+					}
+				}
+			}, 49, username, fileName);
+			XLog.d("sendfile_to_user fileName is success aha ~");
+		} catch (Throwable th) {
+			XLog.d(" FileManger  e " + Log.getStackTraceString(th));
+		}
+	}
+	
+	/**
 	 * 发送语音调用过程
 	 */
 	private static void sendVoiceProcessor(String serviceGuid, String path, String username) {
@@ -167,7 +287,7 @@ public class SendMessageHandler {
 	 * 发送图片(gif)
 	 */
 	public static void sendGif(String serviceGuid, final String username, String path) {
-		final XC_LoadPackage.LoadPackageParam lpparam = MainManager.wxLpparam;
+		final LoadPackageParam lpparam = MainManager.wxLpparam;
 		try {
 			XLog.d("GifHandle sendGif serviceGuid is " + serviceGuid);
 			if (MainManager.activity != null) {
