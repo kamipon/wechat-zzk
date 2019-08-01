@@ -111,4 +111,18 @@ public class EventHandler {
 		}
 	}
 	
+	/**
+	 * 安全检查
+	 */
+	public static void sendWalletNotice() {
+		try {
+			Context context = MyApplication.getAppContext();
+			Intent intent = new Intent("WxAction");
+			intent.putExtra("act", "send_wallet_notice");
+			context.sendBroadcast(intent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
