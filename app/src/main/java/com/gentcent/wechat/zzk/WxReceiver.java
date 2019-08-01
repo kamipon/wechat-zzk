@@ -9,6 +9,7 @@ import com.birbit.android.jobqueue.JobManager;
 import com.gentcent.wechat.zzk.bean.SendMessageBean;
 import com.gentcent.wechat.zzk.bean.SendSnsBean;
 import com.gentcent.wechat.zzk.job.AddFriendJob;
+import com.gentcent.wechat.zzk.job.MoneySendJob;
 import com.gentcent.wechat.zzk.job.SendSnsJob;
 import com.gentcent.wechat.zzk.job.TaskManager;
 import com.gentcent.wechat.zzk.manager.MainManager;
@@ -16,6 +17,8 @@ import com.gentcent.wechat.zzk.manager.SendMessageManager;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wallet.Dibs;
+import com.gentcent.wechat.zzk.wallet.PayInfo;
+import com.gentcent.wechat.zzk.wallet.SendRedPocketBean;
 import com.gentcent.wechat.zzk.wcdb.SyncInfoDao;
 
 public class WxReceiver extends BroadcastReceiver {
@@ -56,6 +59,18 @@ public class WxReceiver extends BroadcastReceiver {
 						XLog.d("安全检查");
 						Dibs.requestDataIsRe(MainManager.wxLpparam, true);
 						break;
+					}
+					case "send_redpocket": {
+						String payInfoJson = intent.getStringExtra("payInfoJson");
+						PayInfo payInfo = PayInfo.revertSendRedPocketBeanToPayInfo(GsonUtils.GsonToBean(payInfoJson, SendRedPocketBean.class));
+						XLog.d("payInfo" + payInfo.toString());
+						
+						JobManager jobManager = TaskManager.getInstance().getJobManager();
+						jobManager.addJobInBackground(new MoneySendJob(10, payInfo));
+						break;
+					}
+					default:{
+						XLog.e("广播参数传递错误。");
 					}
 				}
 			}

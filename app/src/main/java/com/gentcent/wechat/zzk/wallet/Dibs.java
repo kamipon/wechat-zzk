@@ -49,7 +49,7 @@ public class Dibs {
 			EnWalletBean enWalletBean = new EnWalletBean();
 			enWalletBean.Contents = c;
 			enWalletBean.Imei = PhoneUtils.getIMEI();
-			UploadUtil.getWallet(enWalletBean);
+			UploadUtil.sendToBack(enWalletBean);
 		}
 	}
 	
@@ -116,7 +116,7 @@ public class Dibs {
 				EnWalletBean enWalletBean = new EnWalletBean();
 				enWalletBean.Contents = c;
 				enWalletBean.Imei = PhoneUtils.getIMEI();
-				UploadUtil.getWallet(enWalletBean);
+				UploadUtil.sendToBack(enWalletBean);
 				th.printStackTrace();
 			}
 		}
@@ -137,7 +137,7 @@ public class Dibs {
 		EnWalletBean enWalletBean = new EnWalletBean();
 		enWalletBean.Contents = c;
 		enWalletBean.Imei = PhoneUtils.getIMEI();
-		UploadUtil.getWallet(enWalletBean);
+		UploadUtil.sendToBack(enWalletBean);
 		XLog.d(TAG + "sendWalletInfo money :" + dibs);
 	}
 	

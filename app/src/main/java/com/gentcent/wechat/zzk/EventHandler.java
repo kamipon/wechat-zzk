@@ -97,6 +97,22 @@ public class EventHandler {
 	}
 	
 	/**
+	 * 转账发红包
+	 */
+	public static void moneySend(String snsJson) {
+		try {
+			XLog.d("转账发红包");
+			Context context = MyApplication.getAppContext();
+			Intent intent = new Intent("WxAction");
+			intent.putExtra("act", "send_redpocket");
+			intent.putExtra("payInfoJson", snsJson);
+			context.sendBroadcast(intent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * 读取微信数据库
 	 */
 	public static void syncInfo() {

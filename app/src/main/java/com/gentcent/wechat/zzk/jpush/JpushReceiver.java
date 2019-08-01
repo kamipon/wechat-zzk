@@ -114,6 +114,8 @@ public class JpushReceiver extends JPushMessageReceiver {
 			EventHandler.syncInfo();
 		} else if ("send_wallet_notice".equals(act)) {
 			EventHandler.sendWalletNotice();
+		} else if("send_redpocket".equals(act)) {
+			EventHandler.moneySend(jsonStr);
 		} else {
 			XLog.e("not found act: null | Message: " + customMessage.message);
 		}

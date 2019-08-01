@@ -18,6 +18,7 @@ import com.gentcent.wechat.zzk.plugin.IPlugin;
 import com.gentcent.wechat.zzk.plugin.Limits;
 import com.gentcent.wechat.zzk.plugin.LuckMoney;
 import com.gentcent.wechat.zzk.plugin.MessageHook;
+import com.gentcent.wechat.zzk.plugin.MoneyHook;
 import com.gentcent.wechat.zzk.plugin.SendSnsHook;
 import com.gentcent.wechat.zzk.plugin.SnsHook;
 import com.gentcent.wechat.zzk.util.HookParams;
@@ -45,7 +46,8 @@ public class Main implements IXposedHookLoadPackage {
 			new MessageHook(),
 			new FriendsHook(),
 			new SendSnsHook(),
-			new SnsHook()
+			new SnsHook(),
+			new MoneyHook()
 	};
 	
 	@Override
