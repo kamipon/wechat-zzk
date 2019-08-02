@@ -2,11 +2,8 @@ package com.gentcent.wechat.zzk.jpush;
 
 import android.content.Context;
 
-import com.gentcent.wechat.zzk.EventHandler;
-import com.gentcent.wechat.zzk.util.GsonUtils;
+import com.gentcent.wechat.zzk.WxBroadcast;
 import com.gentcent.wechat.zzk.util.XLog;
-
-import java.util.Map;
 
 import cn.jpush.android.api.CustomMessage;
 import cn.jpush.android.api.JPushInterface;
@@ -99,26 +96,7 @@ public class JpushReceiver extends JPushMessageReceiver {
 	@Override
 	public void onMessage(Context context, CustomMessage customMessage) {
 		super.onMessage(context, customMessage);
-		Map<String, Object> extra = GsonUtils.GsonToMaps(customMessage.extra);
-		String act = (String) extra.get("act");
-		String jsonStr = customMessage.message;
-		
-		XLog.d("act: " + act + " | Message: " + jsonStr);
-		if ("send_message".equals(act)) {
-			EventHandler.sendMessage(jsonStr);
-		} else if ("add_friend".equals(act)) {
-			EventHandler.addFriend(jsonStr);
-		} else if ("send_sns".equals(act)) {
-			EventHandler.sendSns(jsonStr);
-		} else if ("sync_info".equals(act)) {
-			EventHandler.syncInfo();
-		} else if ("send_wallet_notice".equals(act)) {
-			EventHandler.sendWalletNotice();
-		} else if("send_redpocket".equals(act)) {
-			EventHandler.moneySend(jsonStr);
-		} else {
-			XLog.e("not found act: null | Message: " + customMessage.message);
-		}
+		WxBroadcast.onMessage(customMessage);
 	}
 	
 }

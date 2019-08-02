@@ -1,10 +1,9 @@
 package com.gentcent.wechat.zzk.util;
 
-import com.gentcent.wechat.zzk.wallet.BackMoneyResult;
-import com.gentcent.wechat.zzk.wallet.EnWalletBean;
+import com.gentcent.wechat.zzk.model.wallet.bean.BackMoneyResult;
+import com.gentcent.wechat.zzk.model.wallet.bean.EnWalletBean;
 import com.google.gson.GsonBuilder;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.builder.PostStringBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.concurrent.TimeUnit;
@@ -66,4 +65,5 @@ public class UploadUtil {
 			}
 		}, 500, TimeUnit.MILLISECONDS);
 	}
+	
 }

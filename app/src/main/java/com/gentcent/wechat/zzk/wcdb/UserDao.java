@@ -92,5 +92,4 @@ public class UserDao {
 		}
 		return nickName;
 	}
-	
 }

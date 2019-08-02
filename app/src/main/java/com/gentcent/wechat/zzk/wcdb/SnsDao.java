@@ -2,7 +2,7 @@ package com.gentcent.wechat.zzk.wcdb;
 
 import android.database.Cursor;
 
-import com.gentcent.wechat.zzk.manager.MainManager;
+import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.util.XLog;
 
 import java.util.ArrayList;

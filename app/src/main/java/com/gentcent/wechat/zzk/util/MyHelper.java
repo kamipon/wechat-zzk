@@ -93,6 +93,15 @@ public class MyHelper {
 		}
 	}
 	
+	/**
+	 * 读取文件第一行
+	 *
+	 * @param fileName 文件名
+	 * @return 文件第一行
+	 */
+	public static String readLine(String fileName) {
+		return readFileAtFristLine(SDCARD_PATH, fileName, "");
+	}
 	
 	/**
 	 * 读取文件第一行

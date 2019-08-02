@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.gentcent.wechat.zzk.manager.MainManager;
+import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.XposedHelpers;
 

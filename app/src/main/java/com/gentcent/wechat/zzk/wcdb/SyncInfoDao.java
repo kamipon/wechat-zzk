@@ -2,9 +2,9 @@ package com.gentcent.wechat.zzk.wcdb;
 
 import android.database.Cursor;
 
-import com.gentcent.wechat.zzk.bean.SnsContentItemBean;
-import com.gentcent.wechat.zzk.manager.MainManager;
-import com.gentcent.wechat.zzk.handler.SnsHandler;
+import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
+import com.gentcent.wechat.zzk.MainManager;
+import com.gentcent.wechat.zzk.model.sns.SnsHandler;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 

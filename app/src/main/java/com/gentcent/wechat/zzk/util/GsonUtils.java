@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,16 +22,24 @@ import java.util.Map;
 public class GsonUtils {
 	//不用创建对象,直接使用Gson.就可以调用方法
 	private static Gson gson = null;
+	
 	//判断gson对象是否存在了,不存在则创建对象
 	static {
 		if (gson == null) {
 			//gson = new Gson();
 			//当使用GsonBuilder方式时属性为空的时候输出来的json字符串是有键值key的,显示形式是"key":null，而直接new出来的就没有"key":null的
-			gson= new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+			gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 		}
 	}
+	
 	//无参的私有构造方法
 	private GsonUtils() {
+	}
+	
+	public static <T> T a(String str, Type type) {
+		GsonBuilder gsonBuilder = new GsonBuilder();
+		gsonBuilder.serializeNulls();
+		return gsonBuilder.create().fromJson(str, type);
 	}
 	
 	/**
@@ -78,7 +87,7 @@ public class GsonUtils {
 				lst.add(gson.fromJson(elem, cls));
 			}
 		} catch (Exception e) {
-			XLog.e("GsonToListError"+ Log.getStackTraceString(e));
+			XLog.e("GsonToListError" + Log.getStackTraceString(e));
 		}
 		return lst;
 	}

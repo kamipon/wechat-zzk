@@ -7,20 +7,18 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.blankj.utilcode.util.AppUtils;
-import com.gentcent.wechat.zzk.manager.MainManager;
 import com.gentcent.wechat.zzk.plugin.ADBlock;
 import com.gentcent.wechat.zzk.plugin.AntiRevoke;
 import com.gentcent.wechat.zzk.plugin.AntiSnsDelete;
 import com.gentcent.wechat.zzk.plugin.AutoLogin;
-import com.gentcent.wechat.zzk.plugin.FriendsHook;
+import com.gentcent.wechat.zzk.plugin.Friends;
 import com.gentcent.wechat.zzk.plugin.HideModule;
 import com.gentcent.wechat.zzk.plugin.IPlugin;
 import com.gentcent.wechat.zzk.plugin.Limits;
 import com.gentcent.wechat.zzk.plugin.LuckMoney;
-import com.gentcent.wechat.zzk.plugin.MessageHook;
-import com.gentcent.wechat.zzk.plugin.MoneyHook;
-import com.gentcent.wechat.zzk.plugin.SendSnsHook;
-import com.gentcent.wechat.zzk.plugin.SnsHook;
+import com.gentcent.wechat.zzk.plugin.Message;
+import com.gentcent.wechat.zzk.plugin.Sns;
+import com.gentcent.wechat.zzk.plugin.Wallet;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.SearchClasses;
@@ -43,11 +41,10 @@ public class Main implements IXposedHookLoadPackage {
 			new HideModule(),
 			new LuckMoney(),
 			new Limits(),
-			new MessageHook(),
-			new FriendsHook(),
-			new SendSnsHook(),
-			new SnsHook(),
-			new MoneyHook()
+			new Message(),
+			new Friends(),
+			new Sns(),
+			new Wallet()
 	};
 	
 	@Override
