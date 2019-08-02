@@ -2,6 +2,9 @@ package com.gentcent.wechat.zzk.model.sns.bean;
 
 import java.util.List;
 
+/**
+ * 自己的朋友圈列表
+ */
 public class SnsSelfListBean {
 	private String Imei;
 	private List<SnsContentItemBean> MySnsList;

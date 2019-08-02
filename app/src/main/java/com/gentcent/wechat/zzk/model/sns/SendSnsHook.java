@@ -23,7 +23,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 
-public class SendSnsHook{
+public class SendSnsHook {
 	private static final String TAG = "SnsHook:  ";
 	
 	public static void hook(final XC_LoadPackage.LoadPackageParam lpparam) {
@@ -38,7 +38,6 @@ public class SendSnsHook{
 						}
 					}, 10000);
 				}
-				
 			}
 		});
 		
@@ -119,7 +118,7 @@ public class SendSnsHook{
 				}
 			}
 		});
-		XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.sns.ui.SnsUploadUI", lpparam.classLoader, "onDestroy", new XC_MethodHook() {
+		XposedHelpers.findAndHookMethod(HookParams.SnsUploadUI, lpparam.classLoader, "onDestroy", new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				Activity activity = (Activity) methodHookParam.thisObject;
 				if (activity != null && activity.getIntent().getBooleanExtra("snsfriendsnsuploadui", false)) {

@@ -1,4 +1,4 @@
-package com.gentcent.wechat.zzk.model.message.bean;
+package com.gentcent.wechat.zzk.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;

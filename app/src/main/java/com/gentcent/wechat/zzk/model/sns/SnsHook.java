@@ -7,7 +7,7 @@ import com.blankj.utilcode.util.PhoneUtils;
 import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.model.sns.bean.SnsSelfListBean;
 import com.gentcent.wechat.zzk.MainManager;
-import com.gentcent.wechat.zzk.plugin.IPlugin;
+import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
@@ -24,18 +24,18 @@ import java.util.concurrent.TimeUnit;
  * @author zuozhi
  * @since 2019-07-25
  */
-public class SnsHook{
+public class SnsHook {
 	private static List<SnsContentItemBean> mList = new ArrayList<>();
 	private static long mSnsStartTime = (System.currentTimeMillis() / 1000);
 	
 	public static void hook(final LoadPackageParam lpparam) {
-		XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.sns.model.aw", lpparam.classLoader, "t", XposedHelpers.findClass("com.tencent.mm.plugin.sns.storage.n", lpparam.classLoader), new XC_MethodHook() {
+		XposedHelpers.findAndHookMethod(HookParams.model_aw, lpparam.classLoader, HookParams.model_aw_method, XposedHelpers.findClass(HookParams.storage_n, lpparam.classLoader), new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
 				SnsHook.mSnsStartTime = System.currentTimeMillis() / 1000;
 			}
 		});
-		XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.sns.storage.o", lpparam.classLoader, "jW", Long.TYPE, new XC_MethodHook() {
+		XposedHelpers.findAndHookMethod(HookParams.storage_o, lpparam.classLoader, HookParams.storage_o_method, Long.TYPE, new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
 				Object result = methodHookParam.getResult();
@@ -79,7 +79,7 @@ public class SnsHook{
 				}
 			}
 		});
-		XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.sns.model.am$a", lpparam.classLoader, "WL", String.class, new XC_MethodHook() {
+		XposedHelpers.findAndHookMethod(HookParams.model_am_a, lpparam.classLoader, HookParams.model_am_a_method, String.class, new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
 				String str = (String) methodHookParam.args[0];
