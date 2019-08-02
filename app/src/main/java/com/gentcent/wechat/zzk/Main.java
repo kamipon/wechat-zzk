@@ -83,7 +83,7 @@ public class Main implements IXposedHookLoadPackage {
 				});
 				
 				//防止发语音闪退
-				XposedHelpers.findAndHookConstructor(HookParams.send_voice_class1, lpparam.classLoader, String.class, int.class, new XC_MethodReplacement() {
+				XposedHelpers.findAndHookConstructor(HookParams.modelvoice_f, lpparam.classLoader, String.class, int.class, new XC_MethodReplacement() {
 					@Override
 					protected Object replaceHookedMethod(MethodHookParam methodHookParam) {
 						try {

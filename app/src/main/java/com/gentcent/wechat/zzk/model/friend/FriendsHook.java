@@ -36,7 +36,7 @@ public class FriendsHook{
 				final Intent intent = activity.getIntent();
 				XLog.d("SayHiWithSnsPermissionUI  ");
 				if (FriendsHook.c == 2) {
-					((EditText) XposedHelpers.getObjectField(activity, HookParams.sayHiWithSnsPermissionUIFieldName)).setText(MyHelper.readLine("addFriendHelloText", ""));
+					((EditText) XposedHelpers.getObjectField(activity, HookParams.sayHiWithSnsPermissionUI_field)).setText(MyHelper.readLine("addFriendHelloText", ""));
 				}
 				ThreadPoolUtils.getInstance().a(new Runnable() {
 					public void run() {
@@ -47,7 +47,7 @@ public class FriendsHook{
 								String stringExtra = intent.getStringExtra("Contact_User");
 								intent.getIntExtra("Contact_Scene", 9);
 								XLog.d("addfriend " + stringExtra);
-								final Class loadClass = lpparam.classLoader.loadClass(HookParams.sayHiWithSnsPermissionUIInnerClass6);
+								final Class loadClass = lpparam.classLoader.loadClass(HookParams.sayHiWithSnsPermissionUI_6);
 								activity.runOnUiThread(new Runnable() {
 									public void run() {
 										MenuItem.OnMenuItemClickListener onMenuItemClickListener = (MenuItem.OnMenuItemClickListener) XposedHelpers.newInstance(loadClass, new Object[]{activity});
@@ -63,7 +63,7 @@ public class FriendsHook{
 				}, 3000, TimeUnit.MILLISECONDS);
 			}
 		});
-		XposedHelpers.findAndHookMethod(HookParams.sayHiWithSnsPermissionUIInnerClass6, lpparam.classLoader, "onMenuItemClick", MenuItem.class, new XC_MethodHook() {
+		XposedHelpers.findAndHookMethod(HookParams.sayHiWithSnsPermissionUI_6, lpparam.classLoader, "onMenuItemClick", MenuItem.class, new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
 			}
@@ -120,9 +120,9 @@ public class FriendsHook{
 										activity.runOnUiThread(new Runnable() {
 											public void run() {
 												FriendsHook.c = 2;
-												Object objectField = XposedHelpers.getObjectField(activity, HookParams.ContactInfoUIFieldName);
+												Object objectField = XposedHelpers.getObjectField(activity, HookParams.ContactInfoUI_file);
 												XLog.d("oHt class is " + objectField.getClass().getName());
-												XposedHelpers.callMethod(objectField, HookParams.ContactInfoUIMethodName, HookParams.ContactInfoUIMethodArgs);
+												XposedHelpers.callMethod(objectField, HookParams.ContactInfoUI_method, HookParams.ContactInfoUI_method_param);
 												XLog.d("callMethod a success");
 											}
 										});

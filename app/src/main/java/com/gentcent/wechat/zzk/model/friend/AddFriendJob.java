@@ -59,7 +59,7 @@ public class AddFriendJob extends Job {
 			XLog.d(TAG + "跳转到FTSMainUI SUCCESS");
 			XLog.d(TAG + "FriendManager.activity:  " + FriendManager.activity);
 			if (FriendManager.activity != null) {
-				XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass(HookParams.FTSMainUI), HookParams.FTSMainUIMethodName, FriendManager.activity, mFriendId);
+				XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass(HookParams.FTSMainUI), HookParams.method_c, FriendManager.activity, mFriendId);
 				XLog.d(TAG + "callStaticMethod | FTSMainUI");
 			} else {
 				Thread.sleep(mDelay * 1000);
