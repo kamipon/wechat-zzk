@@ -22,7 +22,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-
 public class SendSnsHook {
 	private static final String TAG = "SnsHook:  ";
 	

@@ -224,11 +224,11 @@ public class SendSnsManager {
 					Canvas canvas = new Canvas(createBitmap);
 					canvas.drawColor(-1);
 					canvas.drawBitmap(frameAtTime, 0.0f, 0.0f, null);
-					String str1 = MyHelper.SDCARD_PATH + "sns-video/" + System.currentTimeMillis() + "_cover.jpg";
+					String str1 = MyHelper.getDir("sns") + "/" + System.currentTimeMillis() + "_cover.jpg";
 					FileOutputStream fileOutputStream = new FileOutputStream(new File(str1));
 					createBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
 					fileOutputStream.close();
-					videoImgPath = str1.toString();
+					videoImgPath = str1;
 				} catch (Exception e) {
 					e.printStackTrace();
 					XLog.e(TAG + "create video img error:" + Log.getStackTraceString(e));

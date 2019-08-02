@@ -6,7 +6,6 @@ import android.util.Log;
 import com.gentcent.wechat.zzk.model.sns.bean.SnsCommentBean;
 import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.model.sns.bean.SnsLikeBean;
-import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.gentcent.zzk.xped.XposedHelpers;
@@ -54,7 +53,7 @@ public class SnsHandler {
 	 */
 	private static void makeComment_Reply(Object wSnsContentBean, String description, Object wComment, LoadPackageParam lpparam) throws ClassNotFoundException {
 		Boolean bool = (Boolean) XposedHelpers.callMethod(wSnsContentBean, "CM", 32);
-		Class loadClass = lpparam.classLoader.loadClass(HookParams.model_am_a);
+		Class loadClass = lpparam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.am$a");
 		String methodName = "a";
 		Object[] params = new Object[6];
 		params[0] = wSnsContentBean;
@@ -107,14 +106,14 @@ public class SnsHandler {
 	 * @param description     回复内容
 	 */
 	private static void makeComment_Append(Object wSnsContentBean, String description, LoadPackageParam lpparam) throws ClassNotFoundException {
-		Class loadClass = lpparam.classLoader.loadClass(HookParams.model_am_a);
+		Class loadClass = lpparam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.am$a");
 		Boolean bool = (Boolean) XposedHelpers.callMethod(wSnsContentBean, "CM", 32);
 		String methodName = "a";
 		Object[] params = new Object[6];
 		params[0] = wSnsContentBean;
 		params[1] = bool ? 8 : 2;
 		params[2] = description;
-		params[3] = XposedHelpers.newInstance(lpparam.classLoader.loadClass(HookParams.protobuf_byg));
+		params[3] = XposedHelpers.newInstance(lpparam.classLoader.loadClass("com.tencent.mm.protocal.protobuf.byg"));
 		params[4] = 0;
 		params[5] = 0;
 		XposedHelpers.callStaticMethod(loadClass, methodName, params);
@@ -152,13 +151,13 @@ public class SnsHandler {
 		XposedHelpers.getLongField(obj, "field_snsId");
 		if (intField == 0) {
 			XposedHelpers.setIntField(obj, "field_likeFlag", 1);
-			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass(HookParams.storage_h), "a", XposedHelpers.callMethod(obj, "cmo"), obj);
-			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass(HookParams.model_am_a), "a", obj, (Boolean) XposedHelpers.callMethod(obj, "CM", 32) ? 7 : 1, "", 0);
+			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.h"), "a", XposedHelpers.callMethod(obj, "cmo"), obj);
+			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.am$a"), "a", obj, (Boolean) XposedHelpers.callMethod(obj, "CM", 32) ? 7 : 1, "", 0);
 			return;
 		}
 		XposedHelpers.setIntField(obj, "field_likeFlag", 0);
-		XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass(HookParams.storage_h), "a", XposedHelpers.callMethod(obj, "cmo"), obj);
-		XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass(HookParams.model_am_a), "WL", XposedHelpers.callMethod(obj, "cmo"));
+		XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.h"), "a", XposedHelpers.callMethod(obj, "cmo"), obj);
+		XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.am$a"), "WL", XposedHelpers.callMethod(obj, "cmo"));
 	}
 	
 	/**
@@ -214,20 +213,19 @@ public class SnsHandler {
 	
 	/**
 	 * 删除朋友圈
-	 *
-	 * @param wSnsContentBean 微信朋友圈对象
+	 * @param wSnsContentBean	微信朋友圈对象
 	 */
 	private static void delete_SnsContentBean(Object wSnsContentBean, LoadPackageParam loadPackageParam) {
 		try {
 			long longField = XposedHelpers.getLongField(wSnsContentBean, "field_snsId");
 			int intField = XposedHelpers.getIntField(wSnsContentBean, "field_type");
-			long longValue = (Long) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass(HookParams.storage_v), "XU", (String) XposedHelpers.callMethod(wSnsContentBean, "cmo"));
-			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass(HookParams.model_af), "cjt"), "jF", longValue);
-			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass(HookParams.kernel_g), "Qf");
-			XposedHelpers.callMethod(XposedHelpers.getObjectField(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass(HookParams.kernel_g), "Qd"), "evj"), "a", XposedHelpers.newInstance(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.r"), longValue, 1), 0);
-			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass(HookParams.model_af), "cju"), "delete", longValue);
-			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass(HookParams.model_af), "cjz"), "jR", longValue);
-			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass(HookParams.storage_i), "jQ", longValue);
+			long longValue = (Long) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.v"), "XU", (String) XposedHelpers.callMethod(wSnsContentBean, "cmo"));
+			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.af"), "cjt"), "jF", longValue);
+			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.kernel.g"), "Qf");
+			XposedHelpers.callMethod(XposedHelpers.getObjectField(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.kernel.g"), "Qd"), "evj"), "a", XposedHelpers.newInstance(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.r"), longValue, 1), 0);
+			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.af"), "cju"), "delete", longValue);
+			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.af"), "cjz"), "jR", longValue);
+			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.i"), "jQ", longValue);
 			Object callMethod = XposedHelpers.callMethod(wSnsContentBean, "cmi");
 			if (callMethod != null) {
 				String str = null;
@@ -298,7 +296,7 @@ public class SnsHandler {
 	private static Object GetWSnsContentBean(LoadPackageParam lpparam, String methodName, String id) {
 		if (methodName.equals("XA") || methodName.equals("XB")) {
 			try {
-				return XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass(HookParams.storage_h), methodName, id);
+				return XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.h"), methodName, id);
 			} catch (ClassNotFoundException e) {
 				XLog.d("GetWSnsContentBean e:" + Log.getStackTraceString(e));
 				return null;

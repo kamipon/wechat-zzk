@@ -33,7 +33,9 @@ public class MyHelper {
 	 * 获取今天的文件夹
 	 */
 	public static String getDir(String dir) {
-		return SDCARD_PATH + dir + "/" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		String result = SDCARD_PATH + dir + "/" + Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		mkdir(result);
+		return result;
 	}
 	
 	/**
@@ -41,6 +43,16 @@ public class MyHelper {
 	 */
 	private static void mkdir() {
 		File file = new File(SDCARD_PATH);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+	}
+	
+	/**
+	 * 初始化文件夹
+	 */
+	private static void mkdir(String path) {
+		File file = new File(path);
 		if (!file.exists()) {
 			file.mkdirs();
 		}
