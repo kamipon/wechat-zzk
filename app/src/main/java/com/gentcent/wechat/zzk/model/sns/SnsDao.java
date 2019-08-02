@@ -1,9 +1,11 @@
-package com.gentcent.wechat.zzk.wcdb;
+package com.gentcent.wechat.zzk.model.sns;
 
 import android.database.Cursor;
 
 import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.util.XLog;
+import com.gentcent.wechat.zzk.wcdb.UserDao;
+import com.gentcent.wechat.zzk.wcdb.WcdbHolder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,7 +7,6 @@ import com.gentcent.wechat.zzk.model.sns.bean.SnsCommentBean;
 import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.model.sns.bean.SnsLikeBean;
 import com.gentcent.wechat.zzk.util.XLog;
-import com.gentcent.wechat.zzk.wcdb.SnsDao;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;

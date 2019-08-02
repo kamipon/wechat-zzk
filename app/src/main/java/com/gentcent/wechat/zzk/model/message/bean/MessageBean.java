@@ -74,75 +74,41 @@ public class MessageBean implements Parcelable {
 		public String CardNickname;
 		public String CardSmallHeadImgUrl;
 		public String CardUserName;
-		/* access modifiers changed from: private */
 		public String ChatroomMemberWxId;
-		/* access modifiers changed from: private */
 		public String Content;
-		/* access modifiers changed from: private */
 		public String DeviceIMEI = PhoneUtils.getIMEI();
-		/* access modifiers changed from: private */
 		public String FileName;
-		/* access modifiers changed from: private */
 		public int FileSize;
-		/* access modifiers changed from: private */
 		public String FriendAlias;
-		/* access modifiers changed from: private */
 		public String FriendConRemark;
-		/* access modifiers changed from: private */
 		public String FriendHeadMaxImg;
-		/* access modifiers changed from: private */
 		public String FriendHeadMinImg;
-		/* access modifiers changed from: private */
 		public String FriendNickName;
-		/* access modifiers changed from: private */
 		public String FriendWxId;
 		public String GroupID;
-		/* access modifiers changed from: private */
 		public int Interval;
-		/* access modifiers changed from: private */
 		public String LinkDescription;
-		/* access modifiers changed from: private */
 		public String LinkImg;
-		/* access modifiers changed from: private */
 		public String LinkTitle;
-		/* access modifiers changed from: private */
 		public String LinkUrl;
 		public List<ChatRoomRedPocketMemberBean> MemberInfo;
-		/* access modifiers changed from: private */
 		public String MessageId;
-		/* access modifiers changed from: private */
 		public String Money;
-		/* access modifiers changed from: private */
 		public int MoneyStatus;
-		/* access modifiers changed from: private */
 		public String MyHeadMaxImg;
-		/* access modifiers changed from: private */
 		public String MyHeadMinImg;
-		/* access modifiers changed from: private */
 		public String MyNickName;
-		/* access modifiers changed from: private */
 		public String MyWxId = MyHelper.readLine("myWechatID", "");
-		/* access modifiers changed from: private */
 		public int Pos;
-		/* access modifiers changed from: private */
 		public String Province;
-		/* access modifiers changed from: private */
 		public String Region;
-		/* access modifiers changed from: private */
 		public int SendGroupType = 0;
-		/* access modifiers changed from: private */
 		public String ServiceGuid;
-		/* access modifiers changed from: private */
 		public int Sex;
-		/* access modifiers changed from: private */
 		public String SourceTxt;
-		/* access modifiers changed from: private */
 		public int SourceType;
-		/* access modifiers changed from: private */
 		public int Status;
-		/* access modifiers changed from: private */
 		public int Timestamp;
-		/* access modifiers changed from: private */
 		public int Type;
 		public List<ContentMessageBean> contentMessageList = new ArrayList();
 		
@@ -150,37 +116,34 @@ public class MessageBean implements Parcelable {
 			return new MessageBeanBuilder();
 		}
 		
-		public MessageBeanBuilder buildArticle(int i, String str, String str2, String str3, String str4, String str5) {
-			this.FriendWxId = str;
-			this.Pos = i;
+		public MessageBeanBuilder buildArticle(int Pos, String FriendWxId, String LinkTitle, String LinkImg, String LinkUrl, String LinkDescription) {
+			this.FriendWxId = FriendWxId;
+			this.Pos = Pos;
 			this.Type = 7;
-			this.LinkTitle = str2;
-			this.LinkImg = str3;
-			this.LinkUrl = str4;
-			this.LinkDescription = str5;
-			if (ObjectUtils.isNotEmpty((CharSequence) str4) && str4.startsWith("https://mp.weixin.qq.com/mp/waerrpage?appid=")) {
+			this.LinkTitle = LinkTitle;
+			this.LinkImg = LinkImg;
+			this.LinkUrl = LinkUrl;
+			this.LinkDescription = LinkDescription;
+			if (ObjectUtils.isNotEmpty(LinkUrl) && LinkUrl.startsWith("https://mp.weixin.qq.com/mp/waerrpage?appid=")) {
 				this.Type = 0;
 				this.Content = "收到一个小程序，请在手机上查看";
 			}
 			return this;
 		}
 		
-		public MessageBeanBuilder builderMoenyMessageBean(String str, int i, String str2, String str3, String str4, String str5, int i2, int i3) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("url:: ");
-			sb.append(str5);
-			Log.e("Xposed", sb.toString());
-			this.MessageId = str;
-			this.FriendWxId = str2;
-			this.Content = str3;
-			this.Pos = i;
-			this.Money = str4;
+		public MessageBeanBuilder builderMoenyMessageBean(String MessageId, int Pos, String FriendWxId, String Content, String Money, String LinkUrl, int FileSize, int MoneyStatus) {
+			Log.e("zzk", "url:: " + LinkUrl);
+			this.MessageId = MessageId;
+			this.FriendWxId = FriendWxId;
+			this.Content = Content;
+			this.Pos = Pos;
+			this.Money = Money;
 			this.Timestamp = (int) (System.currentTimeMillis() / 1000);
-			this.LinkUrl = str5;
-			this.MoneyStatus = i3;
-			this.FileSize = i2;
-			if (str5 != null) {
-				if (str5.startsWith("wxpay://")) {
+			this.LinkUrl = LinkUrl;
+			this.MoneyStatus = MoneyStatus;
+			this.FileSize = FileSize;
+			if (LinkUrl != null) {
+				if (LinkUrl.startsWith("wxpay://")) {
 					this.Type = 5;
 				} else {
 					this.Type = 6;
@@ -195,65 +158,65 @@ public class MessageBean implements Parcelable {
 			return this;
 		}
 		
-		public MessageBeanBuilder builderGroupMoneyMessageBean(String str, int i, String str2, String str3, String str4, String str5, String str6, String str7, int i2, int i3, List<ChatRoomRedPocketMemberBean> list) {
-			this.MessageId = str;
-			this.FriendWxId = str2;
-			this.Content = str4;
-			this.LinkDescription = str6;
-			this.Pos = i;
-			this.ChatroomMemberWxId = str3;
-			this.Money = str5;
+		public MessageBeanBuilder builderGroupMoneyMessageBean(String MessageId, int Pos, String FriendWxId, String ChatroomMemberWxId, String Content, String Money, String LinkDescription, String LinkUrl, int FileSize, int MoneyStatus, List<ChatRoomRedPocketMemberBean> MemberInfoList) {
+			this.MessageId = MessageId;
+			this.FriendWxId = FriendWxId;
+			this.Content = Content;
+			this.LinkDescription = LinkDescription;
+			this.Pos = Pos;
+			this.ChatroomMemberWxId = ChatroomMemberWxId;
+			this.Money = Money;
 			this.Timestamp = (int) (System.currentTimeMillis() / 1000);
-			this.LinkUrl = str7;
-			this.MoneyStatus = i3;
-			this.FileSize = i2;
+			this.LinkUrl = LinkUrl;
+			this.MoneyStatus = MoneyStatus;
+			this.FileSize = FileSize;
 			this.Type = 5;
-			this.MemberInfo = list;
+			this.MemberInfo = MemberInfoList;
 			return this;
 		}
 		
-		public MessageBeanBuilder builderReMoenyMessageBean(String str, int i, String str2, String str3, int i2, int i3, int i4) {
-			this.MessageId = str;
-			this.FriendWxId = str2;
-			this.Pos = i;
+		public MessageBeanBuilder builderReMoenyMessageBean(String MessageId, int Pos, String FriendWxId, String ChatroomMemberWxId, int MoneyStatus, int Type, int FileSize) {
+			this.MessageId = MessageId;
+			this.FriendWxId = FriendWxId;
+			this.Pos = Pos;
 			this.Timestamp = (int) (System.currentTimeMillis() / 1000);
-			this.MoneyStatus = i2;
-			this.Type = i3;
-			this.ChatroomMemberWxId = str3;
-			this.FileSize = i4;
+			this.MoneyStatus = MoneyStatus;
+			this.Type = Type;
+			this.ChatroomMemberWxId = ChatroomMemberWxId;
+			this.FileSize = FileSize;
 			return this;
 		}
 		
-		public MessageBeanBuilder builderSysMoenyMessageBean(String str, int i, String str2, int i2, int i3) {
-			this.MessageId = str;
-			this.FriendWxId = str2;
-			this.Pos = i;
+		public MessageBeanBuilder builderSysMoenyMessageBean(String MessageId, int Pos, String FriendWxId, int MoneyStatus, int Type) {
+			this.MessageId = MessageId;
+			this.FriendWxId = FriendWxId;
+			this.Pos = Pos;
 			this.Timestamp = (int) (System.currentTimeMillis() / 1000);
-			this.MoneyStatus = i2;
-			this.Type = i3;
+			this.MoneyStatus = MoneyStatus;
+			this.Type = Type;
 			return this;
 		}
 		
-		public MessageBeanBuilder builderSendGroupMessage(String str, String str2, String str3, int i, String str4) {
-			this.DeviceIMEI = str;
-			this.MyWxId = str2;
-			this.FriendWxId = str3;
-			this.Pos = i;
-			this.GroupID = str4;
+		public MessageBeanBuilder builderSendGroupMessage(String DeviceIMEI, String MyWxId, String FriendWxId, int Pos, String GroupID) {
+			this.DeviceIMEI = DeviceIMEI;
+			this.MyWxId = MyWxId;
+			this.FriendWxId = FriendWxId;
+			this.Pos = Pos;
+			this.GroupID = GroupID;
 			return this;
 		}
 		
-		public MessageBeanBuilder builderTypeAndContent(String str, int i) {
-			this.Type = i;
-			this.Content = str;
-			this.contentMessageList.add(new ContentMessageBean(i, str));
+		public MessageBeanBuilder builderTypeAndContent(String Content, int Type) {
+			this.Type = Type;
+			this.Content = Content;
+			this.contentMessageList.add(new ContentMessageBean(Type, Content));
 			return this;
 		}
 		
-		public MessageBeanBuilder builderSystemMessage(String str, String str2, String str3) {
-			this.MyWxId = str;
-			this.FriendWxId = str2;
-			this.Content = str3;
+		public MessageBeanBuilder builderSystemMessage(String MyWxId, String FriendWxId, String Content) {
+			this.MyWxId = MyWxId;
+			this.FriendWxId = FriendWxId;
+			this.Content = Content;
 			this.Pos = -1;
 			this.Type = 99;
 			return this;
@@ -263,33 +226,33 @@ public class MessageBean implements Parcelable {
 			return new MessageBean(this);
 		}
 		
-		public MessageBeanBuilder builderSendRequestsBackMessageBean(String str, String str2, int i, int i2, String str3) {
-			this.Status = i2;
-			this.ServiceGuid = str;
-			this.MessageId = str2;
-			this.FriendWxId = str3;
+		public MessageBeanBuilder builderSendRequestsBackMessageBean(String ServiceGuid, String MessageId, int Type, int Status, String FriendWxId) {
+			this.Status = Status;
+			this.ServiceGuid = ServiceGuid;
+			this.MessageId = MessageId;
+			this.FriendWxId = FriendWxId;
 			this.Pos = 0;
-			this.Type = i;
+			this.Type = Type;
 			this.Timestamp = (int) (System.currentTimeMillis() / 1000);
 			return this;
 		}
 		
-		public MessageBeanBuilder builderSendAddVisitingCardMessageBean(String str, String str2, int i, String str3, String str4, String str5, String str6, String str7, int i2) {
-			this.MessageId = str3;
-			this.FriendWxId = str;
-			this.ChatroomMemberWxId = str2;
+		public MessageBeanBuilder builderSendAddVisitingCardMessageBean(String FriendWxId, String ChatroomMemberWxId, int i, String MessageId, String CardSmallHeadImgUrl, String CardUserName, String CardNickname, String Content, int CardIsFriend) {
+			this.MessageId = MessageId;
+			this.FriendWxId = FriendWxId;
+			this.ChatroomMemberWxId = ChatroomMemberWxId;
 			if (i == 0) {
 				this.Pos = 1;
 			} else if (i == 1) {
 				this.Pos = 0;
 			}
-			this.CardIsFriend = i2;
-			this.Content = str7;
+			this.CardIsFriend = CardIsFriend;
+			this.Content = Content;
 			this.Type = 11;
 			this.Timestamp = (int) (System.currentTimeMillis() / 1000);
-			this.CardSmallHeadImgUrl = str4;
-			this.CardUserName = str5;
-			this.CardNickname = str6;
+			this.CardSmallHeadImgUrl = CardSmallHeadImgUrl;
+			this.CardUserName = CardUserName;
+			this.CardNickname = CardNickname;
 			return this;
 		}
 	}
@@ -298,38 +261,38 @@ public class MessageBean implements Parcelable {
 		return 0;
 	}
 	
-	public MessageBean(String str, String str2, String str3, String str4, int i, int i2) {
-		this.DeviceIMEI = str;
-		this.MyWxId = str2;
-		this.FriendWxId = str3;
-		this.Content = str4;
-		this.Pos = i;
-		this.Type = i2;
+	public MessageBean(String DeviceIMEI, String MyWxId, String FriendWxId, String Content, int Pos, int Type) {
+		this.DeviceIMEI = DeviceIMEI;
+		this.MyWxId = MyWxId;
+		this.FriendWxId = FriendWxId;
+		this.Content = Content;
+		this.Pos = Pos;
+		this.Type = Type;
 	}
 	
-	public MessageBean(String str, String str2, String str3, String str4, int i, int i2, String str5, String str6, String str7, String str8, String str9, String str10) {
-		this.DeviceIMEI = str;
-		this.MyWxId = str2;
-		this.FriendWxId = str3;
-		this.Content = str4;
-		this.Pos = i;
-		this.Type = i2;
-		this.MyNickName = str5;
-		this.MyHeadMaxImg = str6;
-		this.MyHeadMinImg = str7;
-		this.FriendNickName = str8;
-		this.FriendHeadMaxImg = str9;
-		this.FriendHeadMinImg = str10;
+	public MessageBean(String DeviceIMEI, String MyWxId, String FriendWxId, String Content, int Pos, int Type, String MyNickName, String MyHeadMaxImg, String MyHeadMinImg, String FriendNickName, String FriendHeadMaxImg, String FriendHeadMinImg) {
+		this.DeviceIMEI = DeviceIMEI;
+		this.MyWxId = MyWxId;
+		this.FriendWxId = FriendWxId;
+		this.Content = Content;
+		this.Pos = Pos;
+		this.Type = Type;
+		this.MyNickName = MyNickName;
+		this.MyHeadMaxImg = MyHeadMaxImg;
+		this.MyHeadMinImg = MyHeadMinImg;
+		this.FriendNickName = FriendNickName;
+		this.FriendHeadMaxImg = FriendHeadMaxImg;
+		this.FriendHeadMinImg = FriendHeadMinImg;
 	}
 	
-	public MessageBean(String str, String str2, String str3, String str4, String str5, int i, int i2) {
-		this.DeviceIMEI = str;
-		this.MyWxId = str2;
-		this.FriendWxId = str3;
-		this.Content = str5;
-		this.Pos = i;
-		this.Type = i2;
-		this.ChatroomMemberWxId = str4;
+	public MessageBean(String DeviceIMEI, String MyWxId, String FriendWxId, String ChatroomMemberWxId, String Content, int Pos, int Type) {
+		this.DeviceIMEI = DeviceIMEI;
+		this.MyWxId = MyWxId;
+		this.FriendWxId = FriendWxId;
+		this.Content = Content;
+		this.Pos = Pos;
+		this.Type = Type;
+		this.ChatroomMemberWxId = ChatroomMemberWxId;
 	}
 	
 	public MessageBean(MessageBeanBuilder messageBeanBuilder) {
