@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.PhoneUtils;
-import com.gentcent.wechat.zzk.bean.ContentMessageBean;
 import com.gentcent.wechat.zzk.model.chatroom.bean.ChatRoomRedPocketMemberBean;
 import com.gentcent.wechat.zzk.util.MyHelper;
 
