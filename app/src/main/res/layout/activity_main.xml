@@ -12,95 +12,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!--发送消息-->
-        <EditText
-            android:id="@+id/send_message_target_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:hint="@string/send_message_target_id"
-            android:inputType="text"
-            android:text="wxid_pcxj1zyjpc5n21"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/send_message_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/send_message_content"
-            android:inputType="text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="sendMessage"
-            android:text="@string/send_message"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!--添加好友-->
-        <EditText
-            android:id="@+id/add_friend"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:hint="@string/add_friend_hint"
-            android:inputType="text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/hello_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hello_text"
-            android:inputType="text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="addFriend"
-            android:text="@string/add_friend"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!--android:text="{'AddWatermark':false,'ArticleImage':'','ArticleTitle':'','ArticleUrl':'','Content':'ceshi[偷笑]','Images':[],'LookFriendWxIdList':[],'LookUpType':0,'Remind':'','SelfComment':'','Type':1,'Video':''}"-->
-        <!--android:text="{'AddWatermark':false,'ArticleImage':'','ArticleTitle':'','ArticleUrl':'','Content':'测试朋友圈','Images':['http://qiniu.shenshoukeji.net/bf864b91bdc04ca3b63af6663bd1ba44.png','https://cdn2.jianshu.io/assets/web/web-note-ad-side-banner-22096669b4c4b91c3b9266894e951aef.png'],'LookFriendWxIdList':[],'LookUpType':0,'Remind':'','SelfComment':'首次评论','Type':2,'Video':''}"-->
-        <!--android:text="{'AddWatermark':false,'ArticleImage':'','ArticleTitle':'','ArticleUrl':'','Content':'ship','Images':[],'LookFriendWxIdList':[],'LookUpType':0,'Remind':'','SelfComment':'','Type':3,'Video':'http://qiniu.shenshoukeji.net/e8d533c27d774fe696eb3498440d700d.mp4'}"-->
-        <!--android:text="{'AddWatermark':false,'ArticleImage':'http://qiniu.shenshoukeji.net/22102e9824e040598b548f70f5d8c667.png','ArticleTitle':'百度一下','ArticleUrl':'http://www.baidu.com','Content':'lianjie','Images':[],'LookFriendWxIdList':[],'LookUpType':0,'Remind':'','SelfComment':'','Type':4,'Video':''}-->
-
-        <EditText
-            android:id="@+id/sns_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:hint="@string/sns_text"
-            android:inputType="textMultiLine"
-            android:maxLines="10"
-            android:text="{'AddWatermark':false,'ArticleImage':'','ArticleTitle':'','ArticleUrl':'','Content':'测试朋友圈','Images':['http://qiniu.shenshoukeji.net/bf864b91bdc04ca3b63af6663bd1ba44.png','https://cdn2.jianshu.io/assets/web/web-note-ad-side-banner-22096669b4c4b91c3b9266894e951aef.png'],'LookFriendWxIdList':[],'LookUpType':0,'Remind':'','SelfComment':'首次评论','Type':2,'Video':''}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="sendSns"
-            android:text="@string/send_sns"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!--获取微信数据库-->
+        <!--扫码绑定设备-->
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:onClick="getWcdb"
-            android:text="@string/getWcdb"
+            android:onClick="bindDivce"
+            android:text="@string/bind_divce"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

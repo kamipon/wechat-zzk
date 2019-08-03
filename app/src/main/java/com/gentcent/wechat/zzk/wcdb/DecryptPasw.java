@@ -36,7 +36,7 @@ public class DecryptPasw {
 	public static String initDbPassword() {
 		String imei = PhoneUtils.getIMEI();
 		String uin = initCurrWxUin();
-		XLog.e("initDbPassword:  微信数据库密码分割线===================================");
+		XLog.d("initDbPassword:  微信数据库密码分割线===================================");
 		XLog.e("initDbPassword:  " + "imei===" + imei);
 		XLog.e("initDbPassword:  " + "uin===" + uin);
 		try {

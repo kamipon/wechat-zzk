@@ -3,7 +3,7 @@ package com.gentcent.wechat.zzk.model.wallet;
 import android.app.Activity;
 
 import com.blankj.utilcode.util.PhoneUtils;
-import com.gentcent.wechat.zzk.util.UploadUtil;
+import com.gentcent.wechat.zzk.background.UploadUtil;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.model.wallet.bean.BackMoneyResult;
 import com.gentcent.zzk.xped.XC_MethodHook;

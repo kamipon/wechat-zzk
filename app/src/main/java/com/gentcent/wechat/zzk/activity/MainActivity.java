@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.blankj.utilcode.util.AppUtils;
 import com.gentcent.wechat.zzk.WxBroadcast;
 import com.gentcent.wechat.zzk.R;
+import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.model.message.bean.SendMessageBean;
 import com.gentcent.wechat.zzk.service.MyService;
 import com.gentcent.wechat.zzk.util.GsonUtils;
@@ -25,6 +26,8 @@ import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.SearchClasses;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.google.gson.Gson;
+import com.google.zxing.activity.CaptureActivity;
+import com.google.zxing.util.Constant;
 
 import java.io.File;
 import java.util.HashMap;
@@ -50,61 +53,26 @@ public class MainActivity extends AppCompatActivity {
 	}
 	
 	/**
-	 * 发消息
+	 * 扫码绑定设备
 	 *
 	 * @param view 代表被点击的视图
 	 */
-	public void sendMessage(View view) {
-		EditText editText = findViewById(R.id.send_message_content);
-		String content = editText.getText().toString();
-		EditText editText2 = findViewById(R.id.send_message_target_id);
-		String sendId = editText2.getText().toString();
-		
-		SendMessageBean messageBean = new SendMessageBean();
-		messageBean.setFriendWxId(sendId);
-		messageBean.setContent(content);
-		messageBean.setType(1);
-		
-		WxBroadcast.sendMessage(GsonUtils.GsonString(messageBean));
+	public void bindDivce(View view) {
+		Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+		startActivityForResult(intent, Constant.REQ_QR_CODE);
 	}
 	
-	
-	/**
-	 * 添加好友
-	 *
-	 * @param view 代表被点击的视图
-	 */
-	public void addFriend(View view) {
-		EditText editText = findViewById(R.id.add_friend);
-		String id = editText.getText().toString();
-		EditText editText2 = findViewById(R.id.hello_text);
-		String helloText = editText2.getText().toString();
-		
-		Map<String, String> map = new HashMap<>();
-		map.put("addFriendName", id);
-		map.put("helloText", helloText);
-		
-		WxBroadcast.addFriend(GsonUtils.GsonString(map));
-	}
-	
-	/**
-	 * 发送朋友圈
-	 *
-	 * @param view 代表被点击的视图
-	 */
-	public void sendSns(View view) {
-		EditText editText = findViewById(R.id.sns_text);
-		String snsJson = editText.getText().toString();
-		WxBroadcast.sendSns(snsJson);
-	}
-	
-	/**
-	 * 读取微信数据库
-	 *
-	 * @param view 代表被点击的视图
-	 */
-	public void getWcdb(View view) {
-		WxBroadcast.syncInfo();
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		//扫描结果回调
+		if (requestCode == Constant.REQ_QR_CODE && resultCode == RESULT_OK) {
+			Bundle bundle = data.getExtras();
+			String scanResult = bundle.getString(Constant.INTENT_EXTRA_KEY_QR_SCAN);
+			//将扫描出的信息显示出来
+			XLog.d(scanResult);
+			UploadService.bindDevice(scanResult);
+		}
 	}
 	
 	/**

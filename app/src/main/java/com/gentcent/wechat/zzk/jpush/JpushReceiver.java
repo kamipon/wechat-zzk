@@ -2,6 +2,7 @@ package com.gentcent.wechat.zzk.jpush;
 
 import android.content.Context;
 
+import com.blankj.utilcode.util.PhoneUtils;
 import com.gentcent.wechat.zzk.WxBroadcast;
 import com.gentcent.wechat.zzk.util.XLog;
 
@@ -25,7 +26,7 @@ public class JpushReceiver extends JPushMessageReceiver {
 	public void onConnected(Context context, boolean b) {
 		super.onConnected(context, b);
 		XLog.e(TAG + "onConnected " + b);
-		
+		JPushInterface.setAlias(context, 1, PhoneUtils.getIMEI());
 		//重连
 		if (!b) {
 			JPushInterface.init(context);
@@ -47,6 +48,7 @@ public class JpushReceiver extends JPushMessageReceiver {
 	 */
 	@Override
 	public void onAliasOperatorResult(Context context, JPushMessage jPushMessage) {
+		XLog.e(TAG + "setAlias" + jPushMessage);
 		super.onAliasOperatorResult(context, jPushMessage);
 //		String alias = jPushMessage.getAlias();
 //		boolean needAlias = TextUtils.isEmpty(alias);

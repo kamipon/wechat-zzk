@@ -20,7 +20,10 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 震动权限 -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 摄像头权限 -->
+    <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 自动聚焦权限 -->
+
 
     <application
         android:name=".MyApplication"
@@ -86,6 +89,9 @@
                 <category android:name="com.gentcent.wechat.zzk" />
             </intent-filter>
         </receiver>
+
+        <!--扫码-->
+        <activity android:name="com.google.zxing.activity.CaptureActivity" />
     </application>
 
 </manifest>

@@ -8,7 +8,7 @@ import com.blankj.utilcode.util.PhoneUtils;
 import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
-import com.gentcent.wechat.zzk.util.UploadUtil;
+import com.gentcent.wechat.zzk.background.UploadUtil;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.model.wallet.bean.EnWalletBean;
 import com.gentcent.wechat.zzk.model.wallet.bean.WalletBean;
