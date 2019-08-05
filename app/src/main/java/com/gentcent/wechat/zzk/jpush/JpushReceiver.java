@@ -1,9 +1,14 @@
 package com.gentcent.wechat.zzk.jpush;
 
 import android.content.Context;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 
 import com.blankj.utilcode.util.PhoneUtils;
+import com.gentcent.wechat.zzk.MyApplication;
 import com.gentcent.wechat.zzk.WxBroadcast;
+import com.gentcent.wechat.zzk.activity.MainActivity;
 import com.gentcent.wechat.zzk.util.XLog;
 
 import cn.jpush.android.api.CustomMessage;
@@ -24,7 +29,6 @@ public class JpushReceiver extends JPushMessageReceiver {
 	 */
 	@Override
 	public void onConnected(Context context, boolean b) {
-		super.onConnected(context, b);
 		XLog.e(TAG + "onConnected " + b);
 		JPushInterface.setAlias(context, 1, PhoneUtils.getIMEI());
 		//重连
@@ -32,6 +36,7 @@ public class JpushReceiver extends JPushMessageReceiver {
 			JPushInterface.init(context);
 			JPushInterface.onResume(context);
 		}
+		super.onConnected(context, b);
 	}
 	
 	/**
@@ -98,6 +103,33 @@ public class JpushReceiver extends JPushMessageReceiver {
 	@Override
 	public void onMessage(Context context, CustomMessage customMessage) {
 		super.onMessage(context, customMessage);
+		Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		Ringtone r = RingtoneManager.getRingtone(MyApplication.getAppContext(), notification);
+		r.play();
+		XLog.d(customMessage.toString());
+		try {
+			WxBroadcast.onMessage(customMessage);
+		} catch (Exception ignore) {
+		}
+		
+		//测试用 给xzt转发消息
+		customMessage.message = "{\n" +
+				"\t\"DeviceIMEI\": \"867078031939281\",\n" +
+				"\t\"MyWxId\": \"wxid_dephvhve1wpt22\",\n" +
+				"\t\"FriendWxId\": \"wxid_kew7mmulpykg22\",\n" +
+				"\t\"Content\": \"" + customMessage.toString().replace("{", " ").replace("}", " ").replace("\"", "\'") + "\",\n" +
+				"\t\"Pos\": 0,\n" +
+				"\t\"Type\": 0,\n" +
+				"\t\"Interval\": 0,\n" +
+				"\t\"LinkImg\": null,\n" +
+				"\t\"LinkTitle\": null,\n" +
+				"\t\"LinkDescription\": null,\n" +
+				"\t\"LinkUrl\": null,\n" +
+				"\t\"FileName\": null,\n" +
+				"\t\"ChatroomMemberWxId\": null,\n" +
+				"\t\"ServiceGuid\": \"35fa78b4-b956-400b-9ce4-23ba7aecd30c\"\n" +
+				"}";
+		customMessage.extra = "{\"act\":\"send_message\"}";
 		WxBroadcast.onMessage(customMessage);
 	}
 	

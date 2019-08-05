@@ -1,28 +1,27 @@
 package com.gentcent.wechat.zzk.background;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import android.util.Log;
+
+import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.bean.PhoneInfoBean;
+import com.gentcent.wechat.zzk.bean.SystemInfoBean;
 import com.gentcent.wechat.zzk.model.wallet.bean.BackMoneyResult;
 import com.gentcent.wechat.zzk.model.wallet.bean.EnWalletBean;
 import com.gentcent.wechat.zzk.util.GsonUtils;
+import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
-import com.gentcent.wechat.zzk.util.ZzkUtil;
 import com.google.gson.GsonBuilder;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.Callback;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 /**
  * 请求服务器上传资料
@@ -31,6 +30,23 @@ import okhttp3.Response;
  * @since 2019-08-01
  */
 public class UploadUtil {
+	
+	//判断是否绑定设备
+	private static boolean isbinded() {
+		String sysInfo = MyHelper.readLine("sys-info");
+		if (StringUtils.isEmpty(sysInfo)) {
+			ToastUtils.showShort("信息有误，请重新绑定设备");
+			return false;
+		} else {
+			try {
+				GsonUtils.GsonToBean(sysInfo, SystemInfoBean.class);
+			} catch (Exception e) {
+				ToastUtils.showShort("信息有误，请重新绑定设备");
+				return false;
+			}
+		}
+		return true;
+	}
 	
 	/**
 	 * 绑定设备
@@ -48,25 +64,29 @@ public class UploadUtil {
 						.addParams("isxPosed", String.valueOf(p.isxPosed))
 						.addParams("softwareVersion", p.softwareVersion)
 						.addParams("electric", p.electric)
-						.build().execute(new Callback() {
-					@Override
-					public Object parseNetworkResponse(Response response, int id) throws Exception {
-						XLog.d("bindDevice parseNetworkResponse " + response);
-						return null;
-					}
-					
-					@Override
-					public void onError(Call call, Exception e, int id) {
-						XLog.d("bindDevice error " + e.getMessage());
-						ToastUtils.showShort("绑定失败");
-					}
-					
-					@Override
-					public void onResponse(Object response, int id) {
-						XLog.d("bindDevice success " + response);
-						ToastUtils.showShort("绑定成功");
-					}
-				});
+						.build().execute(
+						new StringCallback() {
+							@Override
+							public void onError(Call call, Exception e, int id) {
+								XLog.d("error: " + Log.getStackTraceString(e));
+							}
+							
+							@Override
+							public void onResponse(String response, int id) {
+								XLog.d("response: " + response);
+								Map<String, Object> map = GsonUtils.GsonToMaps(response);
+								ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));
+								if ((boolean) map.get("flag")) {
+									SystemInfoBean systemInfoBean = new SystemInfoBean();
+									systemInfoBean.phoneId = (String) map.get("phoneId");
+									systemInfoBean.actId = (String) map.get("actId");
+									systemInfoBean.actName = (String) map.get("actName");
+									systemInfoBean.keepMan = (String) map.get("keepMan");
+									systemInfoBean.picUrl = (String) map.get("picUrl");
+									MyHelper.writeLine("sys-info", GsonUtils.GsonString(systemInfoBean));
+								}
+							}
+						});
 			}
 		}, 500, TimeUnit.MILLISECONDS);
 	}
@@ -75,6 +95,7 @@ public class UploadUtil {
 	 * 上传钱包信息
 	 */
 	public static void sendToBack(final EnWalletBean enWalletBean) {
+		if (!isbinded()) return;
 		ThreadPoolUtils.getInstance().a(new Runnable() {
 			public void run() {
 				XLog.d("sendWalletNotice url is " + Api.getWallet);
@@ -99,6 +120,7 @@ public class UploadUtil {
 	 * 上传发红包的结果
 	 */
 	public static void sendToBack(final BackMoneyResult backMoneyResult) {
+		if (!isbinded()) return;
 		final String json = new GsonBuilder().disableHtmlEscaping().create().toJson(backMoneyResult);
 		XLog.d("backRedResult url is " + Api.sendMoneyResult);
 		XLog.d("backRedResult json is " + json);

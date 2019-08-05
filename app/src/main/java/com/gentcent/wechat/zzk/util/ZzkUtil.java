@@ -1,5 +1,6 @@
 package com.gentcent.wechat.zzk.util;
 
+import android.util.Base64;
 import android.util.Log;
 
 import com.blankj.utilcode.util.ObjectUtils;
@@ -14,6 +15,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 
 /**
  * @author zuozhi
@@ -42,5 +48,48 @@ public class ZzkUtil {
 	
 	public static boolean l(String str) {
 		return ObjectUtils.isNotEmpty((CharSequence) str) && !str.startsWith("gh_") && !str.startsWith("fake_") && !str.endsWith("@chatroom") && !Arrays.asList(appList).contains(str);
+	}
+	
+	public class MyConstant {
+		public static final String PASSWORD_ENC_SECRET = "gentcent.zzk";
+	}
+	
+	/**
+	 * 加密
+	 **/
+	public static String encryptPassword(String clearText) {
+		try {
+			DESKeySpec keySpec = new DESKeySpec(
+					MyConstant.PASSWORD_ENC_SECRET.getBytes("UTF-8"));
+			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+			SecretKey key = keyFactory.generateSecret(keySpec);
+			
+			Cipher cipher = Cipher.getInstance("DES");
+			cipher.init(Cipher.ENCRYPT_MODE, key);
+			String encrypedPwd = Base64.encodeToString(cipher.doFinal(clearText
+					.getBytes("UTF-8")), Base64.DEFAULT);
+			return encrypedPwd.replaceAll("\r|\n", "");
+		} catch (Exception e) {
+		}
+		return clearText;
+	}
+	
+	/**
+	 * 解密
+	 **/
+	public static String decryptPassword(String encryptedPwd) {
+		try {
+			DESKeySpec keySpec = new DESKeySpec(MyConstant.PASSWORD_ENC_SECRET.getBytes("UTF-8"));
+			SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+			SecretKey key = keyFactory.generateSecret(keySpec);
+			
+			byte[] encryptedWithoutB64 = Base64.decode(encryptedPwd, Base64.DEFAULT);
+			Cipher cipher = Cipher.getInstance("DES");
+			cipher.init(Cipher.DECRYPT_MODE, key);
+			byte[] plainTextPwdBytes = cipher.doFinal(encryptedWithoutB64);
+			return new String(plainTextPwdBytes);
+		} catch (Exception e) {
+		}
+		return encryptedPwd;
 	}
 }

@@ -13,6 +13,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Calendar;
 
+import static com.gentcent.wechat.zzk.util.ZzkUtil.decryptPassword;
+import static com.gentcent.wechat.zzk.util.ZzkUtil.encryptPassword;
+
 /**
  * @author zuozhi
  * @since 2019-07-09
@@ -148,7 +151,7 @@ public class MyHelper {
 			if (readLine != null) {
 				defaultVal = readLine;
 			}
-			return defaultVal;
+			return decryptPassword(defaultVal);
 		} catch (Exception e) {
 			XLog.e("GetString error is " + Log.getStackTraceString(e));
 			return defaultVal;
@@ -180,7 +183,7 @@ public class MyHelper {
 			mkdir();
 			BufferedWriter bufferedWriter2 = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(path + fileName), false), HttpUtils.ENCODING_UTF_8));
 			try {
-				bufferedWriter2.write(content);
+				bufferedWriter2.write(encryptPassword(content));
 				bufferedWriter2.flush();
 				try {
 					bufferedWriter2.close();
