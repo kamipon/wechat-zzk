@@ -92,6 +92,50 @@ public class UploadUtil {
 	}
 	
 	/**
+	 * 绑定微信
+	 */
+	public static void bindWeixin(final PhoneInfoBean p) {
+		if (!isbinded()) return;
+		ThreadPoolUtils.getInstance().a(new Runnable() {
+			public void run() {
+				OkHttpUtils.post().url(Api.phone_add)
+						.addParams("IMEI", p.IMEI)
+						.addParams("phoneBrand", p.phoneBrand)
+						.addParams("wxVersion", p.wxVersion)
+						.addParams("phonemodel", p.phonemodel)
+						.addParams("acId", p.acId)
+						.addParams("isroot", String.valueOf(p.isroot))
+						.addParams("isxPosed", String.valueOf(p.isxPosed))
+						.addParams("softwareVersion", p.softwareVersion)
+						.addParams("electric", p.electric)
+						.build().execute(
+						new StringCallback() {
+							@Override
+							public void onError(Call call, Exception e, int id) {
+								XLog.d("error: " + Log.getStackTraceString(e));
+							}
+							
+							@Override
+							public void onResponse(String response, int id) {
+								XLog.d("response: " + response);
+								Map<String, Object> map = GsonUtils.GsonToMaps(response);
+								ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));
+								if ((boolean) map.get("flag")) {
+									SystemInfoBean systemInfoBean = new SystemInfoBean();
+									systemInfoBean.phoneId = (String) map.get("phoneId");
+									systemInfoBean.actId = (String) map.get("actId");
+									systemInfoBean.actName = (String) map.get("actName");
+									systemInfoBean.keepMan = (String) map.get("keepMan");
+									systemInfoBean.picUrl = (String) map.get("picUrl");
+									MyHelper.writeLine("sys-info", GsonUtils.GsonString(systemInfoBean));
+								}
+							}
+						});
+			}
+		}, 500, TimeUnit.MILLISECONDS);
+	}
+	
+	/**
 	 * 上传钱包信息
 	 */
 	public static void sendToBack(final EnWalletBean enWalletBean) {

@@ -92,4 +92,12 @@ public class UserDao {
 		}
 		return nickName;
 	}
+	
+	/**
+	 * 获取自己的用户信息
+	 */
+	public static void getMyInfo() {
+	
+	
+	}
 }

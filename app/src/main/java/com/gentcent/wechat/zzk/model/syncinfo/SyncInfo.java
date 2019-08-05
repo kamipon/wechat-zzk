@@ -1,15 +1,20 @@
-package com.gentcent.wechat.zzk.wcdb;
+package com.gentcent.wechat.zzk.model.syncinfo;
 
 import android.database.Cursor;
 import android.util.Log;
 
 import com.blankj.utilcode.util.PhoneUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.model.sns.SnsHandler;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
+import com.gentcent.wechat.zzk.wcdb.DecryptPasw;
+import com.gentcent.wechat.zzk.wcdb.UserDao;
+import com.gentcent.wechat.zzk.wcdb.WcdbHolder;
+import com.gentcent.zzk.xped.XposedHelpers;
 
 import java.util.List;
 
@@ -17,7 +22,7 @@ import java.util.List;
  * @author zuozhi
  * @since 2019-07-25
  */
-public class SyncInfoDao {
+public class SyncInfo {
 	/**
 	 * 微信好友信息
 	 */
@@ -34,21 +39,7 @@ public class SyncInfoDao {
 		});
 	}
 	
-	/**
-	 * 获取朋友圈数据
-	 */
-	private static void getSnsData() {
-		List<SnsContentItemBean> selfAllDatas = SnsHandler.getSelfAllDatas(MainManager.wxLpparam);
-		XLog.d("openWxDb:  " + "自己的朋友圈数据=====================================================================================");
-		for (SnsContentItemBean selfAllData : selfAllDatas) {
-			XLog.e(selfAllData.toString());
-		}
-		List<SnsContentItemBean> allDatas = SnsHandler.getAllDatas(MainManager.wxLpparam);
-		XLog.d("openWxDb:  " + "所有的朋友圈数据=====================================================================================");
-		for (SnsContentItemBean allData : allDatas) {
-			XLog.e(allData.toString());
-		}
-	}
+	
 	
 	/**
 	 * 获取好友列表
@@ -73,6 +64,13 @@ public class SyncInfoDao {
 				String pyInitial = c1.getString(c1.getColumnIndex("pyInitial"));
 				String quanPin = c1.getString(c1.getColumnIndex("quanPin"));
 				UserBean userBean = new UserBean(username, alias, nickname, reserved1, reserved2, conRemark, memberlist, displayname, pyInitial, quanPin);
+				
+				//是我自己
+				if (StringUtils.equals(username, UserDao.getMyWxid())) {
+				
+				}
+				
+				
 				XLog.d(userBean.toString());
 			}
 			c1.close();
@@ -124,6 +122,22 @@ public class SyncInfoDao {
 		} catch (Exception e) {
 			c1.close();
 			XLog.e("openWxDb:  " + "读取数据库信息失败" + Log.getStackTraceString(e));
+		}
+	}
+	
+	/**
+	 * 获取朋友圈数据
+	 */
+	private static void getSnsData() {
+		List<SnsContentItemBean> selfAllDatas = SnsHandler.getSelfAllDatas(MainManager.wxLpparam);
+		XLog.d("openWxDb:  " + "自己的朋友圈数据=====================================================================================");
+		for (SnsContentItemBean selfAllData : selfAllDatas) {
+			XLog.e(selfAllData.toString());
+		}
+		List<SnsContentItemBean> allDatas = SnsHandler.getAllDatas(MainManager.wxLpparam);
+		XLog.d("openWxDb:  " + "所有的朋友圈数据=====================================================================================");
+		for (SnsContentItemBean allData : allDatas) {
+			XLog.e(allData.toString());
 		}
 	}
 }

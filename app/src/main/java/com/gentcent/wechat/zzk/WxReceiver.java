@@ -18,7 +18,8 @@ import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.model.wallet.Dibs;
 import com.gentcent.wechat.zzk.model.wallet.PayInfo;
 import com.gentcent.wechat.zzk.model.wallet.bean.SendRedPocketBean;
-import com.gentcent.wechat.zzk.wcdb.SyncInfoDao;
+import com.gentcent.wechat.zzk.model.syncinfo.SyncInfo;
+import com.gentcent.wechat.zzk.wcdb.UserDao;
 
 /**
  * 微信广播接收器
@@ -51,7 +52,7 @@ public class WxReceiver extends BroadcastReceiver {
 						break;
 					}
 					case "sync_info": {
-						SyncInfoDao.syncInfo();
+						SyncInfo.syncInfo();
 						break;
 					}
 					case "send_wallet_notice": {
@@ -63,6 +64,10 @@ public class WxReceiver extends BroadcastReceiver {
 						XLog.d("payInfo" + payInfo.toString());
 						JobManager jobManager = TaskManager.getInstance().getJobManager();
 						jobManager.addJobInBackground(new MoneySendJob(10, payInfo));
+						break;
+					}
+					case "bind_weixin": {
+						UserDao.getMyInfo();
 						break;
 					}
 					default: {

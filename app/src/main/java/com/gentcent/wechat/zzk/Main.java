@@ -72,6 +72,7 @@ public class Main implements IXposedHookLoadPackage {
 						}
 						if (!MainManager.isInitComplete()) {
 							MainManager.init(lpparam);
+							MyHelper.delete("myWechatID");
 							try {
 								if (processName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
 									AppUtils.launchApp(HookParams.WECHAT_PACKAGE_NAME);

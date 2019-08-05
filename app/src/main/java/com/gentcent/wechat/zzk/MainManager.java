@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.XLog;
+import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.*;
@@ -24,6 +25,10 @@ public class MainManager {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
 				if (lpparam.isFirstApplication) {
+					
+					UserDao.getMyWxid();
+					UserDao.getMyInfo();
+					
 					Application application = (Application) methodHookParam.thisObject;
 					
 					if (MainManager.wxLpparam == null) {
