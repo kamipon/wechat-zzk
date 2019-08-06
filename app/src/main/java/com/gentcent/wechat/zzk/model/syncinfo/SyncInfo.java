@@ -40,7 +40,6 @@ public class SyncInfo {
 	}
 	
 	
-	
 	/**
 	 * 获取好友列表
 	 */
@@ -64,14 +63,13 @@ public class SyncInfo {
 				String pyInitial = c1.getString(c1.getColumnIndex("pyInitial"));
 				String quanPin = c1.getString(c1.getColumnIndex("quanPin"));
 				UserBean userBean = new UserBean(username, alias, nickname, reserved1, reserved2, conRemark, memberlist, displayname, pyInitial, quanPin);
-				
+				//补全信息
+				SyncInfoManager.userCompletion(userBean);
+				XLog.d(userBean.toString());
 				//是我自己
 				if (StringUtils.equals(username, UserDao.getMyWxid())) {
 				
 				}
-				
-				
-				XLog.d(userBean.toString());
 			}
 			c1.close();
 		} catch (Exception e) {

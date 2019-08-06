@@ -26,9 +26,6 @@ public class MainManager {
 				super.afterHookedMethod(methodHookParam);
 				if (lpparam.isFirstApplication) {
 					
-					UserDao.getMyWxid();
-					UserDao.getMyInfo();
-					
 					Application application = (Application) methodHookParam.thisObject;
 					
 					if (MainManager.wxLpparam == null) {

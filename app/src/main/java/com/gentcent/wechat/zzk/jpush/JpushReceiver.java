@@ -113,24 +113,24 @@ public class JpushReceiver extends JPushMessageReceiver {
 		}
 		
 		//测试用 给xzt转发消息
-		customMessage.message = "{\n" +
-				"\t\"DeviceIMEI\": \"867078031939281\",\n" +
-				"\t\"MyWxId\": \"wxid_dephvhve1wpt22\",\n" +
-				"\t\"FriendWxId\": \"wxid_kew7mmulpykg22\",\n" +
-				"\t\"Content\": \"" + customMessage.toString().replace("{", " ").replace("}", " ").replace("\"", "\'") + "\",\n" +
-				"\t\"Pos\": 0,\n" +
-				"\t\"Type\": 0,\n" +
-				"\t\"Interval\": 0,\n" +
-				"\t\"LinkImg\": null,\n" +
-				"\t\"LinkTitle\": null,\n" +
-				"\t\"LinkDescription\": null,\n" +
-				"\t\"LinkUrl\": null,\n" +
-				"\t\"FileName\": null,\n" +
-				"\t\"ChatroomMemberWxId\": null,\n" +
-				"\t\"ServiceGuid\": \"35fa78b4-b956-400b-9ce4-23ba7aecd30c\"\n" +
-				"}";
-		customMessage.extra = "{\"act\":\"send_message\"}";
-		WxBroadcast.onMessage(customMessage);
+//		customMessage.message = "{\n" +
+//				"\t\"DeviceIMEI\": \"867078031939281\",\n" +
+//				"\t\"MyWxId\": \"wxid_dephvhve1wpt22\",\n" +
+//				"\t\"FriendWxId\": \"wxid_kew7mmulpykg22\",\n" +
+//				"\t\"Content\": \"" + customMessage.toString().replace("{", " ").replace("}", " ").replace("\"", "\'") + "\",\n" +
+//				"\t\"Pos\": 0,\n" +
+//				"\t\"Type\": 0,\n" +
+//				"\t\"Interval\": 0,\n" +
+//				"\t\"LinkImg\": null,\n" +
+//				"\t\"LinkTitle\": null,\n" +
+//				"\t\"LinkDescription\": null,\n" +
+//				"\t\"LinkUrl\": null,\n" +
+//				"\t\"FileName\": null,\n" +
+//				"\t\"ChatroomMemberWxId\": null,\n" +
+//				"\t\"ServiceGuid\": \"35fa78b4-b956-400b-9ce4-23ba7aecd30c\"\n" +
+//				"}";
+//		customMessage.extra = "{\"act\":\"send_message\"}";
+//		WxBroadcast.onMessage(customMessage);
 	}
 	
 }

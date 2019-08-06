@@ -1,7 +1,5 @@
 package com.gentcent.wechat.zzk.bean;
 
-import com.gentcent.zzk.xped.XposedHelpers;
-
 import java.util.HashMap;
 
 public class UserBean {
