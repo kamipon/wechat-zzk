@@ -9,5 +9,7 @@ public class Api {
 	public static String getWallet = prefix + "card/get";
 	public static String sendMoneyResult = prefix + "sendMoney/result";
 	
-	public static String phone_add = prefix + "appPhone/add";
+	public static String appPhone = prefix + "appPhone/add";
+	public static String addweixin = prefix + "appWchat/addweixin/";
+	public static String appfriend = prefix + "appfriend/add";
 }

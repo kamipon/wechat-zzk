@@ -5,8 +5,7 @@ import com.blankj.utilcode.util.AppUtils.AppInfo;
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.PhoneUtils;
 import com.gentcent.wechat.zzk.bean.PhoneInfoBean;
-import com.gentcent.wechat.zzk.bean.SystemInfoBean;
-import com.gentcent.wechat.zzk.util.GsonUtils;
+import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.XLog;
@@ -16,6 +15,7 @@ import com.gentcent.wechat.zzk.util.XLog;
  * @since 2019-08-03
  */
 public class UploadService {
+	private static final Object bindlock = new Object();
 	
 	/**
 	 * 绑定设备
@@ -47,12 +47,20 @@ public class UploadService {
 	/**
 	 * 绑定微信
 	 */
-	public static void bindWeiXin() {
-		String sysInfo = MyHelper.readLine("sys-info");
-		SystemInfoBean systemInfoBean = GsonUtils.GsonToBean(sysInfo, SystemInfoBean.class);
-		String phoneId = systemInfoBean.phoneId;
-		String weixinID = MyHelper.readLine("myWechatID");
-		
+	public static void bindWeixin(UserBean userBean) {
+		XLog.d("上传自己的微信信息");
+		synchronized (bindlock) {
+			UploadUtil.bindWeixin(userBean);
+		}
+	}
+	
+	/**
+	 * 同步好友
+	 */
+	public static void bindFriend(UserBean userBean) {
+		synchronized (bindlock) {
+			UploadUtil.bindFriend(userBean);
+		}
 	}
 	
 	public static boolean isXposed() {

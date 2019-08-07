@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.blankj.utilcode.util.AppUtils;
+import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.plugin.ADBlock;
 import com.gentcent.wechat.zzk.plugin.AntiRevoke;
 import com.gentcent.wechat.zzk.plugin.AntiSnsDelete;
@@ -30,6 +31,8 @@ import com.gentcent.zzk.xped.XposedBridge;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
+import static com.gentcent.zzk.xped.XposedHelpers.findAndHookMethod;
+
 
 public class Main implements IXposedHookLoadPackage {
 	
@@ -51,6 +54,9 @@ public class Main implements IXposedHookLoadPackage {
 	public void handleLoadPackage(final LoadPackageParam lpparam) {
 		
 		try {
+			if (lpparam.packageName.equals(HookParams.MY_PACKAGE_NAME)) {
+				findAndHookMethod(UploadService.class, "isXposed", XC_MethodReplacement.returnConstant(true));
+			}
 			if (lpparam.packageName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
 				XposedHelpers.findAndHookMethod(ContextWrapper.class, "attachBaseContext", Context.class, new XC_MethodHook() {
 					@Override

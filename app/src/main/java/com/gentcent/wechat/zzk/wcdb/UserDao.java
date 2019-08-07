@@ -46,7 +46,7 @@ public class UserDao {
 		if (c1 != null) {
 			c1.close();
 		}
-		if (ObjectUtils.isNotEmpty((CharSequence) myWxid)) {
+		if (ObjectUtils.isNotEmpty(myWxid)) {
 			MyHelper.writeLine("myWechatID", myWxid);
 			result = myWxid;
 		}

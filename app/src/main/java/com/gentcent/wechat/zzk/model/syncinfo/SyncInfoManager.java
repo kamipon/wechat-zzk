@@ -11,6 +11,9 @@ import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.HookSQL;
 import com.gentcent.wechat.zzk.wcdb.WcdbHolder;
 import com.gentcent.zzk.xped.XposedHelpers;
+import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
+
+import java.util.HashMap;
 
 /**
  * @author zuozhi
@@ -41,6 +44,52 @@ public class SyncInfoManager {
 	}
 	
 	/**
+	 * 获得群聊成员的群昵称
+	 *
+	 * @param username   群聊id
+	 * @param memberlist 成员id列表
+	 */
+	public static HashMap<String, String> getGroupUserName(String username, String memberlist) {
+		HashMap<String, String> hashMap = new HashMap<>();
+		if (TextUtils.isEmpty(memberlist)) {
+			return hashMap;
+		}
+		String[] split = memberlist.split(";");
+		Object callMethod = XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.model.av", MainManager.wxLpparam.classLoader), "XE"), "VI");
+		Object a2 = initChatRoom(username, MainManager.wxLpparam);
+		if (a2 != null) {
+			for (String str3 : split) {
+				String a3 = (String) XposedHelpers.callMethod(a2, "mk", str3);
+				if (!TextUtils.isEmpty(a3)) {
+					hashMap.put(str3, a3);
+				} else {
+					hashMap.put(str3, (String) XposedHelpers.getObjectField(XposedHelpers.callMethod(callMethod, "anl", str3), "field_nickname"));
+				}
+			}
+		} else {
+			for (String str4 : split) {
+				hashMap.put(str4, (String) XposedHelpers.getObjectField(XposedHelpers.callMethod(callMethod, "anl", str4), "field_nickname"));
+			}
+		}
+		return hashMap;
+	}
+	
+	/**
+	 * 初始化群聊
+	 *
+	 * @param username 群聊ID
+	 */
+	private static Object initChatRoom(String username, LoadPackageParam loadPackageParam) {
+		try {
+			Object[] objArr = {username};
+			return XposedHelpers.callMethod(XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.kernel.g"), "L", loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.chatroom.a.c")), "VR"), "nB", objArr);
+		} catch (Exception unused) {
+			XLog.d(" initChatRoom error ");
+			return null;
+		}
+	}
+	
+	/**
 	 * 聊天室信息补全
 	 */
 	private static void setChatroom(UserBean userBean) {
@@ -48,6 +97,7 @@ public class SyncInfoManager {
 			userBean.notice = findNotice(userBean.username);
 			userBean.isAddAddressBook = findIsAddAddressBook(userBean.username);
 			userBean.roomOwner = findChatRoomOwner(userBean.username);
+			userBean.NameMap = getGroupUserName(userBean.username, userBean.memberlist);
 		} catch (Exception unused) {
 			XLog.e("User setChatroom error");
 		}

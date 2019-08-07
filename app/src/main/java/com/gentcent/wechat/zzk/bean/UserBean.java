@@ -15,7 +15,7 @@ public class UserBean {
 	public String reserved2;
 	//备注
 	public String conRemark;
-	//性别
+	//性别 0：群聊 1：男 2：女
 	public int sex;
 	//个性签名
 	public String signature;
@@ -23,24 +23,31 @@ public class UserBean {
 	public String province;
 	//市
 	public String region;
-	//添加来源
+	/**
+	 * 添加来源
+	 * 0:未知来源，微信没有||群聊
+	 * 1:我加别人
+	 * 2:别人加我
+	 */
 	public int sourceType;
 	public String sourceText;
 	//拼音首字母大写
 	public String pyInitial;
 	//全拼
 	public String quanPin;
+	
+	
 	//群聊好友微信id （';'号分割）
 	public String memberlist;
-	//群聊显示的名字 ('、'号分割)
+	//群聊成员的微信昵称 ('、'号分割)
 	public String displayname;
 	//群聊群主
 	public String roomOwner;
-	//保存到通讯录
+	//群聊是否保存到通讯录
 	public boolean isAddAddressBook;
-	//消息免打扰
+	//群公告
 	public String notice;
-	
+	//群昵称和微信id对应表
 	public HashMap<String, String> NameMap;
 	
 	public UserBean(String username, String alias, String nickname, String reserved1, String reserved2, String conRemark, String memberlist, String displayname, String pyInitial, String quanPin) {

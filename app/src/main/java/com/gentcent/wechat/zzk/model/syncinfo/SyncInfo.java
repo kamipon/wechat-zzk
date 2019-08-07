@@ -3,8 +3,8 @@ package com.gentcent.wechat.zzk.model.syncinfo;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.blankj.utilcode.util.PhoneUtils;
 import com.blankj.utilcode.util.StringUtils;
+import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.MainManager;
@@ -14,7 +14,6 @@ import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.DecryptPasw;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.gentcent.wechat.zzk.wcdb.WcdbHolder;
-import com.gentcent.zzk.xped.XposedHelpers;
 
 import java.util.List;
 
@@ -27,21 +26,17 @@ public class SyncInfo {
 	 * 微信好友信息
 	 */
 	public static void syncInfo() {
-		ThreadPoolUtils.getInstance().run(new Runnable() {
-			@Override
-			public void run() {
-				DecryptPasw.initDbPassword();
-				getRcontact();
-//				getChatRoom();
-//				getMessage();
-//				getSnsData();
-			}
-		});
+		DecryptPasw.initDbPassword();
+		bindWeixin();
+		getRcontact();
+//		getChatRoom();
+//		getMessage();
+//		getSnsData();
 	}
 	
 	
 	/**
-	 * 获取好友列表
+	 * 同步好友列表
 	 */
 	private static void getRcontact() {
 		Cursor c1 = null;
@@ -66,11 +61,51 @@ public class SyncInfo {
 				//补全信息
 				SyncInfoManager.userCompletion(userBean);
 				XLog.d(userBean.toString());
-				//是我自己
-				if (StringUtils.equals(username, UserDao.getMyWxid())) {
-				
+				if (username.endsWith("@chatroom")) {
+					//是群聊
+				} else {
+					//是我自己
+					if (StringUtils.equals(username, UserDao.getMyWxid())) {
+//						UploadService.bindWeixin(userBean);
+					} else {
+						UploadService.bindFriend(userBean);
+					}
 				}
 			}
+			c1.close();
+		} catch (Exception e) {
+			c1.close();
+			XLog.e("openWxDb:  " + "读取数据库信息失败" + Log.getStackTraceString(e));
+		}
+	}
+	
+	/**
+	 * 绑定微信
+	 */
+	private static void bindWeixin() {
+		Cursor c1 = null;
+		try {
+			//查询所有联系人（verifyFlag!=0:公众号等类型，群里面非好友的类型为4，未知类型2）
+			String findFriendheadandID = "SELECT * FROM(SELECT r.username as username, r.alias as alias , r.nickname as nickname ,  r.conRemark as conRemark ,  r.pyInitial as pyInitial ,  r.quanPin as quanPin, i.reserved1 as reserved1,  i.reserved2 as reserved2 ,r.showHead as showHead,CASE  WHEN length(r.conRemarkPYFull) > 0  THEN UPPER(r.conRemarkPYFull) ELSE UPPER(r.quanPin) END as PY, CASE   WHEN length(r.conRemark) > 0  THEN UPPER(r.conRemark) ELSE UPPER(r.quanPin) end as byremark,c.memberlist as memberlist,  c.displayname as displayname FROM rcontact r LEFT JOIN img_flag i ON r.username = i.username LEFT JOIN chatroom c ON r.username = c.chatroomname WHERE(type&1 != 0) AND r.type&32 = 0 AND r.type&8 = 0 AND r.verifyFlag&8 = 0   AND (r.username NOT LIKE '%@%' OR (((r.type&1 != 0)  AND r.type&8 = 0 AND r.username LIKE '%@talkroom')) OR (r.type&8 = 0  AND r.username LIKE '%@openim')) AND r.username != 'tmessage' AND r.username != 'officialaccounts' AND r.username != 'helper_entry' AND r.username != 'blogapp' AND r.username != 'weixin' union all SELECT r.username , r.alias as alias , r.nickname , r.conRemark , r.pyInitial, r.quanPin , i.reserved1 , i.reserved2 ,r.showHead ,CASE  WHEN length(r.conRemarkPYFull) > 0  THEN UPPER(r.conRemarkPYFull) ELSE UPPER(r.quanPin) END as PY,CASE   WHEN length(r.conRemark) > 0  THEN UPPER(r.conRemark) ELSE UPPER(r.quanPin) end as byremark, c.memberlist, c.displayname FROM rcontact r  LEFT JOIN img_flag i ON r.username = i.username LEFT JOIN chatroom c ON r.username = c.chatroomname where r.username like '%@chatroom%' ORDER BY r.showHead ASC,PY asc,  byremark asc, quanPin ASC,r.quanPin asc,r.nickname asc,r.username asc) WHERE username = '" + UserDao.getMyWxid() + "'";
+			
+			c1 = WcdbHolder.excute(findFriendheadandID);
+			XLog.d("openWxDb:  " + "自己的信息分割线=====================================================================================");
+			c1.moveToFirst();
+			String username = c1.getString(c1.getColumnIndex("username"));
+			String alias = c1.getString(c1.getColumnIndex("alias"));
+			String nickname = c1.getString(c1.getColumnIndex("nickname"));
+			String reserved1 = c1.getString(c1.getColumnIndex("reserved1"));
+			String reserved2 = c1.getString(c1.getColumnIndex("reserved2"));
+			String conRemark = c1.getString(c1.getColumnIndex("conRemark"));
+			String memberlist = c1.getString(c1.getColumnIndex("memberlist"));
+			String displayname = c1.getString(c1.getColumnIndex("displayname"));
+			String pyInitial = c1.getString(c1.getColumnIndex("pyInitial"));
+			String quanPin = c1.getString(c1.getColumnIndex("quanPin"));
+			UserBean userBean = new UserBean(username, alias, nickname, reserved1, reserved2, conRemark, memberlist, displayname, pyInitial, quanPin);
+			//补全信息
+			SyncInfoManager.userCompletion(userBean);
+			XLog.d(userBean.toString());
+			UploadService.bindWeixin(userBean);
 			c1.close();
 		} catch (Exception e) {
 			c1.close();
