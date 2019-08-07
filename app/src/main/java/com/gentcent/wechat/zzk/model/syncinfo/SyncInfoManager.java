@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.blankj.utilcode.util.ObjectUtils;
 import com.gentcent.wechat.zzk.MainManager;
+import com.gentcent.wechat.zzk.bean.ChartRoomFriendBean;
 import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.HookSQL;
@@ -13,7 +14,9 @@ import com.gentcent.wechat.zzk.wcdb.WcdbHolder;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author zuozhi
@@ -44,34 +47,53 @@ public class SyncInfoManager {
 	}
 	
 	/**
+	 * 根据微信ID获取头像地址
+	 *
+	 * @param wxId 微信ID
+	 */
+	public static String getHeadImgUrlByWxId(String wxId) throws ClassNotFoundException {
+		Object obj = XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.ag.o"), "aaq");
+		Object obj2 = XposedHelpers.callMethod(obj, "pN", wxId);
+		if (obj2 != null) {
+			return (String) XposedHelpers.callMethod(obj2, "aag");
+		}
+		return "";
+	}
+	
+	/**
 	 * 获得群聊成员的群昵称
 	 *
 	 * @param username   群聊id
 	 * @param memberlist 成员id列表
 	 */
-	public static HashMap<String, String> getGroupUserName(String username, String memberlist) {
-		HashMap<String, String> hashMap = new HashMap<>();
+	public static List<ChartRoomFriendBean> getGroupUserName(String username, String memberlist, String namelist) throws ClassNotFoundException {
+		List<ChartRoomFriendBean> list = new ArrayList<>();
 		if (TextUtils.isEmpty(memberlist)) {
-			return hashMap;
+			return list;
 		}
 		String[] split = memberlist.split(";");
+		String[] split2 = namelist.split("、");
 		Object callMethod = XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.model.av", MainManager.wxLpparam.classLoader), "XE"), "VI");
 		Object a2 = initChatRoom(username, MainManager.wxLpparam);
 		if (a2 != null) {
-			for (String str3 : split) {
-				String a3 = (String) XposedHelpers.callMethod(a2, "mk", str3);
-				if (!TextUtils.isEmpty(a3)) {
-					hashMap.put(str3, a3);
+			for (int i = 0; i < split.length; i++) {
+				String wxId = split[i];
+				String chartRoomNick = (String) XposedHelpers.callMethod(a2, "mk", wxId);
+				if (!TextUtils.isEmpty(chartRoomNick)) {
+					list.add(new ChartRoomFriendBean(wxId, split2[i], chartRoomNick, getHeadImgUrlByWxId(wxId)));
 				} else {
-					hashMap.put(str3, (String) XposedHelpers.getObjectField(XposedHelpers.callMethod(callMethod, "anl", str3), "field_nickname"));
+					chartRoomNick = (String) XposedHelpers.getObjectField(XposedHelpers.callMethod(callMethod, "anl", wxId), "field_nickname");
+					list.add(new ChartRoomFriendBean(wxId, split2[i], chartRoomNick, getHeadImgUrlByWxId(wxId)));
 				}
 			}
 		} else {
-			for (String str4 : split) {
-				hashMap.put(str4, (String) XposedHelpers.getObjectField(XposedHelpers.callMethod(callMethod, "anl", str4), "field_nickname"));
+			for (int i = 0; i < split.length; i++) {
+				String wxId = split[i];
+				String chartRoomNick = (String) XposedHelpers.getObjectField(XposedHelpers.callMethod(callMethod, "anl", wxId), "field_nickname");
+				list.add(new ChartRoomFriendBean(wxId, split2[i], chartRoomNick, getHeadImgUrlByWxId(wxId)));
 			}
 		}
-		return hashMap;
+		return list;
 	}
 	
 	/**
@@ -97,7 +119,7 @@ public class SyncInfoManager {
 			userBean.notice = findNotice(userBean.username);
 			userBean.isAddAddressBook = findIsAddAddressBook(userBean.username);
 			userBean.roomOwner = findChatRoomOwner(userBean.username);
-			userBean.NameMap = getGroupUserName(userBean.username, userBean.memberlist);
+			userBean.chartRoomFriendsList = getGroupUserName(userBean.username, userBean.memberlist, userBean.displayname);
 		} catch (Exception unused) {
 			XLog.e("User setChatroom error");
 		}

@@ -9,12 +9,13 @@ import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.model.sns.SnsHandler;
-import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
+import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.DecryptPasw;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.gentcent.wechat.zzk.wcdb.WcdbHolder;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -50,17 +51,17 @@ public class SyncInfo {
 				String username = c1.getString(c1.getColumnIndex("username"));
 				String alias = c1.getString(c1.getColumnIndex("alias"));
 				String nickname = c1.getString(c1.getColumnIndex("nickname"));
-				String reserved1 = c1.getString(c1.getColumnIndex("reserved1"));
+//				String reserved1 = c1.getString(c1.getColumnIndex("reserved1"));
 				String reserved2 = c1.getString(c1.getColumnIndex("reserved2"));
 				String conRemark = c1.getString(c1.getColumnIndex("conRemark"));
 				String memberlist = c1.getString(c1.getColumnIndex("memberlist"));
 				String displayname = c1.getString(c1.getColumnIndex("displayname"));
 				String pyInitial = c1.getString(c1.getColumnIndex("pyInitial"));
 				String quanPin = c1.getString(c1.getColumnIndex("quanPin"));
-				UserBean userBean = new UserBean(username, alias, nickname, reserved1, reserved2, conRemark, memberlist, displayname, pyInitial, quanPin);
+				UserBean userBean = new UserBean(username, alias, nickname, reserved2, conRemark, memberlist, displayname, pyInitial, quanPin);
 				//补全信息
 				SyncInfoManager.userCompletion(userBean);
-				XLog.d(userBean.toString());
+				XLog.d(GsonUtils.GsonString(userBean));
 				if (username.endsWith("@chatroom")) {
 					//是群聊
 				} else {
@@ -94,14 +95,13 @@ public class SyncInfo {
 			String username = c1.getString(c1.getColumnIndex("username"));
 			String alias = c1.getString(c1.getColumnIndex("alias"));
 			String nickname = c1.getString(c1.getColumnIndex("nickname"));
-			String reserved1 = c1.getString(c1.getColumnIndex("reserved1"));
 			String reserved2 = c1.getString(c1.getColumnIndex("reserved2"));
 			String conRemark = c1.getString(c1.getColumnIndex("conRemark"));
 			String memberlist = c1.getString(c1.getColumnIndex("memberlist"));
 			String displayname = c1.getString(c1.getColumnIndex("displayname"));
 			String pyInitial = c1.getString(c1.getColumnIndex("pyInitial"));
 			String quanPin = c1.getString(c1.getColumnIndex("quanPin"));
-			UserBean userBean = new UserBean(username, alias, nickname, reserved1, reserved2, conRemark, memberlist, displayname, pyInitial, quanPin);
+			UserBean userBean = new UserBean(username, alias, nickname, reserved2, conRemark, memberlist, displayname, pyInitial, quanPin);
 			//补全信息
 			SyncInfoManager.userCompletion(userBean);
 			XLog.d(userBean.toString());

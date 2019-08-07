@@ -1,6 +1,7 @@
 package com.gentcent.wechat.zzk.bean;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class UserBean {
 	//微信ID
@@ -10,7 +11,7 @@ public class UserBean {
 	//微信昵称
 	public String nickname;
 	//小头像
-	public String reserved1;
+//	public String reserved1;
 	//大头像
 	public String reserved2;
 	//备注
@@ -36,25 +37,25 @@ public class UserBean {
 	//全拼
 	public String quanPin;
 	
+	//-----------------群聊-------------------------
 	
 	//群聊好友微信id （';'号分割）
 	public String memberlist;
 	//群聊成员的微信昵称 ('、'号分割)
 	public String displayname;
+	//群昵成员新信息表
+	public List<ChartRoomFriendBean> chartRoomFriendsList;
 	//群聊群主
 	public String roomOwner;
 	//群聊是否保存到通讯录
 	public boolean isAddAddressBook;
 	//群公告
 	public String notice;
-	//群昵称和微信id对应表
-	public HashMap<String, String> NameMap;
 	
-	public UserBean(String username, String alias, String nickname, String reserved1, String reserved2, String conRemark, String memberlist, String displayname, String pyInitial, String quanPin) {
+	public UserBean(String username, String alias, String nickname, String reserved2, String conRemark, String memberlist, String displayname, String pyInitial, String quanPin) {
 		this.username = username;
 		this.alias = alias;
 		this.nickname = nickname;
-		this.reserved1 = reserved1;
 		this.reserved2 = reserved2;
 		this.conRemark = conRemark;
 		this.memberlist = memberlist;
@@ -69,7 +70,6 @@ public class UserBean {
 				"username='" + username + '\'' +
 				", alias='" + alias + '\'' +
 				", nickname='" + nickname + '\'' +
-				", reserved1='" + reserved1 + '\'' +
 				", reserved2='" + reserved2 + '\'' +
 				", conRemark='" + conRemark + '\'' +
 				", sex=" + sex +
@@ -82,10 +82,10 @@ public class UserBean {
 				", quanPin='" + quanPin + '\'' +
 				", memberlist='" + memberlist + '\'' +
 				", displayname='" + displayname + '\'' +
+				", chartRoomFriendsList=" + chartRoomFriendsList +
 				", roomOwner='" + roomOwner + '\'' +
 				", isAddAddressBook=" + isAddAddressBook +
 				", notice='" + notice + '\'' +
-				", NameMap=" + NameMap +
 				'}';
 	}
 }
