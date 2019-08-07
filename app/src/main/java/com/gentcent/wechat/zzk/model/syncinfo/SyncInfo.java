@@ -107,6 +107,10 @@ public class SyncInfo {
 			XLog.d(userBean.toString());
 			UploadService.bindWeixin(userBean);
 			c1.close();
+			
+			//防止同步的时候先插入好友
+			Thread.sleep(2000);
+			XLog.d("sleep:2000");
 		} catch (Exception e) {
 			c1.close();
 			XLog.e("openWxDb:  " + "读取数据库信息失败" + Log.getStackTraceString(e));

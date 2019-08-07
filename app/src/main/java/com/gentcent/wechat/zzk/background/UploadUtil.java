@@ -1,6 +1,7 @@
 package com.gentcent.wechat.zzk.background;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -78,6 +79,7 @@ public class UploadUtil {
 							@Override
 							public void onError(Call call, Exception e, int id) {
 								XLog.d("error: " + Log.getStackTraceString(e));
+								ToastUtils.showShort("绑定失败，请检查网络后重新再试");
 							}
 							
 							@Override
@@ -120,6 +122,7 @@ public class UploadUtil {
 					@Override
 					public void onError(Call call, Exception e, int id) {
 						XLog.d("error: " + Log.getStackTraceString(e));
+						ToastUtils.showShort("同步失败，请检查网络后重新再试");
 					}
 					
 					@Override
@@ -158,6 +161,7 @@ public class UploadUtil {
 					@Override
 					public void onError(Call call, Exception e, int id) {
 						XLog.d("error: " + Log.getStackTraceString(e));
+						ToastUtils.showShort("同步失败，请检查网络后重新再试");
 					}
 					
 					@Override
