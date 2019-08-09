@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.blankj.utilcode.util.FileUtils;
-import com.gentcent.wechat.zzk.model.message.bean.SendMessageBean;
+import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
 import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
@@ -57,7 +57,7 @@ public class SendMessageHandler {
 	/**
 	 * 发送纯文本消息
 	 */
-	public static void sendText(SendMessageBean sendMsgBean) {
+	public static void sendText(MessageBean sendMsgBean) {
 		try {
 			final String serviceGuid = sendMsgBean.getServiceGuid();
 			final String friendWxId = sendMsgBean.getFriendWxId();
@@ -165,7 +165,7 @@ public class SendMessageHandler {
 	/**
 	 * 发送链接
 	 */
-	public static void sendArticle(SendMessageBean sm, Bitmap bitmap, String username) {
+	public static void sendArticle(MessageBean sm, Bitmap bitmap, String username) {
 		final LoadPackageParam lpparam = MainManager.wxLpparam;
 		String serviceGuid = sm.getServiceGuid();
 		String articleUrl = sm.getLinkUrl();
@@ -250,7 +250,7 @@ public class SendMessageHandler {
 	/**
 	 * 群聊@好友
 	 */
-	public static void sendAppointText(SendMessageBean sm) {
+	public static void sendAppointText(MessageBean sm) {
 		String serviceGuid = sm.getServiceGuid();
 		final String friendWxId = sm.getFriendWxId();
 		final String content = sm.getContent();

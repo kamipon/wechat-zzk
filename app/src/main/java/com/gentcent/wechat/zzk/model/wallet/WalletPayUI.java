@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.Button;
 
+import com.gentcent.wechat.zzk.model.wallet.bean.PayInfo;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;

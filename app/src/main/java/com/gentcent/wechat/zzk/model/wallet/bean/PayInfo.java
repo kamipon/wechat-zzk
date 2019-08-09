@@ -1,10 +1,8 @@
-package com.gentcent.wechat.zzk.model.wallet;
+package com.gentcent.wechat.zzk.model.wallet.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
-
-import com.gentcent.wechat.zzk.model.wallet.bean.SendRedPocketBean;
 
 import java.io.Serializable;
 import java.util.Arrays;

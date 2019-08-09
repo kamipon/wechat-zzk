@@ -1,6 +1,5 @@
 package com.gentcent.wechat.zzk.bean;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class UserBean {
@@ -51,6 +50,9 @@ public class UserBean {
 	public boolean isAddAddressBook;
 	//群公告
 	public String notice;
+	
+	public UserBean() {
+	}
 	
 	public UserBean(String username, String alias, String nickname, String reserved2, String conRemark, String memberlist, String displayname, String pyInitial, String quanPin) {
 		this.username = username;

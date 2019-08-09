@@ -8,6 +8,7 @@ import com.birbit.android.jobqueue.Job;
 import com.birbit.android.jobqueue.Params;
 import com.birbit.android.jobqueue.RetryConstraint;
 import com.gentcent.wechat.zzk.MainManager;
+import com.gentcent.wechat.zzk.model.wallet.bean.PayInfo;
 import com.gentcent.wechat.zzk.util.XLog;
 
 import java.util.Date;

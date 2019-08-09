@@ -11,16 +11,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.AppUtils;
-import com.gentcent.wechat.zzk.WxBroadcast;
 import com.gentcent.wechat.zzk.R;
 import com.gentcent.wechat.zzk.background.UploadService;
-import com.gentcent.wechat.zzk.model.message.bean.SendMessageBean;
 import com.gentcent.wechat.zzk.service.MyService;
-import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.SearchClasses;
@@ -30,9 +26,7 @@ import com.google.zxing.activity.CaptureActivity;
 import com.google.zxing.util.Constant;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import dalvik.system.PathClassLoader;
 

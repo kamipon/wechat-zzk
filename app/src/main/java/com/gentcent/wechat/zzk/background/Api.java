@@ -12,4 +12,6 @@ public class Api {
 	public static String appPhone = prefix + "appPhone/add";
 	public static String addweixin = prefix + "appWchat/addweixin/";
 	public static String appfriend = prefix + "appfriend/add";
+	public static String addgroup = prefix + "";
+	public static String addWchat = prefix + "appWchat/add";
 }

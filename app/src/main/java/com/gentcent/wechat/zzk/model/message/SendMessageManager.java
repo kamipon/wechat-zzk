@@ -2,13 +2,14 @@ package com.gentcent.wechat.zzk.model.message;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.blankj.utilcode.util.ImageUtils;
-import com.gentcent.wechat.zzk.model.message.bean.SendMessageBean;
+import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
 import com.gentcent.wechat.zzk.util.DownloadUtil;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
@@ -54,7 +55,7 @@ public class SendMessageManager {
 	/**
 	 * 发送消息入口（入口)
 	 */
-	public static void sendMessage(final SendMessageBean sm) {
+	public static void sendMessage(final MessageBean sm) {
 		String url = null;
 		String name = null;
 		int type = sm.getType();
@@ -115,7 +116,7 @@ public class SendMessageManager {
 	/**
 	 * 发送消息入口（分类器）
 	 */
-	private static void sendMessageDispatcher(SendMessageBean sm, @Nullable String path) {
+	private static void sendMessageDispatcher(MessageBean sm, @Nullable String path) {
 		final String extName = getExtName(sm.getContent());
 		String[] split = sm.getFriendWxId().split("\\|");
 		int type = sm.getType();
@@ -454,6 +455,27 @@ public class SendMessageManager {
 		contentValues2.put("atCount", 0);
 		contentValues2.put("UnReadInvite", 0);
 		WcdbHolder.excute("rconversation", contentValues2, "username= ?", idArr);
+	}
+	
+	public static int getStatusByMsgId(long msgId) {
+		try {
+			String sql = "SELECT status FROM message WHERE msgId = " + msgId;
+			Cursor cur = WcdbHolder.excute(sql, "EnMicroMsg.db");
+			if (cur == null) {
+				return 0;
+			}
+			cur.moveToFirst();
+			if (!cur.isAfterLast()) {
+				int i = cur.getInt(cur.getColumnIndex("status"));
+				cur.close();
+				return i;
+			}
+			cur.close();
+			return 0;
+		} catch (Throwable th) {
+			XLog.d("SendManager getCurSendId e:" + Log.getStackTraceString(th));
+			return 0;
+		}
 	}
 	
 }

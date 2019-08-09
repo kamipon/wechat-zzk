@@ -4,14 +4,23 @@ package com.gentcent.wechat.zzk.model.message;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 
+import com.blankj.utilcode.util.ObjectUtils;
+import com.gentcent.wechat.zzk.background.UploadService;
+import com.gentcent.wechat.zzk.model.friend.AddVerifyingFriend;
 import com.gentcent.wechat.zzk.util.HookParams;
+import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
 
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+
 
 public class MessageHook {
+	
+	private static String[] appNameList = {"filehelper", "qqmail", "floatbottle", "shakeapp", "lbsapp", "medianote", "newsapp", "facebookapp", "qqfriend", "masssendapp", "feedsapp", "voipapp", "officialaccounts", "voicevoipapp", "voiceinputapp", "linkedinplugin", "notifymessage", "fmessage", "weixin", "qmessage", "tmessage"};
 	
 	public static void hook(final XC_LoadPackage.LoadPackageParam lpparam) {
 		XposedHelpers.findAndHookMethod(HookParams.getInstance().SQLiteDatabaseClassName, lpparam.classLoader, HookParams.getInstance().SQLiteDatabaseInsertWithOnConflictMethod, String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
@@ -68,31 +77,48 @@ public class MessageHook {
 			-1879048186：共享实时位置
 			10000：提示字体
 		 */
-		int type = contentValues.getAsInteger("type");
+		final int type = contentValues.getAsInteger("type");
 		//0：接受 , 1：发送
-		int isSend = contentValues.getAsInteger("isSend");
+		final int isSend = contentValues.getAsInteger("isSend");
 		//信息ID , 递增
-		long msgId = contentValues.getAsLong("msgId");
+		final long msgId = contentValues.getAsLong("msgId");
 		//发送者ID
-		String talker = contentValues.getAsString("talker");
+		final String talker = contentValues.getAsString("talker");
 		//消息内容
-		String content = contentValues.getAsString("content");
-		int createTime = (int) (contentValues.getAsLong("createTime") / 1000L);
-//		MessageBean messageBean = a(content);
+		final String content = contentValues.getAsString("content");
+		final int createTime = (int) (contentValues.getAsLong("createTime") / 1000L);
 		
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("message || type=");
-		stringBuilder.append(type);
-		stringBuilder.append("; msgId=");
-		stringBuilder.append(msgId);
-		stringBuilder.append("; isSend=");
-		stringBuilder.append(isSend);
-		stringBuilder.append("; talker=");
-		stringBuilder.append(talker);
-//		stringBuilder.append("; friendId is ");
-//		stringBuilder.append(messageBean);
-		stringBuilder.append("; content=");
-		stringBuilder.append(content);
-		XLog.d(stringBuilder.toString());
+		XLog.d("message || type=" + type + "; msgId=" + msgId + "; isSend=" + isSend + "; talker=" + talker + "; content=" + content);
+		
+		if (isNeedSendToBack(talker)) {
+			if (type == 1) { //文本消息
+				XLog.d("messageHandle" + "MysnedText msgId =" + msgId + " content :" + content);
+				if (!talker.endsWith("@chatroom")) {
+					AddVerifyingFriend.run(talker);
+				}
+				ThreadPoolUtils.getInstance().a(new Runnable() {
+					public void run() {
+						int status = SendMessageManager.getStatusByMsgId(msgId);
+						XLog.d("receiveDelay text state is " + status);
+						if (talker.endsWith("@chatroom")) {
+//							aj.b(status, QNUploadUtil.a(isSend), talker, content, createTime);
+							return;
+						}
+						UploadService.receiveTextMessage(status, isSend, talker, content, createTime);
+					}
+				}, 350, TimeUnit.MILLISECONDS);
+				
+			} else if (type == 3) {
+			
+			}
+		}
+	}
+	
+	public static boolean isNeedSendToBack(String wxId) {
+		return (ObjectUtils.isNotEmpty(wxId) && wxId.endsWith("@chatroom")) || isNotAppWxId(wxId);
+	}
+	
+	public static boolean isNotAppWxId(String wxId) {
+		return ObjectUtils.isNotEmpty(wxId) && !wxId.startsWith("gh_") && !wxId.startsWith("fake_") && !wxId.endsWith("@chatroom") && !Arrays.asList(appNameList).contains(wxId);
 	}
 }

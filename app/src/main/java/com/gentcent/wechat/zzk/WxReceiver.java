@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.birbit.android.jobqueue.JobManager;
-import com.gentcent.wechat.zzk.model.message.bean.SendMessageBean;
+import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
 import com.gentcent.wechat.zzk.model.sns.bean.SendSnsBean;
 import com.gentcent.wechat.zzk.model.friend.AddFriendJob;
 import com.gentcent.wechat.zzk.model.wallet.MoneySendJob;
@@ -16,7 +16,7 @@ import com.gentcent.wechat.zzk.service.TaskManager;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.model.wallet.Dibs;
-import com.gentcent.wechat.zzk.model.wallet.PayInfo;
+import com.gentcent.wechat.zzk.model.wallet.bean.PayInfo;
 import com.gentcent.wechat.zzk.model.wallet.bean.SendRedPocketBean;
 import com.gentcent.wechat.zzk.model.syncinfo.SyncInfo;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
@@ -34,7 +34,7 @@ public class WxReceiver extends BroadcastReceiver {
 				//发送朋友圈
 				switch (act) {
 					case "send_message": {
-						SendMessageBean sendMsgBean = GsonUtils.GsonToBean(intent.getStringExtra("sendmsgbean"), SendMessageBean.class);
+						MessageBean sendMsgBean = GsonUtils.GsonToBean(intent.getStringExtra("sendmsgbean"), MessageBean.class);
 						SendMessageManager.sendMessage(sendMsgBean);
 						break;
 					}
