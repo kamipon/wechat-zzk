@@ -27,37 +27,34 @@ public class MessageConvert {
 	public static synchronized UploadBean a(UploadBean uploadBean, String talker) {
 		synchronized (MessageConvert.class) {
 			try {
-				b();
 				XLog.d("MessageConvert convert wxid is " + talker);
-				if (userList != null && userList.size() > 0) {
-					UserBean userBean = userList.get(talker);
-					if (userBean == null) {
-						userBean = UserDao.getUserBeanByWxId(talker);
-						userList.put(talker, userBean);
-					}
-					if (userBean != null) {
-						uploadBean.userBean = userBean;
-					} else {
-						XLog.d("MessageConvert" + "uploadBean.Type is " + uploadBean.messageBean.getType());
-						if (uploadBean.messageBean.getType() == 99 && talker.endsWith("@chatroom")) {
-							String displayname = "";
-							String sql = "select displayname from chatroom where chatroomname='" + talker + "'";
-							Cursor a2 = WcdbHolder.excute(sql);
-							while (a2.moveToNext()) {
-								displayname = a2.getString(a2.getColumnIndex("displayname"));
-							}
-							XLog.d("displayname is " + displayname);
-							if (!TextUtils.isEmpty(displayname)) {
-								if (displayname.length() <= 30) {
-									uploadBean.userBean.nickname = displayname;
-								} else {
-									uploadBean.userBean.nickname = displayname.substring(0, 30);
-								}
-							}
-							a2.close();
-							String sb5 = "uploadBean.userBean.nickname is " + uploadBean.userBean.nickname;
-							XLog.d("MessageConvert" + sb5);
+				UserBean userBean = userList.get(talker);
+				if (userBean == null) {
+					userBean = UserDao.getUserBeanByWxId(talker);
+					userList.put(talker, userBean);
+				}
+				if (userBean != null) {
+					uploadBean.userBean = userBean;
+				} else {
+					XLog.d("MessageConvert" + "uploadBean.Type is " + uploadBean.messageBean.getType());
+					if (uploadBean.messageBean.getType() == 99 && talker.endsWith("@chatroom")) {
+						String displayname = "";
+						String sql = "select displayname from chatroom where chatroomname='" + talker + "'";
+						Cursor a2 = WcdbHolder.excute(sql);
+						while (a2.moveToNext()) {
+							displayname = a2.getString(a2.getColumnIndex("displayname"));
 						}
+						XLog.d("displayname is " + displayname);
+						if (!TextUtils.isEmpty(displayname)) {
+							if (displayname.length() <= 30) {
+								uploadBean.userBean.nickname = displayname;
+							} else {
+								uploadBean.userBean.nickname = displayname.substring(0, 30);
+							}
+						}
+						a2.close();
+						String sb5 = "uploadBean.userBean.nickname is " + uploadBean.userBean.nickname;
+						XLog.d("MessageConvert" + sb5);
 					}
 				}
 				if (!talker.endsWith("@chatroom") && ObjectUtils.isEmpty(uploadBean.userBean.nickname)) {

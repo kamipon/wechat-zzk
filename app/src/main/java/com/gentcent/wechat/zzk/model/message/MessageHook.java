@@ -10,6 +10,7 @@ import com.gentcent.wechat.zzk.model.friend.AddVerifyingFriend;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
+import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.gentcent.zzk.xped.XC_MethodHook;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
@@ -94,7 +95,9 @@ public class MessageHook {
 			if (type == 1) { //文本消息
 				XLog.d("messageHandle" + "MysnedText msgId =" + msgId + " content :" + content);
 				if (!talker.endsWith("@chatroom")) {
-					AddVerifyingFriend.run(talker);
+					if(UserDao.getUserBeanByWxId(talker)==null){
+						AddVerifyingFriend.run(talker);
+					}
 				}
 				ThreadPoolUtils.getInstance().a(new Runnable() {
 					public void run() {

@@ -241,19 +241,20 @@ public class UploadUtil {
 			if (uploadBean.messageBean.getContent() == null) {
 				uploadBean.messageBean.setContent("");
 			}
-			final String json = new GsonBuilder().disableHtmlEscaping().create().toJson(MessageConvert.a(uploadBean, talker));
+			final String param = new GsonBuilder().disableHtmlEscaping().create().toJson(MessageConvert.a(uploadBean, talker));
 			
 			ThreadPoolUtils.getInstance().a(new Runnable() {
 				public void run() {
-					XLog.d("sendToBackend json is " + json);
-					OkHttpUtils.postString().url(Api.addWchat).content(json).mediaType(MediaType.parse("application/json; charset=utf-8")).build().execute(new StringCallback() {
+					XLog.d("sendToBackend param is " + param);
+					OkHttpUtils.post().url(Api.addWchat).addParams("param", param).build().execute(new StringCallback() {
 						public void onError(Call call, Exception exc, int i) {
+							XLog.d("error: " + Log.getStackTraceString(exc));
 //							try {
 //								String a2 = QNUploadUtil.a(exc);
 //								XLog.d("sendToBackend error " + a2);
 //								new Timer().schedule(new TimerTask() {
 //									public void run() {
-//										QNUploadUtil.b(false, 0, json);
+//										QNUploadUtil.b(false, 0, param);
 //									}
 //								}, 5000);
 //							} catch (Exception e) {
@@ -261,7 +262,6 @@ public class UploadUtil {
 //							}
 						}
 						
-						/* renamed from: a */
 						public void onResponse(String response, int i) {
 							XLog.d("sendToBackend success " + response);
 						}

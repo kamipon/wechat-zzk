@@ -66,10 +66,6 @@ public class WxReceiver extends BroadcastReceiver {
 						jobManager.addJobInBackground(new MoneySendJob(10, payInfo));
 						break;
 					}
-					case "bind_weixin": {
-						UserDao.getMyInfo();
-						break;
-					}
 					default: {
 						XLog.e("广播参数传递错误。");
 					}
