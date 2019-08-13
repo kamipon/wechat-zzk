@@ -18,6 +18,7 @@ import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostStringBuilder;
@@ -223,7 +224,7 @@ public class UploadUtil {
 		if (!isbinded()) return;
 		XLog.d("sendToBackend serviceGuid " + serviceGuid);
 		if (!verify(talker, type, content)) {
-			final UploadBean uploadBean = new UploadBean(new UserBean(), new MessageBean(), MyHelper.readLine("phone-id"));
+			UploadBean uploadBean = new UploadBean(new UserBean(), new MessageBean(), MyHelper.readLine("phone-id"));
 			uploadBean.messageBean.setMyWxId(UserDao.getMyWxid());
 			uploadBean.messageBean.setFriendWxId(talker);
 			uploadBean.messageBean.setContent(content);
@@ -241,12 +242,17 @@ public class UploadUtil {
 			if (uploadBean.messageBean.getContent() == null) {
 				uploadBean.messageBean.setContent("");
 			}
-			final String param = new GsonBuilder().disableHtmlEscaping().create().toJson(MessageConvert.a(uploadBean, talker));
-			
+			uploadBean = MessageConvert.a(uploadBean, talker);
+			final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+			final UploadBean finalUploadBean = uploadBean;
 			ThreadPoolUtils.getInstance().a(new Runnable() {
 				public void run() {
-					XLog.d("sendToBackend param is " + param);
-					OkHttpUtils.post().url(Api.addWchat).addParams("param", param).build().execute(new StringCallback() {
+					XLog.d("sendToBackend param is " + gson.toJson(finalUploadBean));
+					OkHttpUtils.post().url(Api.addWchat)
+							.addParams("wxmessage", gson.toJson(finalUploadBean.messageBean))
+							.addParams("phoneID", finalUploadBean.phoneID)
+							.addParams("wxuser", gson.toJson(finalUploadBean.userBean))
+							.build().execute(new StringCallback() {
 						public void onError(Call call, Exception exc, int i) {
 							XLog.d("error: " + Log.getStackTraceString(exc));
 //							try {

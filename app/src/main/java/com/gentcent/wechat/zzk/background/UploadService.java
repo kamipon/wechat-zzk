@@ -1,13 +1,11 @@
 package com.gentcent.wechat.zzk.background;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.AppUtils.AppInfo;
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.PhoneUtils;
-import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.bean.PhoneInfoBean;
 import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.util.HookParams;
@@ -84,5 +82,9 @@ public class UploadService {
 			XLog.d("发送/接收 文字消息 ");
 			UploadUtil.sendToBack("", status, "", isSend, 0, talker, content,"", createTime,0,"");
 		}
+	}
+	
+	public static void receiveImgMessage(String path, String talker, Object o) {
+	
 	}
 }

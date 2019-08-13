@@ -94,30 +94,28 @@ public class MessageHook {
 		
 		XLog.d("message || type=" + type + "; msgId=" + msgId + "; isSend=" + isSend + "; talker=" + talker + "; content=" + content);
 		
-		if (isSend == 0) {
-			if (isNeedSendToBack(talker)) {
-				if (!talker.endsWith("@chatroom")) {
-					if (UserDao.getUserBeanByWxId(talker) == null) {
-						AddVerifyingFriend.run(talker);
-					}
+		if (isNeedSendToBack(talker)) {
+			if (!talker.endsWith("@chatroom")) {
+				if (UserDao.getUserBeanByWxId(talker) == null) {
+					AddVerifyingFriend.run(talker);
 				}
-				if (type == 1) { //文本消息
-					XLog.d("messageHandle" + "MysnedText msgId =" + msgId + " content :" + content);
-					ThreadPoolUtils.getInstance().a(new Runnable() {
-						public void run() {
-							int status = SendMessageManager.getStatusByMsgId(msgId);
-							XLog.d("receiveDelay text state is " + status);
-							if (talker.endsWith("@chatroom")) {
-								//							aj.b(status, QNUploadUtil.a(isSend), talker, content, createTime);
-								return;
-							}
-							UploadService.receiveTextMessage(status, isSend, talker, content, createTime);
+			}
+			if (type == 1) { //文本消息
+				XLog.d("messageHandle" + "MysnedText msgId =" + msgId + " content :" + content);
+				ThreadPoolUtils.getInstance().a(new Runnable() {
+					public void run() {
+						int status = SendMessageManager.getStatusByMsgId(msgId);
+						XLog.d("receiveDelay text state is " + status);
+						if (talker.endsWith("@chatroom")) {
+							//							aj.b(status, QNUploadUtil.a(isSend), talker, content, createTime);
+							return;
 						}
-					}, 350, TimeUnit.MILLISECONDS);
-				} else if (type == 3) { //图片消息
-					JobManager jobManager = TaskManager.getInstance().getJobManager();
-					jobManager.addJobInBackground(new DownloadImageJob(contentValues, talker.endsWith("@chatroom"), 2000));
-				}
+						UploadService.receiveTextMessage(status, isSend, talker, content, createTime);
+					}
+				}, 350, TimeUnit.MILLISECONDS);
+			} else if (type == 3) { //图片消息
+				JobManager jobManager = TaskManager.getInstance().getJobManager();
+				jobManager.addJobInBackground(new DownloadImageJob(contentValues, talker.endsWith("@chatroom"), 2000));
 			}
 		}
 	}

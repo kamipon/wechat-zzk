@@ -9,11 +9,14 @@ import com.birbit.android.jobqueue.Job;
 import com.birbit.android.jobqueue.Params;
 import com.birbit.android.jobqueue.RetryConstraint;
 import com.gentcent.wechat.zzk.MainManager;
+import com.gentcent.wechat.zzk.background.UploadService;
+import com.gentcent.wechat.zzk.background.UploadUtil;
 import com.gentcent.wechat.zzk.model.sns.SendSnsManager;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.util.ZzkUtil;
 import com.gentcent.zzk.xped.XposedHelpers;
+import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.util.Date;
 
