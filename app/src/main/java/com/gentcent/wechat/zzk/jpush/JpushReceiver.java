@@ -10,6 +10,7 @@ import com.blankj.utilcode.util.PhoneUtils;
 import com.gentcent.wechat.zzk.MyApplication;
 import com.gentcent.wechat.zzk.WxBroadcast;
 import com.gentcent.wechat.zzk.activity.MainActivity;
+import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.XLog;
 
 import cn.jpush.android.api.CustomMessage;
@@ -31,7 +32,7 @@ public class JpushReceiver extends JPushMessageReceiver {
 	@Override
 	public void onConnected(Context context, boolean b) {
 		XLog.e(TAG + "onConnected " + b);
-		JPushInterface.setAlias(context, 1, PhoneUtils.getIMEI());
+		JPushInterface.setAlias(context, 1, MyHelper.readLine("phone-id", ""));
 		//重连
 		if (!b) {
 			JPushInterface.init(context);

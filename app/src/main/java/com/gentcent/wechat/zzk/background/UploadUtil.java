@@ -24,6 +24,7 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.builder.PostStringBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.io.File;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
@@ -276,6 +277,18 @@ public class UploadUtil {
 			}, 500, TimeUnit.MILLISECONDS);
 		}
 	}
+	
+	/**
+	 * 带文件的消息信息，先上传
+	 *
+	 * @param file       需要上传的文件
+	 * @param uploadBean 消息信息
+	 */
+	public static void uploadFileToBack(File file, UploadBean uploadBean) {
+		XLog.d(file.toString());
+		XLog.d(GsonUtils.GsonString(uploadBean));
+	}
+	
 	
 	private static boolean verify(String talker, int type, String content) {
 		return TextUtils.isEmpty(content) || (!TextUtils.isEmpty(talker) && TextUtils.equals(talker, "weixin")) || (type == 0 && (content.startsWith("[B@") || content.contains("~SEMI_XML~")));

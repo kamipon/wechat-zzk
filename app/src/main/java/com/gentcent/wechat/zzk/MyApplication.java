@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import com.blankj.utilcode.util.PhoneUtils;
+import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 
@@ -33,7 +34,7 @@ public class MyApplication extends Application {
 		JPushInterface.init(this);
 		JPushInterface.onResume(context);
 		XLog.e("Jpush id:" + JPushInterface.getRegistrationID(context));
-		XLog.e("Phone IMEI:" + PhoneUtils.getIMEI());
+		XLog.e("Phone id:" + MyHelper.readLine("phone-id", ""));
 	}
 	
 	public static Context getAppContext() {

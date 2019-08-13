@@ -126,8 +126,7 @@ public class UserDao {
 			return userBean;
 		} catch (Exception e) {
 			c1.close();
-			XLog.e("openWxDb:  " + "读取用户信息失败" + Log.getStackTraceString(e));
-			return userBean;
+			return null;
 		}
 	}
 }
