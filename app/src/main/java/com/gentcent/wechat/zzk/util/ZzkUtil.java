@@ -92,4 +92,15 @@ public class ZzkUtil {
 		}
 		return encryptedPwd;
 	}
+	
+	public static Object getMsgObj(LoadPackageParam loadPackageParam, long msgId) {
+		try {
+			XLog.d("HTools getMsgObj");
+			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.av"), "XE");
+			return XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.c"), "VK"), "iA", msgId);
+		} catch (Throwable th) {
+			XLog.d("HTools  getMsgObj e:" + Log.getStackTraceString(th));
+			return null;
+		}
+	}
 }

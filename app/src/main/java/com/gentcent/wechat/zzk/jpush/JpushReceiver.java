@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.util.Log;
 
 import com.blankj.utilcode.util.PhoneUtils;
 import com.gentcent.wechat.zzk.MyApplication;
@@ -109,7 +110,8 @@ public class JpushReceiver extends JPushMessageReceiver {
 		XLog.d(customMessage.toString());
 		try {
 			WxBroadcast.onMessage(customMessage);
-		} catch (Exception ignore) {
+		} catch (Exception e) {
+			XLog.e("error:" + Log.getStackTraceString(e));
 		}
 		
 		//测试用 给xzt转发消息

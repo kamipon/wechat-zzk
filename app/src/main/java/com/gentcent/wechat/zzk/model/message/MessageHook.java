@@ -4,9 +4,12 @@ package com.gentcent.wechat.zzk.model.message;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 
+import com.birbit.android.jobqueue.JobManager;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.model.friend.AddVerifyingFriend;
+import com.gentcent.wechat.zzk.model.wallet.MoneySendJob;
+import com.gentcent.wechat.zzk.service.TaskManager;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
@@ -91,28 +94,30 @@ public class MessageHook {
 		
 		XLog.d("message || type=" + type + "; msgId=" + msgId + "; isSend=" + isSend + "; talker=" + talker + "; content=" + content);
 		
-		if (isNeedSendToBack(talker)) {
-			if (type == 1) { //文本消息
-				XLog.d("messageHandle" + "MysnedText msgId =" + msgId + " content :" + content);
+		if (isSend == 0) {
+			if (isNeedSendToBack(talker)) {
 				if (!talker.endsWith("@chatroom")) {
-					if(UserDao.getUserBeanByWxId(talker)==null){
+					if (UserDao.getUserBeanByWxId(talker) == null) {
 						AddVerifyingFriend.run(talker);
 					}
 				}
-				ThreadPoolUtils.getInstance().a(new Runnable() {
-					public void run() {
-						int status = SendMessageManager.getStatusByMsgId(msgId);
-						XLog.d("receiveDelay text state is " + status);
-						if (talker.endsWith("@chatroom")) {
-//							aj.b(status, QNUploadUtil.a(isSend), talker, content, createTime);
-							return;
+				if (type == 1) { //文本消息
+					XLog.d("messageHandle" + "MysnedText msgId =" + msgId + " content :" + content);
+					ThreadPoolUtils.getInstance().a(new Runnable() {
+						public void run() {
+							int status = SendMessageManager.getStatusByMsgId(msgId);
+							XLog.d("receiveDelay text state is " + status);
+							if (talker.endsWith("@chatroom")) {
+								//							aj.b(status, QNUploadUtil.a(isSend), talker, content, createTime);
+								return;
+							}
+							UploadService.receiveTextMessage(status, isSend, talker, content, createTime);
 						}
-						UploadService.receiveTextMessage(status, isSend, talker, content, createTime);
-					}
-				}, 350, TimeUnit.MILLISECONDS);
-				
-			} else if (type == 3) {
-			
+					}, 350, TimeUnit.MILLISECONDS);
+				} else if (type == 3) { //图片消息
+					JobManager jobManager = TaskManager.getInstance().getJobManager();
+					jobManager.addJobInBackground(new DownloadImageJob(contentValues, talker.endsWith("@chatroom"), 2000));
+				}
 			}
 		}
 	}
