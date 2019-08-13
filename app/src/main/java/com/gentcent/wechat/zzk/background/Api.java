@@ -8,6 +8,7 @@ public class Api {
 	public static String prefix = "http://192.168.0.33/";
 	public static String getWallet = prefix + "card/get";
 	public static String sendMoneyResult = prefix + "sendMoney/result";
+	public static String blank = prefix + ""; //占位 ，测试用
 	
 	public static String appPhone = prefix + "appPhone/add";
 	public static String addweixin = prefix + "appWchat/addweixin/";

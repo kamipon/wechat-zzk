@@ -9,6 +9,7 @@ import com.birbit.android.jobqueue.Job;
 import com.birbit.android.jobqueue.Params;
 import com.birbit.android.jobqueue.RetryConstraint;
 import com.gentcent.wechat.zzk.MainManager;
+import com.gentcent.wechat.zzk.background.MessageConvert;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.bean.UploadBean;
 import com.gentcent.wechat.zzk.bean.UserBean;
@@ -99,7 +100,6 @@ public class DownloadMessageJob extends Job {
 			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.as.o"), "afj"), "a", longValue, Long.valueOf(this.msgId), 1, 100000, staticIntField, callStaticMethod2, 0, Boolean.TRUE);
 			XLog.d("ImgHDHandle  downloag");
 			
-			
 			MessageBean messageBean = new MessageBean();
 			messageBean.setMyWxId(UserDao.getMyWxid());
 			messageBean.setFriendWxId(talker);
@@ -107,9 +107,8 @@ public class DownloadMessageJob extends Job {
 			messageBean.setStatus(SendMessageManager.getStatusByMsgId(Long.valueOf(msgId)));
 			messageBean.setAddTime(createTime);
 			messageBean.setServiceGuid("");
-			UserBean userBean = UserDao.getUserBeanByWxId(talker);
-			UploadBean uploadBean = new UploadBean(userBean, messageBean, MyHelper.readLine("phone-id"));
-			
+			UploadBean uploadBean = new UploadBean(messageBean, MyHelper.readLine("phone-id"));
+			uploadBean = MessageConvert.a(uploadBean, talker);
 			UploadService.uploadFileToBack(new File(path), uploadBean, type);
 			
 		}

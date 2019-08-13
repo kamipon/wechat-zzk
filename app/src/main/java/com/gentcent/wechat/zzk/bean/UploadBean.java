@@ -12,4 +12,9 @@ public class UploadBean {
 		this.messageBean = messageBean;
 		this.phoneID = phoneID;
 	}
+	
+	public UploadBean(MessageBean messageBean, String phoneID) {
+		this.messageBean = messageBean;
+		this.phoneID = phoneID;
+	}
 }

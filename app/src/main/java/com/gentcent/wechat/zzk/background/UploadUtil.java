@@ -279,16 +279,83 @@ public class UploadUtil {
 	}
 	
 	/**
+	 * 上传收到的消息
+	 */
+	public static void sendToBack(UploadBean uploadBean) {
+		if (!isbinded()) return;
+		final MessageBean messageBean = uploadBean.messageBean;
+		final UserBean userBean = uploadBean.userBean;
+		final String phoneID = uploadBean.phoneID;
+		if (!verify(messageBean.getFriendWxId(), messageBean.getType(), messageBean.getContent())) {
+			final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+			final UploadBean finalUploadBean = uploadBean;
+			ThreadPoolUtils.getInstance().a(new Runnable() {
+				public void run() {
+					XLog.d("sendToBackend param is " + gson.toJson(finalUploadBean));
+					OkHttpUtils.post().url(Api.addWchat)
+							.addParams("wxmessage", gson.toJson(messageBean))
+							.addParams("phoneID", phoneID)
+							.addParams("wxuser", gson.toJson(userBean))
+							.build().execute(new StringCallback() {
+						public void onError(Call call, Exception exc, int i) {
+							XLog.d("error: " + Log.getStackTraceString(exc));
+//							try {
+//								String a2 = QNUploadUtil.a(exc);
+//								XLog.d("sendToBackend error " + a2);
+//								new Timer().schedule(new TimerTask() {
+//									public void run() {
+//										QNUploadUtil.b(false, 0, param);
+//									}
+//								}, 5000);
+//							} catch (Exception e) {
+//								XLog.d("sendToBackend error e1 is " + Log.getStackTraceString(e));
+//							}
+						}
+						
+						public void onResponse(String response, int i) {
+							XLog.d("sendToBackend success " + response);
+						}
+					});
+				}
+			}, 500, TimeUnit.MILLISECONDS);
+		}
+	}
+	
+	/**
 	 * 带文件的消息信息，先上传
 	 *
 	 * @param file       需要上传的文件
 	 * @param uploadBean 消息信息
 	 */
-	public static void uploadFileToBack(File file, UploadBean uploadBean) {
+	public static void uploadFileToBack(final File file, final UploadBean uploadBean) {
+		if (!isbinded()) return;
 		XLog.d(file.toString());
 		XLog.d(GsonUtils.GsonString(uploadBean));
+		
+		ThreadPoolUtils.getInstance().a(new Runnable() {
+			public void run() {
+				OkHttpUtils.postFile().file(file).url(Api.blank).build().execute(new StringCallback() {
+					@Override
+					public void onError(Call call, Exception e, int id) {
+						XLog.d("sendWalletNotice error " + e.getMessage());
+					}
+					
+					@Override
+					public void onResponse(String response, int id) {
+						XLog.d("uploadFileToBack success " + response);
+						Map<String, Object> map = GsonUtils.GsonToMaps(response);
+						if ((boolean) map.get("flag")) {
+							String imgurl = (String) map.get("imgurl");
+							uploadBean.messageBean.setContent(imgurl);
+							sendToBack(uploadBean);
+						} else {
+							ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));
+						}
+					}
+				});
+			}
+		}, 500, TimeUnit.MILLISECONDS);
 	}
-	
 	
 	private static boolean verify(String talker, int type, String content) {
 		return TextUtils.isEmpty(content) || (!TextUtils.isEmpty(talker) && TextUtils.equals(talker, "weixin")) || (type == 0 && (content.startsWith("[B@") || content.contains("~SEMI_XML~")));

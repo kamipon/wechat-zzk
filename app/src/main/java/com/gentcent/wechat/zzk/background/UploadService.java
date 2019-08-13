@@ -12,6 +12,7 @@ import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.XLog;
+import com.gentcent.wechat.zzk.util.ZzkUtil;
 
 import java.io.File;
 
@@ -77,13 +78,26 @@ public class UploadService {
 	}
 	
 	/**
-	 * 接受纯文本消息
+	 * 接收纯文本消息
 	 */
-	public static void receiveTextMessage(int status, int isSend, String talker, String content, int createTime) {
+	public static void receiveTextMessage(int status, int isSend, String talker, String content, int createTime, long msgId) {
 		XLog.d("doText content " + content);
 		if (!TextUtils.isEmpty(content)) {
 			XLog.d("发送/接收 文字消息 ");
-			UploadUtil.sendToBack("", status, "", isSend, 0, talker, content, "", createTime, 0, "");
+			UploadUtil.sendToBack("", status, String.valueOf(msgId), isSend, 0, talker, content, "", createTime, 0, "");
+		}
+	}
+	
+	/**
+	 * 接收图片消息
+	 */
+	public static void receiveAnimationMessage(int status, int isSend, String talker, String content, int createTime, long msgId) {
+		XLog.d("doAnimation content " + content);
+		if (!TextUtils.isEmpty(content)) {
+			XLog.d("发送/接收 表情包 ");
+			String cdnurl = ZzkUtil.a(content, "cdnurl").replace("*#*", ":");
+			
+			UploadUtil.sendToBack("", status, String.valueOf(msgId), isSend, 1, talker, cdnurl, "", createTime, 0, "");
 		}
 	}
 	
@@ -91,7 +105,6 @@ public class UploadService {
 	 * 上传文件到后台
 	 *
 	 * @param file 上传的文件
-	 * @return 服务器上的图片路径
 	 */
 	public static void uploadFileToBack(File file, UploadBean uploadBean, int type) {
 		uploadBean.messageBean.setType(mappingType(type));

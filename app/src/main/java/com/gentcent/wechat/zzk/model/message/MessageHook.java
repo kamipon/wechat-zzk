@@ -66,19 +66,20 @@ public class MessageHook {
 	
 	private static void log(ContentValues contentValues) {
 		/*
-			1：纯文本消息
-			3：图片
-			34：语音
-			42：名片
-			47：表情
-			48：指定定位
-			49：文件、卡片信息
-			50：视屏通话 content：voip_content_video
-			50：语音通话 content：voip_content_voice
-			436207665：红包
-			419430449：转账
-			-1879048186：共享实时位置
-			10000：提示字体
+		 * 1：纯文本消息√
+		 * 3：图片√
+		 * 34：语音√
+		 * 42：名片
+		 * 43：视频√
+		 * 47：表情√
+		 * 48：指定定位
+		 * 49：文件、链接信息
+		 * 50：视屏通话 content：voip_content_video
+		 * 50：语音通话 content：voip_content_voice
+		 * 436207665：红包
+		 * 419430449：转账
+		 * -1879048186：共享实时位置
+		 * 10000：提示字体
 		 */
 		final int type = contentValues.getAsInteger("type");
 		//0：接受 , 1：发送
@@ -90,7 +91,7 @@ public class MessageHook {
 		//消息内容
 		final String content = contentValues.getAsString("content");
 		final int createTime = (int) (contentValues.getAsLong("createTime") / 1000L);
-		
+		final int status = SendMessageManager.getStatusByMsgId(msgId);
 		XLog.d("message || type=" + type + "; msgId=" + msgId + "; isSend=" + isSend + "; talker=" + talker + "; content=" + content);
 		
 		if (isSend == 0) {
@@ -104,18 +105,19 @@ public class MessageHook {
 					XLog.d("messageHandle" + "MysnedText msgId =" + msgId + " content :" + content);
 					ThreadPoolUtils.getInstance().a(new Runnable() {
 						public void run() {
-							int status = SendMessageManager.getStatusByMsgId(msgId);
 							XLog.d("receiveDelay text state is " + status);
 							if (talker.endsWith("@chatroom")) {
 								//aj.b(status, QNUploadUtil.a(isSend), talker, content, createTime);
 								return;
 							}
-							UploadService.receiveTextMessage(status, isSend, talker, content, createTime);
+							UploadService.receiveTextMessage(status, isSend, talker, content, createTime,msgId);
 						}
 					}, 350, TimeUnit.MILLISECONDS);
 				} else if (type == 3) { //图片消息
 					JobManager jobManager = TaskManager.getInstance().getJobManager();
 					jobManager.addJobInBackground(new DownloadMessageJob(contentValues, 2000));
+				} else if (type == 47) { //表情
+					UploadService.receiveAnimationMessage(status, isSend, talker, content, createTime,msgId);
 				}
 			}
 		}

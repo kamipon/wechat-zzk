@@ -54,6 +54,15 @@ public class ZzkUtil {
 		public static final String PASSWORD_ENC_SECRET = "gentcent.zzk";
 	}
 	
+	public static String a(String str, String str2) {
+		try {
+			int indexOf = str.indexOf("\"", str.indexOf(str2)) + 1;
+			return str.substring(indexOf, str.indexOf("\"", indexOf));
+		} catch (Exception unused) {
+			return "";
+		}
+	}
+	
 	/**
 	 * 加密
 	 **/
