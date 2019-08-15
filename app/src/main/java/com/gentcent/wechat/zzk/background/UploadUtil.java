@@ -3,13 +3,12 @@ package com.gentcent.wechat.zzk.background;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.blankj.utilcode.util.PhoneUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.bean.PhoneInfoBean;
 import com.gentcent.wechat.zzk.bean.SystemInfoBean;
-import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.bean.UploadBean;
+import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
 import com.gentcent.wechat.zzk.model.wallet.bean.BackMoneyResult;
 import com.gentcent.wechat.zzk.model.wallet.bean.EnWalletBean;
@@ -21,14 +20,11 @@ import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.builder.PostStringBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -86,7 +82,7 @@ public class UploadUtil {
 						new StringCallback() {
 							@Override
 							public void onError(Call call, Exception e, int id) {
-								XLog.d("error: " + Log.getStackTraceString(e));
+								XLog.e("error: " + Log.getStackTraceString(e));
 								ToastUtils.showShort("绑定失败，请检查网络后重新再试");
 							}
 							
@@ -129,7 +125,7 @@ public class UploadUtil {
 				new StringCallback() {
 					@Override
 					public void onError(Call call, Exception e, int id) {
-						XLog.d("error: " + Log.getStackTraceString(e));
+						XLog.e("error: " + Log.getStackTraceString(e));
 						ToastUtils.showShort("同步失败，请检查网络后重新再试");
 					}
 					
@@ -147,7 +143,7 @@ public class UploadUtil {
 	}
 	
 	/**
-	 * 绑定微信
+	 * TODO:绑定群聊
 	 */
 	public static void bindGroup(final UserBean u) {
 		if (!isbinded()) return;
@@ -163,7 +159,7 @@ public class UploadUtil {
 				new StringCallback() {
 					@Override
 					public void onError(Call call, Exception e, int id) {
-						XLog.d("error: " + Log.getStackTraceString(e));
+						XLog.e("error: " + Log.getStackTraceString(e));
 						ToastUtils.showShort("同步失败，请检查网络后重新再试");
 					}
 					
@@ -202,7 +198,7 @@ public class UploadUtil {
 				new StringCallback() {
 					@Override
 					public void onError(Call call, Exception e, int id) {
-						XLog.d("error: " + Log.getStackTraceString(e));
+						XLog.e("error: " + Log.getStackTraceString(e));
 						ToastUtils.showShort("同步失败，请检查网络后重新再试");
 					}
 					
@@ -255,18 +251,7 @@ public class UploadUtil {
 							.addParams("wxuser", gson.toJson(finalUploadBean.userBean))
 							.build().execute(new StringCallback() {
 						public void onError(Call call, Exception exc, int i) {
-							XLog.d("error: " + Log.getStackTraceString(exc));
-//							try {
-//								String a2 = QNUploadUtil.a(exc);
-//								XLog.d("sendToBackend error " + a2);
-//								new Timer().schedule(new TimerTask() {
-//									public void run() {
-//										QNUploadUtil.b(false, 0, param);
-//									}
-//								}, 5000);
-//							} catch (Exception e) {
-//								XLog.d("sendToBackend error e1 is " + Log.getStackTraceString(e));
-//							}
+							XLog.e("error: " + Log.getStackTraceString(exc));
 						}
 						
 						public void onResponse(String response, int i) {
@@ -298,18 +283,7 @@ public class UploadUtil {
 							.addParams("wxuser", gson.toJson(userBean))
 							.build().execute(new StringCallback() {
 						public void onError(Call call, Exception exc, int i) {
-							XLog.d("error: " + Log.getStackTraceString(exc));
-//							try {
-//								String a2 = QNUploadUtil.a(exc);
-//								XLog.d("sendToBackend error " + a2);
-//								new Timer().schedule(new TimerTask() {
-//									public void run() {
-//										QNUploadUtil.b(false, 0, param);
-//									}
-//								}, 5000);
-//							} catch (Exception e) {
-//								XLog.d("sendToBackend error e1 is " + Log.getStackTraceString(e));
-//							}
+							XLog.e("error: " + Log.getStackTraceString(exc));
 						}
 						
 						public void onResponse(String response, int i) {
@@ -322,37 +296,50 @@ public class UploadUtil {
 	}
 	
 	/**
-	 * 带文件的消息信息，先上传
+	 * 带文件的消息信息，先上传文件
 	 *
 	 * @param file       需要上传的文件
 	 * @param uploadBean 消息信息
 	 */
-	public static void uploadFileToBack(final File file, final UploadBean uploadBean) {
+	public static void uploadFileToBack(final File file, final UploadBean uploadBean, final boolean reRun) {
 		if (!isbinded()) return;
 		XLog.d(file.toString());
 		XLog.d(GsonUtils.GsonString(uploadBean));
 		
 		ThreadPoolUtils.getInstance().a(new Runnable() {
 			public void run() {
-				OkHttpUtils.postFile().file(file).url(Api.blank).build().execute(new StringCallback() {
-					@Override
-					public void onError(Call call, Exception e, int id) {
-						XLog.d("sendWalletNotice error " + e.getMessage());
-					}
-					
-					@Override
-					public void onResponse(String response, int id) {
-						XLog.d("uploadFileToBack success " + response);
-						Map<String, Object> map = GsonUtils.GsonToMaps(response);
-						if ((boolean) map.get("flag")) {
-							String imgurl = (String) map.get("imgurl");
-							uploadBean.messageBean.setContent(imgurl);
-							sendToBack(uploadBean);
-						} else {
-							ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));
-						}
-					}
-				});
+				OkHttpUtils.post()
+						.addFile(file.getName(), file.getName(), file)
+						.url(Api.fileUploadsWchat)
+						.addHeader("Content-Type", "multipart/form-data")
+						.build()
+						.execute(new StringCallback() {
+							@Override
+							public void onError(Call call, Exception e, int id) {
+								XLog.d("uploadFileToBack error: " + Log.getStackTraceString(e));
+								try {
+									if (reRun) {
+										Thread.sleep(2000);
+										uploadFileToBack(file, uploadBean, false);
+									}
+								} catch (InterruptedException e1) {
+									e1.printStackTrace();
+								}
+							}
+							
+							@Override
+							public void onResponse(String response, int id) {
+								XLog.d("uploadFileToBack success: " + response);
+								Map<String, Object> map = GsonUtils.GsonToMaps(response);
+								if ((boolean) map.get("flag")) {
+									String src = (String) map.get("src");
+									uploadBean.messageBean.setContent(src);
+									sendToBack(uploadBean);
+								} else {
+									ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));
+								}
+							}
+						});
 			}
 		}, 500, TimeUnit.MILLISECONDS);
 	}

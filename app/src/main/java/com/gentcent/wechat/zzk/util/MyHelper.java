@@ -9,8 +9,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.Calendar;
 
 import static com.gentcent.wechat.zzk.util.ZzkUtil.decryptPassword;
@@ -254,6 +257,32 @@ public class MyHelper {
 			}
 		} catch (Exception e) {
 			XLog.e("复制单个文件操作出错" + Log.getStackTraceString(e));
+		}
+	}
+	
+	public static String a(InputStream inputStream) throws IOException {
+		String str = "";
+		try {
+			byte[] bArr = new byte[4096];
+			MessageDigest instance = MessageDigest.getInstance("MD5");
+			while (true) {
+				int read = inputStream.read(bArr);
+				if (read == -1) {
+					break;
+				}
+				instance.update(bArr, 0, read);
+			}
+			String bigInteger = new BigInteger(1, instance.digest()).toString(16);
+			while (bigInteger.length() < 32) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("0");
+				sb.append(bigInteger);
+				bigInteger = sb.toString();
+			}
+			return bigInteger;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return str;
 		}
 	}
 	

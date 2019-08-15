@@ -56,23 +56,23 @@ public class DownloadMessageJob extends Job {
 	
 	@Override
 	public void onAdded() {
-		XLog.d(TAG + "add on " + new Date().toLocaleString());
+		XLog.d(TAG + "add on " + new Date().toLocaleString() + " type:" + type);
 	}
 	
 	@Override
 	public void onRun() {
+		XLog.d(TAG + "run");
 		try {
-			ImgDownload();
-			
+			if (type == 3) { //图片
+				ImgDownload();
+			}
 			Thread.sleep(mDelay * 1000);
 		} catch (Exception e) {
-			e.printStackTrace();
 			XLog.e(TAG + "错误:" + Log.getStackTraceString(e));
 		}
 	}
 	
 	private void ImgDownload() throws ClassNotFoundException {
-		XLog.d(TAG + "download_img");
 		Object a2 = ZzkUtil.getMsgObj(MainManager.wxLpparam, Long.valueOf(this.msgId));
 		if (a2 != null) {
 			long longValue = (Long) XposedHelpers.getObjectField(XposedHelpers.callMethod(XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.as.o"), "afi"), "u", a2), "fof");
@@ -87,13 +87,6 @@ public class DownloadMessageJob extends Job {
 			
 			String path = obj.replace("th_", "") + ".jpg";
 			XLog.d("ImgHDHandle receive image path:" + path);
-
-//				String a3 = resolver(this.content, "hdlength=");
-//				long j = 0;
-//				if (a3 != null && !a3.equals("")) {
-//					j = Long.valueOf(a3);
-//				}
-//				ImgHDHandle.this.a(sb5, obj, j);
 			int staticIntField = XposedHelpers.getStaticIntField(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.R$f"), "chat_img_template");
 			Object callStaticMethod2 = XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.ui.chatting.gallery.l"), "dAR");
 			XposedHelpers.callMethod(XposedHelpers.getObjectField(callStaticMethod2, "yjP"), "add", Long.valueOf(this.msgId));
@@ -109,26 +102,13 @@ public class DownloadMessageJob extends Job {
 			messageBean.setServiceGuid("");
 			UploadBean uploadBean = new UploadBean(messageBean, MyHelper.readLine("phone-id"));
 			uploadBean = MessageConvert.a(uploadBean, talker);
-			UploadService.uploadFileToBack(new File(path), uploadBean, type);
 			
-		}
-	}
-	
-	private String resolver(String conent, String str2) {
-		String str3 = " ";
-		boolean z = false;
-		try {
-			int indexOf = conent.indexOf(str2);
-			String substring = conent.substring(str2.length() + indexOf, indexOf + conent.substring(indexOf, conent.length() - 1).indexOf(str3));
-			if (substring.endsWith(")")) {
-				substring = substring.substring(0, substring.length() - 1);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-			if (z) {
-				return substring;
-			}
-			return substring.replace("\"", "");
-		} catch (Exception unused) {
-			return "";
+			UploadService.uploadFileToBack(new File(path), uploadBean, type);
 		}
 	}
 	

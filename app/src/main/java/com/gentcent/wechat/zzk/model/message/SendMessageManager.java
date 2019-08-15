@@ -21,9 +21,9 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
-import static com.gentcent.wechat.zzk.model.message.messageDao.getCurMsgId;
-import static com.gentcent.wechat.zzk.model.message.messageDao.getGifCurMsgId;
-import static com.gentcent.wechat.zzk.model.message.messageDao.getLastMsgId;
+import static com.gentcent.wechat.zzk.model.message.MessageDao.getCurMsgId;
+import static com.gentcent.wechat.zzk.model.message.MessageDao.getGifCurMsgId;
+import static com.gentcent.wechat.zzk.model.message.MessageDao.getLastMsgId;
 
 /**
  * 管理发送消息任务
@@ -176,6 +176,14 @@ public class SendMessageManager {
 				SendMessageHandler.sendAppointText(sm);
 				break;
 		}
+	}
+	
+	/**
+	 * AMR转MP3
+	 */
+	public static boolean amrToMp3() {
+		
+		return true;
 	}
 	
 	/**

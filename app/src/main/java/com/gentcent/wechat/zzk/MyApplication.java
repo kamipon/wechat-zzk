@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationCompat;
 import com.blankj.utilcode.util.PhoneUtils;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
+import com.gentcent.wechat.zzk.util.VoiceManager;
 import com.gentcent.wechat.zzk.util.XLog;
 
 import java.util.concurrent.TimeUnit;
@@ -28,6 +29,14 @@ public class MyApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		MyApplication.context = getApplicationContext();
+		
+		ThreadPoolUtils.getInstance().run(new Runnable() {
+			public void run() {
+				XLog.d(TAG + "app_releaseSo 1");
+				VoiceManager.a(MyApplication.this);
+				XLog.d(TAG + "app_releaseSo 2");
+			}
+		});
 		
 		//初始化极光推送
 		JPushInterface.setDebugMode(true);

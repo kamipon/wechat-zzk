@@ -108,7 +108,7 @@ public class UploadService {
 	 */
 	public static void uploadFileToBack(File file, UploadBean uploadBean, int type) {
 		uploadBean.messageBean.setType(mappingType(type));
-		UploadUtil.uploadFileToBack(file, uploadBean);
+		UploadUtil.uploadFileToBack(file, uploadBean,true);
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public class UploadService {
 	 *             0:文本√
 	 *             1：图片（.gif和其他）√
 	 *             2：语音√
-	 *             3：视频√
+	 *             3：视频
 	 *             7：链接
 	 *             8：文件
 	 *             9：群聊

@@ -10,7 +10,7 @@ import com.gentcent.wechat.zzk.wcdb.WcdbHolder;
  * @author zuozhi
  * @since 2019-08-02
  */
-public class messageDao {
+public class MessageDao {
 	
 	/**
 	 * 获取当前msgId（Gif）（被轮询调用）
