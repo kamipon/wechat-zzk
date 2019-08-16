@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 public class MessageHook {
 	
-	
 	public static void hook(final XC_LoadPackage.LoadPackageParam lpparam) {
 		XposedHelpers.findAndHookMethod(HookParams.getInstance().SQLiteDatabaseClassName, lpparam.classLoader, HookParams.getInstance().SQLiteDatabaseInsertWithOnConflictMethod, String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
 			@SuppressLint("CommitPrefEdits")
@@ -52,8 +51,10 @@ public class MessageHook {
 					XLog.e("错误：" + e.toString());
 				}
 			}
-			
 		});
+		
+		
+		VideoHook.a(lpparam);
 	}
 	
 	

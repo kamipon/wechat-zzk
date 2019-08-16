@@ -6,18 +6,15 @@ import com.birbit.android.jobqueue.JobManager;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.gentcent.wechat.zzk.background.MessageConvert;
 import com.gentcent.wechat.zzk.background.UploadService;
-import com.gentcent.wechat.zzk.background.UploadUtil;
 import com.gentcent.wechat.zzk.bean.UploadBean;
 import com.gentcent.wechat.zzk.model.friend.AddVerifyingFriend;
 import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
 import com.gentcent.wechat.zzk.service.TaskManager;
-import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.VoiceManager;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
-import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
 import java.io.File;
 import java.util.Arrays;
@@ -34,7 +31,7 @@ public class MessageHandler {
 		 * 3：图片√
 		 * 34：语音√
 		 * 42：名片
-		 * 43：视频
+		 * 43：视频√
 		 * 47：表情√
 		 * 48：指定定位
 		 * 49：文件、链接信息
@@ -96,6 +93,9 @@ public class MessageHandler {
 					uploadBean = MessageConvert.a(uploadBean, talker);
 					MsgHelper.getInstance().putMsg(msgId, uploadBean);
 					XLog.d("接受语音消息： STEP1  保存到MsgHelper中.");
+				} else if (type == 43) { //视频
+					String imgPath = contentValues.getAsString("imgPath");
+					XLog.d("messageHandle MysnedVideo msgId =" + msgId + " content :" + content + ",imgPath:" + imgPath);
 				}
 			}
 		}
