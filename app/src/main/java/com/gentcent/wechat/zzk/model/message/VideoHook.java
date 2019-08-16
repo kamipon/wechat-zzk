@@ -241,7 +241,7 @@ public class VideoHook {
 							XLog.d("VideoHook file is :" + file.getAbsolutePath());
 							boolean endsWith = sendWXID.endsWith("@chatroom");
 							boolean isSend = TextUtils.equals(friendId, UserDao.getMyWxid());
-							XLog.d("VideoHook uploadVideo isSend " + isSend + "  friendId is " + friendId+ "  sendWXID is " + sendWXID);
+							XLog.d("VideoHook uploadVideo isSend " + isSend + "  friendId is " + friendId + "  sendWXID is " + sendWXID);
 							if (!isSend) { //接收
 								if (endsWith) { //群聊
 								
@@ -249,9 +249,10 @@ public class VideoHook {
 									MessageBean messageBean = new MessageBean();
 									messageBean.setIsSend(0);
 									messageBean.setMyWxId(UserDao.getMyWxid());
-									messageBean.setFriendWxId(friendId);
+									messageBean.setFriendWxId(sendWXID);
+									messageBean.setServiceGuid("");
 									UploadBean uploadBean = new UploadBean(messageBean, MyHelper.readLine("phone-id"));
-									uploadBean = MessageConvert.a(uploadBean, friendId);
+									uploadBean = MessageConvert.a(uploadBean, sendWXID);
 									UploadService.uploadFileToBack(file, uploadBean, 43);
 								}
 							}

@@ -52,9 +52,6 @@ public class MessageHook {
 				}
 			}
 		});
-		
-		
-		VideoHook.a(lpparam);
 	}
 	
 	
