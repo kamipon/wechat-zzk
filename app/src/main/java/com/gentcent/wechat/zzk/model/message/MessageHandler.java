@@ -1,9 +1,11 @@
 package com.gentcent.wechat.zzk.model.message;
 
 import android.content.ContentValues;
+import android.util.Log;
 
 import com.birbit.android.jobqueue.JobManager;
 import com.blankj.utilcode.util.ObjectUtils;
+import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.background.MessageConvert;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.bean.UploadBean;
@@ -14,7 +16,10 @@ import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.VoiceManager;
 import com.gentcent.wechat.zzk.util.XLog;
+import com.gentcent.wechat.zzk.util.ZzkUtil;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
+import com.gentcent.zzk.xped.XposedHelpers;
+import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
 import java.io.File;
 import java.util.Arrays;
@@ -138,7 +143,7 @@ public class MessageHandler {
 								if (i == -1) {
 									newPath = localpath;
 								}
-								UploadService.uploadFileToBack(new File(newPath), uploadBean, msgType);
+								UploadService.uploadFileToBack(new File(newPath), uploadBean);
 							}
 						}
 					});
@@ -176,6 +181,96 @@ public class MessageHandler {
 		}
 	}
 	
+	/**
+	 * 链接
+	 */
+	public static void AppMessageHandle(ContentValues contentValues) {
+		final LoadPackageParam loadPackageParam = MainManager.wxLpparam;
+		if (contentValues.containsKey("type") && contentValues.containsKey("msgId")) {
+			int type = contentValues.getAsInteger("type");
+			XLog.d("AppMessageHandle type" + type);
+			final long msgid = contentValues.getAsLong("msgId");
+			if (type == 5) { //app页面分享
+				XLog.d("MysnedUrl  msgid = " + msgid + " insert time is " + System.currentTimeMillis());
+				ThreadPoolUtils.getInstance().a(new Runnable() {
+					public void run() {
+						receiveArtic(loadPackageParam, msgid);
+					}
+				}, 2000, TimeUnit.MILLISECONDS);
+			} else if (type == 33) {
+				ThreadPoolUtils.getInstance().a(new Runnable() {
+					public void run() {
+						XLog.e("TODO: type==33 AppBrandHandle.a(loadPackageParam, msgid)");
+//						AppBrandHandle.a(loadPackageParam, msgid);
+					}
+				}, 2000, TimeUnit.MILLISECONDS);
+			}
+			if (contentValues.containsKey("source") && contentValues.containsKey("appId") && contentValues.containsKey("description") && contentValues.containsKey("title")) {
+				String source = contentValues.getAsString("source");
+				String appId = contentValues.getAsString("appId");
+				String description = contentValues.getAsString("description");
+				String title = contentValues.getAsString("title");
+				XLog.d("AppMessageHandleinsertWithOnConflict AppMessage tpye: " + type + ",msgId:" + msgid + ",source:" + source + ",appId:" + appId + ",description:" + description + ",title:" + title);
+			}
+		}
+	}
+	
+	public static void receiveArtic(LoadPackageParam loadPackageParam, long msgId) {
+		boolean ischartRoom;
+		try {
+			Object a = ZzkUtil.getMsgObj(loadPackageParam, msgId);
+			int field_isSend = XposedHelpers.getIntField(a, "field_isSend");
+			String field_imgPath = (String) XposedHelpers.getObjectField(a, "field_imgPath");
+			String field_talker = (String) XposedHelpers.getObjectField(a, "field_talker");
+			String field_content = (String) XposedHelpers.getObjectField(a, "field_content");
+			XLog.d("ReceiveArticUtil handle field_talker :" + field_talker);
+			XLog.d("ReceiveArticUtil handle field_content :" + field_content);
+			if (field_talker != null && field_talker.length() > 0 && field_talker.endsWith("@chatroom")) {
+				field_content = (String) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.be"), "oa", field_content);
+				ischartRoom = true;
+			} else {
+				ischartRoom = false;
+			}
+			Object callStaticMethod = XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.ae.j$b"), "lE", field_content);
+			if (callStaticMethod != null) {
+				String imgPath = (field_imgPath == null || field_imgPath.length() <= 0) ? null : ZzkUtil.getImgPath(loadPackageParam, field_imgPath);
+				String url = (String) XposedHelpers.getObjectField(callStaticMethod, "url");
+				String description = (String) XposedHelpers.getObjectField(callStaticMethod, "description");
+				String title = (String) XposedHelpers.getObjectField(callStaticMethod, "title");
+//				if (field_isSend == 0) {
+//					GroupInvite.load_openUrl(loadPackageParam, url);
+//				}
+				XLog.d("msgId:" + msgId);
+				XLog.d("ischartRoom:" + ischartRoom);
+				XLog.d("imgPath:" + imgPath);
+				XLog.d("title:" + title);
+				XLog.d("field_talker:" + field_talker);
+				XLog.d("url:" + url);
+				XLog.d("description:" + description);
+				XLog.d("field_isSend:" + field_isSend);
+				
+				MessageBean messageBean = new MessageBean();
+				messageBean.setFriendWxId(field_talker);
+				messageBean.setMyWxId(UserDao.getMyWxid());
+				messageBean.setIsSend(field_isSend);
+				messageBean.setLinkDescription(description);
+				messageBean.setLinkUrl(url);
+				messageBean.setLinkTitle(title);
+				messageBean.setMsgId(String.valueOf(msgId));
+				messageBean.setType(7);
+				UploadBean uploadBean = new UploadBean(messageBean, MyHelper.readLine("phone-id"));
+				uploadBean = MessageConvert.a(uploadBean, field_talker);
+				File file = new File(imgPath);
+				if (field_isSend == 0) {
+					UploadService.uploadFileToBack(file, uploadBean);
+				}
+				
+			}
+		} catch (Throwable th) {
+			XLog.d("ReceiveArticUtil  handle e:" + Log.getStackTraceString(th));
+		}
+	}
+	
 	
 	public static boolean isNeedSendToBack(String wxId) {
 		return (ObjectUtils.isNotEmpty(wxId) && wxId.endsWith("@chatroom")) || isNotAppWxId(wxId);
@@ -186,4 +281,5 @@ public class MessageHandler {
 	public static boolean isNotAppWxId(String wxId) {
 		return ObjectUtils.isNotEmpty(wxId) && !wxId.startsWith("gh_") && !wxId.startsWith("fake_") && !wxId.endsWith("@chatroom") && !Arrays.asList(appNameList).contains(wxId);
 	}
+	
 }

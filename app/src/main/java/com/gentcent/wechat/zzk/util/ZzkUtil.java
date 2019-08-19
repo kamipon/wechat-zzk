@@ -37,6 +37,12 @@ public class ZzkUtil {
 		}
 	}
 	
+	public static String getImgPath(LoadPackageParam loadPackageParam, String str) throws ClassNotFoundException {
+		String str2 = (String) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.as.o"), "afi"), "H", new Object[]{str, Boolean.TRUE});
+		XLog.d("HToolsgetImgb imagepath :" + str2);
+		return str2;
+	}
+	
 	public static String b(String str) {
 		JSONObject build = new XmlToJson.Builder(str).build();
 		return build.toString();

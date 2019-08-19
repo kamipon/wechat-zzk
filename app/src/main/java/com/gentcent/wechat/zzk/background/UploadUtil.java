@@ -271,28 +271,26 @@ public class UploadUtil {
 		final MessageBean messageBean = uploadBean.messageBean;
 		final UserBean userBean = uploadBean.userBean;
 		final String phoneID = uploadBean.phoneID;
-		if (!verify(messageBean.getFriendWxId(), messageBean.getType(), messageBean.getContent())) {
-			final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-			final UploadBean finalUploadBean = uploadBean;
-			ThreadPoolUtils.getInstance().a(new Runnable() {
-				public void run() {
-					XLog.d("sendToBackend param is " + gson.toJson(finalUploadBean));
-					OkHttpUtils.post().url(Api.addWchat)
-							.addParams("wxmessage", gson.toJson(messageBean))
-							.addParams("phoneID", phoneID)
-							.addParams("wxuser", gson.toJson(userBean))
-							.build().execute(new StringCallback() {
-						public void onError(Call call, Exception exc, int i) {
-							XLog.e("error: " + Log.getStackTraceString(exc));
-						}
-						
-						public void onResponse(String response, int i) {
-							XLog.d("sendToBackend success " + response);
-						}
-					});
-				}
-			}, 500, TimeUnit.MILLISECONDS);
-		}
+		final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+		final UploadBean finalUploadBean = uploadBean;
+		ThreadPoolUtils.getInstance().a(new Runnable() {
+			public void run() {
+				XLog.d("sendToBackend param is " + gson.toJson(finalUploadBean));
+				OkHttpUtils.post().url(Api.addWchat)
+						.addParams("wxmessage", gson.toJson(messageBean))
+						.addParams("phoneID", phoneID)
+						.addParams("wxuser", gson.toJson(userBean))
+						.build().execute(new StringCallback() {
+					public void onError(Call call, Exception exc, int i) {
+						XLog.e("error: " + Log.getStackTraceString(exc));
+					}
+					
+					public void onResponse(String response, int i) {
+						XLog.d("sendToBackend success " + response);
+					}
+				});
+			}
+		}, 500, TimeUnit.MILLISECONDS);
 	}
 	
 	/**
@@ -333,7 +331,11 @@ public class UploadUtil {
 								Map<String, Object> map = GsonUtils.GsonToMaps(response);
 								if ((boolean) map.get("flag")) {
 									String src = (String) map.get("src");
-									uploadBean.messageBean.setContent(src);
+									if (uploadBean.messageBean.getType() == 7) {
+										uploadBean.messageBean.setLinkImg(src);
+									} else {
+										uploadBean.messageBean.setContent(src);
+									}
 									sendToBack(uploadBean);
 								} else {
 									ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));

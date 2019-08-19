@@ -23,14 +23,15 @@ public class MessageHook {
 			protected void beforeHookedMethod(MethodHookParam param) {
 				try {
 					String str = (String) param.args[0];
+//					XLog.d("TYPE = " + str);
 //				if (str.equals("fmessage_conversation")) {
 //				}
 					if (param.args[2] != null) {
 						final ContentValues contentValues = (ContentValues) param.args[2];
-//					if (str.equals("AppMessage")) {
-//						a.a(this.a, contentValues);
-//						return;
-//					}
+						if (str.equals("AppMessage")) {
+							MessageHandler.AppMessageHandle(contentValues);
+							return;
+						}
 						if (str.equals("WxFileIndex2")) {
 							ThreadPoolUtils.getInstance().a(new Runnable() {
 								public void run() {

@@ -100,6 +100,7 @@ public class DownloadMessageJob extends Job {
 			messageBean.setStatus(SendMessageManager.getStatusByMsgId(Long.valueOf(msgId)));
 			messageBean.setAddTime(createTime);
 			messageBean.setServiceGuid("");
+			messageBean.setType(UploadService.mappingType(type));
 			UploadBean uploadBean = new UploadBean(messageBean, MyHelper.readLine("phone-id"));
 			uploadBean = MessageConvert.a(uploadBean, talker);
 			
@@ -108,7 +109,7 @@ public class DownloadMessageJob extends Job {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			UploadService.uploadFileToBack(new File(path), uploadBean, type);
+			UploadService.uploadFileToBack(new File(path), uploadBean);
 		}
 	}
 	

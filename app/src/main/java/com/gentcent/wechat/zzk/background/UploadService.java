@@ -106,9 +106,8 @@ public class UploadService {
 	 *
 	 * @param file 上传的文件
 	 */
-	public static void uploadFileToBack(File file, UploadBean uploadBean, int type) {
-		uploadBean.messageBean.setType(mappingType(type));
-		UploadUtil.uploadFileToBack(file, uploadBean,true);
+	public static void uploadFileToBack(File file, UploadBean uploadBean) {
+		UploadUtil.uploadFileToBack(file, uploadBean, true);
 	}
 	
 	/**
@@ -140,7 +139,7 @@ public class UploadService {
 	 *             9：群聊
 	 *             -1:UNKNOW
 	 */
-	private static int mappingType(int type) {
+	public static int mappingType(int type) {
 		if (type == 1) {
 			return 0;
 		} else if (type == 3) {
@@ -151,6 +150,8 @@ public class UploadService {
 			return 2;
 		} else if (type == 43) {
 			return 3;
+		} else if (type == 49) {
+			return 7;
 		}
 		return -1;
 	}

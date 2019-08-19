@@ -251,9 +251,10 @@ public class VideoHook {
 									messageBean.setMyWxId(UserDao.getMyWxid());
 									messageBean.setFriendWxId(sendWXID);
 									messageBean.setServiceGuid("");
+									messageBean.setType(3);
 									UploadBean uploadBean = new UploadBean(messageBean, MyHelper.readLine("phone-id"));
 									uploadBean = MessageConvert.a(uploadBean, sendWXID);
-									UploadService.uploadFileToBack(file, uploadBean, 43);
+									UploadService.uploadFileToBack(file, uploadBean);
 								}
 							}
 						} else {
