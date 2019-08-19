@@ -10,6 +10,7 @@ import com.gentcent.wechat.zzk.background.MessageConvert;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.bean.UploadBean;
 import com.gentcent.wechat.zzk.model.friend.AddVerifyingFriend;
+import com.gentcent.wechat.zzk.model.message.FileManager.C0378b;
 import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
 import com.gentcent.wechat.zzk.service.TaskManager;
 import com.gentcent.wechat.zzk.util.MyHelper;
@@ -119,16 +120,18 @@ public class MessageHandler {
 			final Long msgId = contentValues.getAsLong("msgId");
 			if (msgType == 49 && msgSubType == 34) {
 				XLog.d("WxFileIndex2Handle MysnedFile msgId =" + msgId);
-//				SendMessageManager.a(new Runnable() {
-//					public void run() {
-//						aa aV = new aa();
-//						C0378b a2 = aV.a(loadPackageParam, "" + msgId);
-//						if (ObjectUtils.isNotEmpty((Object) a2)) {
-//							XLog.d("WxFileIndex2Handle   insertWithOnConflict WxFileIndex2 xxxx res  " + a2.toString());
-//							QNUploadUtil.a(a2.c == 1 ? QNUploadUtil.e : QNUploadUtil.f, a2.d, a2.a, a2.e, a2.b, a2.f, msgtime);
-//						}
-//					}
-//				}, 49, msgId.longValue(), -1);
+				ThreadPoolUtils.getInstance().run(new Runnable() {
+					@Override
+					public void run() {
+						FileManager aV = new FileManager();
+						C0378b a2 = aV.a(MainManager.wxLpparam, "" + msgId);
+						if (ObjectUtils.isNotEmpty(a2)) {
+							XLog.d("WxFileIndex2Handle   insertWithOnConflict WxFileIndex2 xxxx res  " + a2.toString());
+							
+//							QNUploadUtil.path(a2.isSend == 1 ? QNUploadUtil.friendId : QNUploadUtil.ischatroom, a2.talker, a2.path, a2.friendId, a2.size, a2.ischatroom, msgtime);
+						}
+					}
+				});
 			} else if (msgType == 34 && msgSubType == 10) {
 				if (MsgHelper.getInstance().getMsg(msgId) != null) {
 					final String localpath = "/storage/emulated/0/tencent/MicroMsg/" + contentValues.getAsString("path");

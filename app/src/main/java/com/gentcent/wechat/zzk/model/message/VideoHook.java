@@ -61,7 +61,6 @@ public class VideoHook {
 		});
 	}
 	
-	/* access modifiers changed from: private */
 	public static boolean c(String str) {
 		if (a == null) {
 			a = new HashSet();

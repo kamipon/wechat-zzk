@@ -17,6 +17,9 @@ import java.util.concurrent.TimeUnit;
 public class MessageHook {
 	
 	public static void hook(final XC_LoadPackage.LoadPackageParam lpparam) {
+		VideoHook.a(lpparam);
+		FileManager.a(lpparam);
+		
 		XposedHelpers.findAndHookMethod(HookParams.getInstance().SQLiteDatabaseClassName, lpparam.classLoader, HookParams.getInstance().SQLiteDatabaseInsertWithOnConflictMethod, String.class, String.class, ContentValues.class, int.class, new XC_MethodHook() {
 			@SuppressLint("CommitPrefEdits")
 			@Override

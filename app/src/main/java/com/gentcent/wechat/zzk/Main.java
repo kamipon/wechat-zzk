@@ -11,6 +11,7 @@ import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.plugin.ADBlock;
 import com.gentcent.wechat.zzk.plugin.AntiRevoke;
 import com.gentcent.wechat.zzk.plugin.AntiSnsDelete;
+import com.gentcent.wechat.zzk.plugin.AppUpdate;
 import com.gentcent.wechat.zzk.plugin.AutoLogin;
 import com.gentcent.wechat.zzk.plugin.Friends;
 import com.gentcent.wechat.zzk.plugin.HideModule;
@@ -47,7 +48,8 @@ public class Main implements IXposedHookLoadPackage {
 			new Message(),
 			new Friends(),
 			new Sns(),
-			new Wallet()
+			new Wallet(),
+			new AppUpdate()
 	};
 	
 	@Override
