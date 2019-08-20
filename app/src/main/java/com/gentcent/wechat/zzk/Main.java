@@ -91,7 +91,7 @@ public class Main implements IXposedHookLoadPackage {
 				});
 				
 				//防止发语音闪退
-				XposedHelpers.findAndHookConstructor(HookParams.modelvoice_f, lpparam.classLoader, String.class, int.class, new XC_MethodReplacement() {
+				XposedHelpers.findAndHookConstructor(HookParams.send_voice_class1, lpparam.classLoader, String.class, int.class, new XC_MethodReplacement() {
 					@Override
 					protected Object replaceHookedMethod(MethodHookParam methodHookParam) {
 						try {
@@ -99,18 +99,6 @@ public class Main implements IXposedHookLoadPackage {
 						} catch (Exception ignored) {
 						}
 						return null;
-					}
-				});
-				
-				//全局搜索xposed字段出现的方法，可能是微信的Xposed检测
-				XposedHelpers.findAndHookMethod("com.tencent.mm.app.t", lpparam.classLoader, "a", StackTraceElement[].class, new XC_MethodHook() {
-					@Override
-					protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-						super.afterHookedMethod(param);
-						if ((Boolean) param.getResult()) {
-							param.setResult(false);
-							XLog.e(" ### 微信检测到xposed(已经自动隐藏) ### ");
-						}
 					}
 				});
 			}

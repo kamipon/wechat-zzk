@@ -12,7 +12,6 @@ import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.background.MessageConvert;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.bean.UploadBean;
-import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.XLog;
@@ -39,6 +38,7 @@ public class DownloadMessageJob extends Job {
 	private int createTime;    //createTime
 	private long msgSvrId;    //msgSvrId
 	private int type;    //type
+	private ContentValues contentValues;    //type
 	
 	
 	public DownloadMessageJob(ContentValues contentValues, int mDelay) {
@@ -52,6 +52,7 @@ public class DownloadMessageJob extends Job {
 		this.msgSvrId = contentValues.getAsLong("msgSvrId");
 		this.type = contentValues.getAsInteger("type");
 		this.isChartRoom = this.talker.endsWith("@chatroom");
+		this.contentValues = contentValues;
 	}
 	
 	@Override

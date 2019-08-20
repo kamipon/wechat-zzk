@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.IntentFilter;
 
 import com.gentcent.wechat.zzk.util.HookParams;
+import com.gentcent.wechat.zzk.util.MyWxNames;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.gentcent.zzk.xped.XC_MethodHook;
@@ -19,6 +20,7 @@ public class MainManager {
 	public static Activity activity;
 	public static LoadPackageParam wxLpparam;
 	public static WxReceiver wxReceiver;
+	public static MyWxNames myWxNames;
 	
 	public static void init(final LoadPackageParam lpparam) {
 		XposedHelpers.findAndHookMethod(Application.class, "onCreate", new XC_MethodHook() {
@@ -38,6 +40,10 @@ public class MainManager {
 						MainManager.wxReceiver = new WxReceiver();
 						application.registerReceiver(MainManager.wxReceiver, intentFilter);
 						XLog.d("wxReceiver is reset success!  " + lpparam.processName);
+					}
+					if (myWxNames == null) {
+						myWxNames = new MyWxNames();
+						XLog.d("myWxNames is reset success!  " + lpparam.processName);
 					}
 				}
 			}

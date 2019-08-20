@@ -3,9 +3,6 @@ package com.gentcent.wechat.zzk.model.message;
 import android.database.Cursor;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.blankj.utilcode.util.ObjectUtils;
 import com.gentcent.wechat.zzk.MainManager;
@@ -36,29 +33,11 @@ public class VideoHook {
 	
 	public static void a(LoadPackageParam loadPackageParam) {
 		try {
-			c(loadPackageParam);
-			d(loadPackageParam);
-			b(loadPackageParam);
+			hook1(loadPackageParam);
+			hook2(loadPackageParam);
 		} catch (Throwable th) {
 			XposedBridge.log("videoHook e: " + Log.getStackTraceString(th));
 		}
-	}
-	
-	private static void b(LoadPackageParam loadPackageParam) throws Throwable {
-		XposedHelpers.findAndHookMethod("com.tencent.mm.ui.chatting.viewitems.c", loadPackageParam.classLoader, "a", loadPackageParam.classLoader.loadClass("com.tencent.mm.ui.chatting.viewitems.c$a"), Integer.TYPE, loadPackageParam.classLoader.loadClass("com.tencent.mm.ui.chatting.d.a"), loadPackageParam.classLoader.loadClass("com.tencent.mm.storage.bi"), new XC_MethodHook() {
-			public void afterHookedMethod(MethodHookParam methodHookParam) {
-				if (XposedHelpers.getIntField(methodHookParam.args[3], "field_type") == 3) {
-					FrameLayout frameLayout = (FrameLayout) XposedHelpers.getObjectField(methodHookParam.args[0], "jwK");
-					int childCount = frameLayout.getChildCount();
-					for (int i = 0; i < childCount; i++) {
-						View childAt = frameLayout.getChildAt(i);
-						if (childAt instanceof LinearLayout) {
-							childAt.setVisibility(View.INVISIBLE);
-						}
-					}
-				}
-			}
-		});
 	}
 	
 	public static boolean c(String str) {
@@ -75,19 +54,19 @@ public class VideoHook {
 		return contains;
 	}
 	
-	private static void c(final LoadPackageParam loadPackageParam) {
-		XposedHelpers.findAndHookMethod("com.tencent.mm.modelvideo.g", loadPackageParam.classLoader, "aja", new XC_MethodHook() {
+	private static void hook1(final LoadPackageParam loadPackageParam) {
+		XposedHelpers.findAndHookMethod("com.tencent.mm.modelvideo.g", loadPackageParam.classLoader, "apN", new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
 				String fileName = (String) XposedHelpers.getObjectField(methodHookParam.thisObject, "fileName");
-				Object objectField = XposedHelpers.getObjectField(methodHookParam.thisObject, "fFO");
+				Object objectField = XposedHelpers.getObjectField(methodHookParam.thisObject, "gqi");
 				final String talker = (String) XposedHelpers.callMethod(objectField, "getUser", new Object[0]);
-				String filePath = (String) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.modelvideo.t"), "tF", new Object[]{fileName});
+				String filePath = (String) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.modelvideo.t"), "vW", new Object[]{fileName});
 				if (!VideoHook.c(filePath)) {
 					XLog.d("VideoHook enter uploadSendVideo talker: " + talker + ",fileName:" + filePath);
 					final File file = new File(filePath);
 					XLog.d("VideoHook videoFile exists is " + file.exists());
-					int intField = XposedHelpers.getIntField(objectField, "fHJ");
+					int intField = XposedHelpers.getIntField(objectField, "gsd");
 //					SendManager.a(intField + "", filePath);
 //					SendManager.a(new Runnable() {
 //						public void run() {
@@ -106,8 +85,7 @@ public class VideoHook {
 		});
 	}
 	
-	/* access modifiers changed from: private */
-	public static boolean d(String str) {
+	public static boolean verify(String str) {
 		try {
 			boolean z = !c[0].equals(str);
 			c[0] = str;
@@ -123,8 +101,8 @@ public class VideoHook {
 		}
 	}
 	
-	private static void d(LoadPackageParam loadPackageParam) throws Throwable {
-		XposedHelpers.findAndHookMethod("com.tencent.mars.cdn.CdnLogic", loadPackageParam.classLoader, "startC2CDownload", loadPackageParam.classLoader.loadClass("com.tencent.mars.cdn.CdnLogic$C2CDownloadRequest"), new XC_MethodHook() {
+	private static void hook2(LoadPackageParam loadPackageParam) throws Throwable {
+		XposedHelpers.findAndHookMethod("com.tencent.mars.cdn.CdnLogic", loadPackageParam.classLoader, "startC2CDownload", loadPackageParam.classLoader.loadClass("com.tencent.mars.cdn.CdnLogic$C2CDownloadRequest"), loadPackageParam.classLoader.loadClass("com.tencent.mars.cdn.CdnLogic$DownloadCallback"), new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) {
 				XLog.d("VideoHook" + " enter uploadReceiverVideo startC2CDownload method");
 				final Object obj = methodHookParam.args[0];
@@ -145,7 +123,7 @@ public class VideoHook {
 							String savePath = (String) XposedHelpers.getObjectField(obj, "savePath");
 							XLog.d("VideoHook 判断视频" + savePath.contains("video"));
 							if (savePath.contains("video")) {
-								if (!VideoHook.d(savePath)) {
+								if (!VideoHook.verify(savePath)) {
 									XLog.d("VideoHook" + "videohook is not allown");
 									return;
 								}
