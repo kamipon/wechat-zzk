@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.gentcent.wechat.zzk.util.XLog;
+
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -55,13 +57,13 @@ public class PayInfo implements Parcelable, Serializable {
 				payInfo.type = 0;
 			} else if (sendRedPocketBean.ContentType == 5) {
 				if (sendRedPocketBean.FriendWxId.endsWith("@chatroom")) {
-					Log.e("Xposed", " PayInfo  chatroom ");
+					XLog.d(" PayInfo  chatroom ");
 					payInfo.type = 2;
 					payInfo.chatroom_num = sendRedPocketBean.Num;
 					StringBuilder sb = new StringBuilder();
 					sb.append(" PayInfo  revertSendRedPocketBeanToPayInfo Num ：：");
 					sb.append(sendRedPocketBean.Num);
-					Log.e("Xposed", sb.toString());
+					XLog.d(sb.toString());
 					payInfo.chatroom_type = sendRedPocketBean.RedPocketType;
 				} else {
 					payInfo.type = 1;
@@ -78,7 +80,7 @@ public class PayInfo implements Parcelable, Serializable {
 			StringBuilder sb3 = new StringBuilder();
 			sb3.append(" PayInfoBindSerial ：：");
 			sb3.append(sendRedPocketBean.BindSerial);
-			Log.e("Xposed", sb3.toString());
+			XLog.d(sb3.toString());
 			if (sendRedPocketBean.BindSerial.startsWith("-1")) {
 				payInfo.paymethod = "";
 			} else {

@@ -3,6 +3,7 @@ package com.gentcent.wechat.zzk.model.wallet;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -34,29 +35,16 @@ public class MyKeyboardWindow {
 				}
 			});
 		} catch (Throwable th) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("MyKeyboardWindow  hookTargetClass e:");
-			sb.append(th.getMessage());
-			XLog.d(sb.toString());
-			th.printStackTrace();
+			XLog.d("MyKeyboardWindow  hookTargetClass e:" + Log.getStackTraceString(th));
 		}
 	}
 	
 	public static void b(int i) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("MyKeyboardWindow  input :");
-		sb.append(i);
-		XLog.d(sb.toString());
+		XLog.d("MyKeyboardWindow  input :" + i);
 		if (i >= 0 && i <= 9) {
-			StringBuilder sb2 = new StringBuilder();
-			sb2.append("MyKeyboardWindow  input setup1  g_MyKeyboardWindow is ");
-			sb2.append(a);
-			XLog.d(sb2.toString());
+			XLog.d("MyKeyboardWindow  input setup1  g_MyKeyboardWindow is " + a);
 			LinearLayout linearLayout = a;
-			StringBuilder sb3 = new StringBuilder();
-			sb3.append("mKey");
-			sb3.append(i);
-			Button button = (Button) XposedHelpers.getObjectField(linearLayout, sb3.toString());
+			Button button = (Button) XposedHelpers.getObjectField(linearLayout, "mKey" + i);
 			if (button != null) {
 				XLog.d("MyKeyboardWindow  input setup2");
 				b.onClick(button);

@@ -29,18 +29,18 @@ public class SnsHook{
 	private static long mSnsStartTime = (System.currentTimeMillis() / 1000);
 	
 	public static void hook(final LoadPackageParam lpparam) {
-		XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.sns.model.aw", lpparam.classLoader, "t", XposedHelpers.findClass("com.tencent.mm.plugin.sns.storage.n", lpparam.classLoader), new XC_MethodHook() {
+		XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.sns.model.ax", lpparam.classLoader, "t", XposedHelpers.findClass("com.tencent.mm.plugin.sns.storage.n", lpparam.classLoader), new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
 				SnsHook.mSnsStartTime = System.currentTimeMillis() / 1000;
 			}
 		});
-		XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.sns.storage.o", lpparam.classLoader, "jW", Long.TYPE, new XC_MethodHook() {
+		XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.sns.storage.o", lpparam.classLoader, "mn", Long.TYPE, new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
 				Object result = methodHookParam.getResult();
 				if (result != null) {
-					long intValue = (long) (Integer) XposedHelpers.getObjectField(XposedHelpers.callMethod(result, "cmi"), "ozl");
+					long intValue = (long) (Integer) XposedHelpers.getObjectField(XposedHelpers.callMethod(result, "czu"), "CreateTime");
 					long j = intValue - SnsHook.mSnsStartTime;
 					if (j >= 0) {
 						final SnsContentItemBean snsContentItemBean = SnsHandler.getSnsContentItemBean(lpparam, result, "");
@@ -76,17 +76,6 @@ public class SnsHook{
 							}
 						}
 					}
-				}
-			}
-		});
-		XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.sns.model.am$a", lpparam.classLoader, "WL", String.class, new XC_MethodHook() {
-			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-				super.afterHookedMethod(methodHookParam);
-				String str = (String) methodHookParam.args[0];
-				XLog.d("hookCancelPrise is " + str);
-				if (!TextUtils.equals(str, "sns_table_0")) {
-					XLog.d("!TextUtils.equals(str, \"sns_table_0\")");
-//					b(str, true);
 				}
 			}
 		});

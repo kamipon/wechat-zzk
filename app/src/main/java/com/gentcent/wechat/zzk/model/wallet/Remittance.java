@@ -1,10 +1,13 @@
 package com.gentcent.wechat.zzk.model.wallet;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.model.wallet.bean.PayInfo;
@@ -72,13 +75,13 @@ public class Remittance {
 						} else {
 							intent = new Intent();
 						}
-						XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.wallet.a"), "a", XposedHelpers.getObjectField(activity, "pmB"), intent);
+						XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.wallet.a"), "a", XposedHelpers.getObjectField(activity, "qVn"), intent);
 						if (intent.getIntExtra("busi_type", 0) != 1) {
 							intent.setClass(activity, loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.remittance.ui.RemittanceUI"));
 							intent.putExtra("receiver_name", (String) methodHookParam.args[0]);
-							intent.putExtra("scene", XposedHelpers.getIntField(activity, "gyT"));
+							intent.putExtra("scene", XposedHelpers.getIntField(activity, "mScene"));
 							intent.putExtra("pay_scene", ((Integer) methodHookParam.args[1]).intValue());
-							intent.putExtra("pay_channel", XposedHelpers.getIntField(activity, "nyH"));
+							intent.putExtra("pay_channel", XposedHelpers.getIntField(activity, "mChannel"));
 							intent.putExtra("shenshou", true);
 							intent.putExtra(PayInfo.Intent_Tag, stringExtra);
 							activity.startActivity(intent);
@@ -93,69 +96,77 @@ public class Remittance {
 			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.remittance.ui.RemittanceUI", loadPackageParam.classLoader, "a", String.class, Integer.TYPE, String.class, String.class, String.class, String.class, String.class, loadPackageParam.classLoader.loadClass("com.tencent.mm.g.a.fu"), new XC_MethodHook() {
 				public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
-					StringBuilder sb = new StringBuilder();
-					sb.append("  send info :");
-					sb.append(methodHookParam.args[0]);
-					sb.append(",");
-					sb.append(methodHookParam.args[1]);
-					sb.append(",");
-					sb.append(methodHookParam.args[2]);
-					sb.append(",");
-					sb.append(methodHookParam.args[3]);
-					sb.append(",");
-					sb.append(methodHookParam.args[4]);
-					sb.append(",");
-					sb.append(methodHookParam.args[5]);
-					sb.append(",");
-					sb.append(methodHookParam.args[6]);
-					XLog.d("MYRemittance " + sb.toString());
+					String sb = "  send info :" +
+							methodHookParam.args[0] +
+							"," +
+							methodHookParam.args[1] +
+							"," +
+							methodHookParam.args[2] +
+							"," +
+							methodHookParam.args[3] +
+							"," +
+							methodHookParam.args[4] +
+							"," +
+							methodHookParam.args[5] +
+							"," +
+							methodHookParam.args[6];
+					XLog.d("MYRemittance " + sb);
 				}
 			});
-			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.remittance.ui.RemittanceUI", loadPackageParam.classLoader, "c", Integer.TYPE, Integer.TYPE, String.class, loadPackageParam.classLoader.loadClass("com.tencent.mm.ah.m"), new XC_MethodHook() {
+			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.remittance.ui.RemittanceUI", loadPackageParam.classLoader, "onSceneEnd", Integer.TYPE, Integer.TYPE, String.class, loadPackageParam.classLoader.loadClass("com.tencent.mm.ak.m"), new XC_MethodHook() {
+				@SuppressLint("SetTextI18n")
 				public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
 					int intValue = (Integer) methodHookParam.args[0];
 					int intValue2 = (Integer) methodHookParam.args[1];
 					if (intValue == 0 && intValue2 == 0) {
-						Activity activity = (Activity) methodHookParam.thisObject;
+						final Activity activity = (Activity) methodHookParam.thisObject;
 						if (activity.getIntent().getBooleanExtra("shenshou", false)) {
 							activity.getIntent().putExtra("shenshou", false);
 							PayInfo payInfo = GsonUtils.GsonToBean(activity.getIntent().getStringExtra(PayInfo.Intent_Tag), PayInfo.class);
 							if (payInfo.money >= 0.0d) {
-								XposedHelpers.callMethod(activity, "amz");
 								double d = payInfo.money;
 								WalletPayUI.a = true;
 								WalletPayUI.c = false;
 								WalletPayUI.b = payInfo;
 								Remittance.b = activity;
-								XposedHelpers.setDoubleField(activity, "pmG", d);
-								int intValue3 = (Integer) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.remittance.ui.RemittanceBaseUI"), "a", new Object[]{Remittance.b});
-								String str = (String) XposedHelpers.getObjectField(Remittance.b, "mName");
-								String str2 = (String) XposedHelpers.getObjectField(Remittance.b, "ozQ");
-								String str3 = (String) XposedHelpers.getObjectField(Remittance.b, "pnd");
-								XposedHelpers.callMethod(activity, "a", new Class[]{String.class, Integer.TYPE, String.class, String.class, String.class, String.class, String.class, loadPackageParam.classLoader.loadClass("com.tencent.mm.g.a.fu")}, payInfo.Remarks, intValue3, str, str2, str3, null, "", null);
+								if (payInfo.Remarks != null && !payInfo.Remarks.equals("")) {
+									XposedHelpers.setObjectField(activity, "mDesc", payInfo.Remarks);
+								}
+								XLog.d("MYRemittance  onSceneEnd 1：" + WalletPayUI.b);
+								Object objectField = XposedHelpers.getObjectField(activity, "ltQ");
+								if (objectField != null) {
+									EditText editText = (EditText) XposedHelpers.getObjectField(objectField, "BIX");
+									if (editText != null) {
+										editText.setText("" + payInfo.money);
+										XLog.d("MYRemittance  onSceneEnd 2");
+										editText.postDelayed(new Runnable() {
+											public void run() {
+												try {
+													((View.OnClickListener) XposedHelpers.newInstance(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.remittance.ui.RemittanceNewBaseUI$12"), new Object[]{activity})).onClick(null);
+												} catch (ClassNotFoundException e) {
+													XLog.d("MYRemittance onSceneEnd e:" + Log.getStackTraceString(e));
+												}
+											}
+										}, 1000);
+										XLog.d("MYRemittance  onSceneEnd 3");
+									}
+								}
 							}
 						}
 					}
 				}
 			});
-			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.remittance.ui.RemittanceBaseUI", loadPackageParam.classLoader, "a", loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.remittance.model.v"), new XC_MethodHook() {
+			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.remittance.ui.RemittanceNewBaseUI", loadPackageParam.classLoader, "a", loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.remittance.model.v"), new XC_MethodHook() {
 				public void beforeHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					if (Remittance.a) {
-						boolean booleanField = XposedHelpers.getBooleanField(methodHookParam.thisObject, "pnw");
-						boolean booleanField2 = XposedHelpers.getBooleanField(methodHookParam.thisObject, "pnx");
-						boolean booleanField3 = XposedHelpers.getBooleanField(methodHookParam.thisObject, "pny");
-						XposedHelpers.setBooleanField(methodHookParam.thisObject, "pnw", true);
-						XposedHelpers.setBooleanField(methodHookParam.thisObject, "pnx", true);
-						XposedHelpers.setBooleanField(methodHookParam.thisObject, "pny", true);
-						StringBuilder sb = new StringBuilder();
-						sb.append(" forward mUR:");
-						sb.append(booleanField);
-						sb.append(",mUS:");
-						sb.append(booleanField2);
-						sb.append(",mUT:");
-						sb.append(booleanField3);
-						XLog.d("MYRemittance " + sb.toString());
+						boolean booleanField = XposedHelpers.getBooleanField(methodHookParam.thisObject, "qWi");
+						boolean booleanField2 = XposedHelpers.getBooleanField(methodHookParam.thisObject, "qWj");
+						boolean booleanField3 = XposedHelpers.getBooleanField(methodHookParam.thisObject, "qWk");
+						XposedHelpers.setBooleanField(methodHookParam.thisObject, "qWi", true);
+						XposedHelpers.setBooleanField(methodHookParam.thisObject, "qWj", true);
+						XposedHelpers.setBooleanField(methodHookParam.thisObject, "qWk", true);
+						XLog.d("MYRemittance forward mUR:" + booleanField + ",mUS:" + booleanField2 + ",mUT:" + booleanField3);
 					}
 				}
 			});
@@ -167,7 +178,7 @@ public class Remittance {
 						final Activity activity = (Activity) methodHookParam.thisObject;
 						new Handler().postDelayed(new Runnable() {
 							public void run() {
-								((Button) XposedHelpers.getObjectField(activity, "pss")).callOnClick();
+								((Button) XposedHelpers.getObjectField(activity, "rbA")).callOnClick();
 							}
 						}, 1000);
 					}

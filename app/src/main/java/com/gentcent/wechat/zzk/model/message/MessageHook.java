@@ -3,6 +3,7 @@ package com.gentcent.wechat.zzk.model.message;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.util.Log;
 
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
@@ -52,7 +53,7 @@ public class MessageHook {
 //					}
 					}
 				} catch (Error | Exception e) {
-					XLog.e("错误：" + e.toString());
+					XLog.e("错误：" + Log.getStackTraceString(e));
 				}
 			}
 		});

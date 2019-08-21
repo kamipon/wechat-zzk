@@ -55,7 +55,7 @@ public class SendSnsHook {
 						XLog.d("SnsUploadUI onCreate stringExtra " + stringExtra);
 						XLog.d("SnsUploadUI onCreate LookUpType " + intent.getIntExtra("LookUpType", 0));
 						if (!TextUtils.isEmpty(stringExtra)) {
-							XposedHelpers.callMethod((TextView) XposedHelpers.getObjectField(activity, "qHY"), "setText", stringExtra);
+							XposedHelpers.callMethod((TextView) XposedHelpers.getObjectField(activity, "svr"), "setText", stringExtra);
 						}
 					}
 					//首次回复
@@ -175,7 +175,7 @@ public class SendSnsHook {
 			XLog.d(TAG + "send sns click mController is null");
 			return;
 		}
-		final TextView textView = (TextView) XposedHelpers.getObjectField(objectField, "xrx");
+		final TextView textView = (TextView) XposedHelpers.getObjectField(objectField, "zDX");
 		if (textView == null) {
 			XLog.d(TAG + "send sns click commit error is textView null");
 		} else {

@@ -20,14 +20,14 @@ public class Info {
 	public static Info a(Object obj, String str) {
 		Info aVar = new Info();
 		aVar.h = str;
-		aVar.a = XposedHelpers.getIntField(obj, "eSs");
-		aVar.b = XposedHelpers.getIntField(obj, "eSo");
-		aVar.c = (String) XposedHelpers.getObjectField(obj, "eSr");
-		aVar.d = (String) XposedHelpers.getObjectField(obj, "eSq");
-		aVar.e = XposedHelpers.getIntField(obj, "eSt");
-		aVar.f = XposedHelpers.getIntField(obj, "czq");
-		aVar.g = (String) XposedHelpers.getObjectField(obj, "cjR");
-		aVar.l = (String) XposedHelpers.getObjectField(obj, "eTy");
+		aVar.a = XposedHelpers.getIntField(obj, "fCo");
+		aVar.b = XposedHelpers.getIntField(obj, "fCk");
+		aVar.c = (String) XposedHelpers.getObjectField(obj, "fCn");
+		aVar.d = (String) XposedHelpers.getObjectField(obj, "fCm");
+		aVar.e = XposedHelpers.getIntField(obj, "fCp");
+		aVar.f = XposedHelpers.getIntField(obj, "cYA");
+		aVar.g = (String) XposedHelpers.getObjectField(obj, "cIM");
+		aVar.l = (String) XposedHelpers.getObjectField(obj, "fDu");
 		return aVar;
 	}
 	

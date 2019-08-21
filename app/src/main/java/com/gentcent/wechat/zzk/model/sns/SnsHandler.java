@@ -52,8 +52,8 @@ public class SnsHandler {
 	 * @param wComment        微信评论对象
 	 */
 	private static void makeComment_Reply(Object wSnsContentBean, String description, Object wComment, LoadPackageParam lpparam) throws ClassNotFoundException {
-		Boolean bool = (Boolean) XposedHelpers.callMethod(wSnsContentBean, "CM", 32);
-		Class loadClass = lpparam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.am$a");
+		Boolean bool = (Boolean) XposedHelpers.callMethod(wSnsContentBean, "FH", 32);
+		Class loadClass = lpparam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.an$a");
 		String methodName = "a";
 		Object[] params = new Object[6];
 		params[0] = wSnsContentBean;
@@ -78,9 +78,9 @@ public class SnsHandler {
 		if (GetWSnsContentBean_By_snsID != null) {
 			try {
 				Object comment = null;
-				LinkedList wCommentList = (LinkedList) XposedHelpers.getObjectField(XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.aj"), "p", GetWSnsContentBean_By_snsID), "wnp");
+				LinkedList wCommentList = (LinkedList) XposedHelpers.getObjectField(XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.ak"), "p", GetWSnsContentBean_By_snsID), "CommentUserList");
 				for (Object wCommen : wCommentList) {
-					if (username.equals((String) XposedHelpers.getObjectField(wCommen, "uWD"))) {
+					if (username.equals((String) XposedHelpers.getObjectField(wCommen, "Username"))) {
 						comment = wCommen;
 						break;
 					}
@@ -106,14 +106,14 @@ public class SnsHandler {
 	 * @param description     回复内容
 	 */
 	private static void makeComment_Append(Object wSnsContentBean, String description, LoadPackageParam lpparam) throws ClassNotFoundException {
-		Class loadClass = lpparam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.am$a");
-		Boolean bool = (Boolean) XposedHelpers.callMethod(wSnsContentBean, "CM", 32);
+		Class loadClass = lpparam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.an$a");
+		Boolean bool = (Boolean) XposedHelpers.callMethod(wSnsContentBean, "FH", 32);
 		String methodName = "a";
 		Object[] params = new Object[6];
 		params[0] = wSnsContentBean;
 		params[1] = bool ? 8 : 2;
 		params[2] = description;
-		params[3] = XposedHelpers.newInstance(lpparam.classLoader.loadClass("com.tencent.mm.protocal.protobuf.byg"));
+		params[3] = XposedHelpers.newInstance(lpparam.classLoader.loadClass("com.tencent.mm.protocal.protobuf.cds"));
 		params[4] = 0;
 		params[5] = 0;
 		XposedHelpers.callStaticMethod(loadClass, methodName, params);
@@ -151,13 +151,13 @@ public class SnsHandler {
 		XposedHelpers.getLongField(obj, "field_snsId");
 		if (intField == 0) {
 			XposedHelpers.setIntField(obj, "field_likeFlag", 1);
-			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.h"), "a", XposedHelpers.callMethod(obj, "cmo"), obj);
-			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.am$a"), "a", obj, (Boolean) XposedHelpers.callMethod(obj, "CM", 32) ? 7 : 1, "", 0);
+			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.h"), "a", XposedHelpers.callMethod(obj, "getSnsId"), obj);
+			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.an$a"), "a", obj, (Boolean) XposedHelpers.callMethod(obj, "FH", 32) ? 7 : 1, "", 0);
 			return;
 		}
 		XposedHelpers.setIntField(obj, "field_likeFlag", 0);
-		XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.h"), "a", XposedHelpers.callMethod(obj, "cmo"), obj);
-		XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.am$a"), "WL", XposedHelpers.callMethod(obj, "cmo"));
+		XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.h"), "a", XposedHelpers.callMethod(obj, "getSnsId"), obj);
+		XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.an$a"), "abP", XposedHelpers.callMethod(obj, "getSnsId"));
 	}
 	
 	/**
@@ -219,46 +219,46 @@ public class SnsHandler {
 		try {
 			long longField = XposedHelpers.getLongField(wSnsContentBean, "field_snsId");
 			int intField = XposedHelpers.getIntField(wSnsContentBean, "field_type");
-			long longValue = (Long) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.v"), "XU", (String) XposedHelpers.callMethod(wSnsContentBean, "cmo"));
-			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.af"), "cjt"), "jF", longValue);
-			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.kernel.g"), "Qf");
-			XposedHelpers.callMethod(XposedHelpers.getObjectField(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.kernel.g"), "Qd"), "evj"), "a", XposedHelpers.newInstance(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.r"), longValue, 1), 0);
-			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.af"), "cju"), "delete", longValue);
-			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.af"), "cjz"), "jR", longValue);
-			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.i"), "jQ", longValue);
-			Object callMethod = XposedHelpers.callMethod(wSnsContentBean, "cmi");
+			long longValue = (Long) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.v"), "adb", (String) XposedHelpers.callMethod(wSnsContentBean, "getSnsId"));
+			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.ag"), "cwq"), "lW", longValue);
+			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.kernel.g"), "Wc");
+			XposedHelpers.callMethod(XposedHelpers.getObjectField(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.kernel.g"), "Wa"), "fbW"), "a", XposedHelpers.newInstance(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.r"), longValue, 1), 0);
+			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.ag"), "cwr"), "delete", longValue);
+			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.ag"), "cww"), "mi", longValue);
+			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.i"), "mh", longValue);
+			Object callMethod = XposedHelpers.callMethod(wSnsContentBean, "czu");
 			if (callMethod != null) {
 				String str = null;
-				Object objectField = XposedHelpers.getObjectField(callMethod, "wsw");
+				Object objectField = XposedHelpers.getObjectField(callMethod, "yDr");
 				if (objectField != null) {
 					str = (String) XposedHelpers.getObjectField(objectField, "Id");
 				}
-				if (!(Boolean) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.sdk.platformtools.bp"), "isNullOrNil", str)) {
-					Object staticObjectField = XposedHelpers.getStaticObjectField(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.c.a"), "fUS");
-					if ((Boolean) XposedHelpers.callMethod(staticObjectField, "cV", str)) {
-						String str2 = (String) XposedHelpers.callMethod(staticObjectField, "cT", str);
-						Object newInstance = XposedHelpers.newInstance(loadPackageParam.classLoader.loadClass("com.tencent.mm.g.a.od"));
-						Object objectField2 = XposedHelpers.getObjectField(newInstance, "czx");
+				if (!(Boolean) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.sdk.platformtools.bo"), "isNullOrNil", str)) {
+					Object staticObjectField = XposedHelpers.getStaticObjectField(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.c.a"), "gHA");
+					if ((Boolean) XposedHelpers.callMethod(staticObjectField, "ej", str)) {
+						String str2 = (String) XposedHelpers.callMethod(staticObjectField, "eh", str);
+						Object newInstance = XposedHelpers.newInstance(loadPackageParam.classLoader.loadClass("com.tencent.mm.g.a.ot"));
+						Object objectField2 = XposedHelpers.getObjectField(newInstance, "cYK");
 						XposedHelpers.setObjectField(objectField2, "appId", str);
-						XposedHelpers.setObjectField(objectField2, "czy", XposedHelpers.getObjectField(callMethod, "jfn"));
-						XposedHelpers.setObjectField(objectField2, "bTZ", str2);
-						XposedHelpers.setObjectField(objectField2, "mediaTagName", XposedHelpers.getObjectField(callMethod, "wsB"));
-						XposedHelpers.callMethod(XposedHelpers.getStaticObjectField(loadPackageParam.classLoader.loadClass("com.tencent.mm.sdk.b.a"), "wKm"), "m", newInstance);
+						XposedHelpers.setObjectField(objectField2, "cYL", XposedHelpers.getObjectField(callMethod, "kfE"));
+						XposedHelpers.setObjectField(objectField2, "crY", str2);
+						XposedHelpers.setObjectField(objectField2, "mediaTagName", XposedHelpers.getObjectField(callMethod, "yDw"));
+						XposedHelpers.callMethod(XposedHelpers.getStaticObjectField(loadPackageParam.classLoader.loadClass("com.tencent.mm.sdk.b.a"), "yVI"), "l", newInstance);
 					}
 				}
 			}
-			Object callStaticMethod = XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.modelsns.b"), "lk", 739);
+			Object callStaticMethod = XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.modelsns.b"), "mB", 739);
 			if (callStaticMethod == null) {
-				callStaticMethod = XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.modelsns.b"), "ll", 739);
+				callStaticMethod = XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.modelsns.b"), "mC", 739);
 			}
 			if (callStaticMethod != null) {
-				Object callMethod2 = XposedHelpers.callMethod(XposedHelpers.callMethod(callStaticMethod, "sV", XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.data.i"), "j", wSnsContentBean)), "ln", intField);
+				Object callMethod2 = XposedHelpers.callMethod(XposedHelpers.callMethod(callStaticMethod, "vm", XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.sns.data.i"), "j", wSnsContentBean)), "mE", intField);
 				String str3 = longField == 0 ? CONTEXT_KEY : "0";
-				if ((Boolean) XposedHelpers.callMethod(wSnsContentBean, "cmK")) {
+				if ((Boolean) XposedHelpers.callMethod(wSnsContentBean, "czW")) {
 					str3 = WAKE_TYPE_KEY;
 				}
-				XposedHelpers.callMethod(callMethod2, "sV", str3);
-				XposedHelpers.callMethod(callStaticMethod, "ahK");
+				XposedHelpers.callMethod(callMethod2, "vm", str3);
+				XposedHelpers.callMethod(callStaticMethod, "aoy");
 			}
 		} catch (Throwable th) {
 			th.printStackTrace();
@@ -294,7 +294,7 @@ public class SnsHandler {
 	 * @param methodName "XA":bySnsId    "XB":byRowId
 	 */
 	private static Object GetWSnsContentBean(LoadPackageParam lpparam, String methodName, String id) {
-		if (methodName.equals("XA") || methodName.equals("XB")) {
+		if (methodName.equals("acH") || methodName.equals("acI")) {
 			try {
 				return XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.plugin.sns.storage.h"), methodName, id);
 			} catch (ClassNotFoundException e) {
@@ -338,24 +338,24 @@ public class SnsHandler {
 		SnsContentItemBean snsContentItemBean = new SnsContentItemBean();
 		snsContentItemBean.setNickName(UserDao.getMyName());
 		snsContentItemBean.setSnsWxid((String) XposedHelpers.getObjectField(wSnsContentBean, "field_userName"));
-		snsContentItemBean.setSnsID((String) XposedHelpers.callMethod(wSnsContentBean, "cmo"));
-		Object cmi = XposedHelpers.callMethod(wSnsContentBean, "cmi");
-		snsContentItemBean.setTimestamp((long) (Integer) XposedHelpers.getObjectField(cmi, "ozl"));
-		snsContentItemBean.setContent((String) XposedHelpers.getObjectField(cmi, "wsu"));
+		snsContentItemBean.setSnsID((String) XposedHelpers.callMethod(wSnsContentBean, "getSnsId"));
+		Object cmi = XposedHelpers.callMethod(wSnsContentBean, "czu");
+		snsContentItemBean.setTimestamp((long) (Integer) XposedHelpers.getObjectField(cmi, "CreateTime"));
+		snsContentItemBean.setContent((String) XposedHelpers.getObjectField(cmi, "yDp"));
 		snsContentItemBean.setSelfLike((Integer) XposedHelpers.getObjectField(wSnsContentBean, "field_likeFlag") == 1);
 		snsContentItemBean.setImages(new ArrayList<String>());
-		Object wsx = XposedHelpers.getObjectField(cmi, "wsx");
-		int type = (Integer) XposedHelpers.getObjectField(wsx, "vqt");
+		Object wsx = XposedHelpers.getObjectField(cmi, "yDs");
+		int type = (Integer) XposedHelpers.getObjectField(wsx, "xxw");
 		if (type == IMAGE) {
 			snsContentItemBean.setType(1);
-			for (Object o : ((LinkedList) XposedHelpers.getObjectField(wsx, "vqu"))) {
+			for (Object o : ((LinkedList) XposedHelpers.getObjectField(wsx, "xxx"))) {
 				snsContentItemBean.getImages().add((String) XposedHelpers.getObjectField(o, "Url"));
 			}
 		} else if (type == ARTICLE) {
 			snsContentItemBean.setType(3);
 			String title = (String) XposedHelpers.getObjectField(wsx, "Title");
 			String url = (String) XposedHelpers.getObjectField(wsx, "Url");
-			LinkedList linkedList = (LinkedList) XposedHelpers.getObjectField(wsx, "vqu");
+			LinkedList linkedList = (LinkedList) XposedHelpers.getObjectField(wsx, "xxx");
 			if (linkedList != null && linkedList.size() > 0) {
 				snsContentItemBean.setArticleImage((String) XposedHelpers.getObjectField(linkedList.get(0), "Url"));
 			}
@@ -365,7 +365,7 @@ public class SnsHandler {
 			snsContentItemBean.setType(0);
 		} else {
 			snsContentItemBean.setType(2);
-			LinkedList linkedList2 = (LinkedList) XposedHelpers.getObjectField(wsx, "vqu");
+			LinkedList linkedList2 = (LinkedList) XposedHelpers.getObjectField(wsx, "xxx");
 			if (linkedList2 != null && linkedList2.size() > 0) {
 				Object obj2 = linkedList2.get(0);
 				if (obj2 != null) {
@@ -374,15 +374,15 @@ public class SnsHandler {
 			}
 		}
 		try {
-			Object callStaticMethod = XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.aj"), "p", wSnsContentBean);
-			LinkedList linkedList3 = (LinkedList) XposedHelpers.getObjectField(callStaticMethod, "wnp");
-			for (Object o : ((LinkedList) XposedHelpers.getObjectField(callStaticMethod, "wnm"))) {
+			Object callStaticMethod = XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.plugin.sns.model.ak"), "p", wSnsContentBean);
+			LinkedList linkedList3 = (LinkedList) XposedHelpers.getObjectField(callStaticMethod, "CommentUserList");
+			for (Object o : ((LinkedList) XposedHelpers.getObjectField(callStaticMethod, "LikeUserList"))) {
 				snsContentItemBean.getLikelist().add(getSnsLikeBean(o));
 			}
 			for (Object o : linkedList3) {
 				snsContentItemBean.getCommentlist().add(getSnsCommentBean(o));
 			}
-			int intField = XposedHelpers.getIntField(callStaticMethod, "vUS");
+			int intField = XposedHelpers.getIntField(callStaticMethod, "ExtFlag");
 			if (intField != 3) {
 				if (intField != 5) {
 					snsContentItemBean.setPublic(true);
@@ -400,10 +400,10 @@ public class SnsHandler {
 			LinkedList linkedList4 = null;
 			if (intField == 3) {
 				snsContentItemBean.setSee(false);
-				linkedList4 = (LinkedList) XposedHelpers.getObjectField(callStaticMethod, "wnx");
+				linkedList4 = (LinkedList) XposedHelpers.getObjectField(callStaticMethod, "BlackList");
 			} else if (intField == 5) {
 				snsContentItemBean.setSee(true);
-				linkedList4 = (LinkedList) XposedHelpers.getObjectField(callStaticMethod, "vTG");
+				linkedList4 = (LinkedList) XposedHelpers.getObjectField(callStaticMethod, "GroupUser");
 			}
 			if (linkedList4 == null || linkedList4.size() <= 0) {
 				XLog.d(TAG + "getSnsContentItemBean localLinkedList3  ==null");
@@ -413,7 +413,7 @@ public class SnsHandler {
 			}
 			for (Object next : linkedList4) {
 				if (next != null) {
-					snsContentItemBean.getChooseFriends().add((String) XposedHelpers.getObjectField(next, "wiP"));
+					snsContentItemBean.getChooseFriends().add((String) XposedHelpers.getObjectField(next, "yte"));
 				}
 			}
 //			if (snsContentItemBean.IsPublic) {
@@ -431,8 +431,8 @@ public class SnsHandler {
 	 */
 	private static SnsLikeBean getSnsLikeBean(Object obj) {
 		SnsLikeBean snsLikeBean = new SnsLikeBean();
-		snsLikeBean.setTimestamp((long) XposedHelpers.getIntField(obj, "ozl"));
-		snsLikeBean.setWxid((String) XposedHelpers.getObjectField(obj, "uWD"));
+		snsLikeBean.setTimestamp((long) XposedHelpers.getIntField(obj, "CreateTime"));
+		snsLikeBean.setWxid((String) XposedHelpers.getObjectField(obj, "Username"));
 		snsLikeBean.setNickName(UserDao.getNickByWxid(snsLikeBean.getWxid()));
 		return snsLikeBean;
 	}
@@ -445,12 +445,12 @@ public class SnsHandler {
 	private static SnsCommentBean getSnsCommentBean(Object obj) {
 		SnsCommentBean snsCommentBean = new SnsCommentBean();
 		try {
-			snsCommentBean.setTimestamp((long) XposedHelpers.getIntField(obj, "ozl"));
-			snsCommentBean.setWxid((String) XposedHelpers.getObjectField(obj, "uWD"));
+			snsCommentBean.setTimestamp((long) XposedHelpers.getIntField(obj, "CreateTime"));
+			snsCommentBean.setWxid((String) XposedHelpers.getObjectField(obj, "Username"));
 			snsCommentBean.setNickName(UserDao.getNickByWxid(snsCommentBean.getWxid()));
 			snsCommentBean.setCommentId(snsCommentBean.getWxid());
-			snsCommentBean.setCommentText((String) XposedHelpers.getObjectField(obj, "mzy"));
-			snsCommentBean.setBeReviewedWxid((String) XposedHelpers.getObjectField(obj, "wmV"));
+			snsCommentBean.setCommentText((String) XposedHelpers.getObjectField(obj, "nWR"));
+			snsCommentBean.setBeReviewedWxid((String) XposedHelpers.getObjectField(obj, "yxR"));
 			if (!TextUtils.isEmpty(snsCommentBean.getBeReviewedWxid())) {
 				snsCommentBean.setBeReviewedNickName(UserDao.getNickByWxid(snsCommentBean.getBeReviewedWxid()));
 			}

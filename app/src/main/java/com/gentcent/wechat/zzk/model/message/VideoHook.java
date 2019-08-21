@@ -104,43 +104,48 @@ public class VideoHook {
 	private static void hook2(LoadPackageParam loadPackageParam) throws Throwable {
 		XposedHelpers.findAndHookMethod("com.tencent.mars.cdn.CdnLogic", loadPackageParam.classLoader, "startC2CDownload", loadPackageParam.classLoader.loadClass("com.tencent.mars.cdn.CdnLogic$C2CDownloadRequest"), loadPackageParam.classLoader.loadClass("com.tencent.mars.cdn.CdnLogic$DownloadCallback"), new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) {
-				XLog.d("VideoHook" + " enter uploadReceiverVideo startC2CDownload method");
-				final Object obj = methodHookParam.args[0];
-				XLog.d("VideoHook" + "get enter uploadReceiverVideo startC2CDownload method");
-				int intField = XposedHelpers.getIntField(obj, "fileType");
-				XLog.d("VideoHook fileType3333:" + intField);
-				if (intField == 3) {
-					new Thread(new Runnable() {
-						public void run() {
-							try {
-								Thread.sleep(3000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							String aeskey = (String) XposedHelpers.getObjectField(obj, "aeskey");
-							String fileKey = (String) XposedHelpers.getObjectField(obj, "fileKey");
-							String fileid = (String) XposedHelpers.getObjectField(obj, "fileid");
-							String savePath = (String) XposedHelpers.getObjectField(obj, "savePath");
-							XLog.d("VideoHook 判断视频" + savePath.contains("video"));
-							if (savePath.contains("video")) {
-								if (!VideoHook.verify(savePath)) {
-									XLog.d("VideoHook" + "videohook is not allown");
-									return;
+				try {
+					XLog.d("VideoHook" + " enter uploadReceiverVideo startC2CDownload method");
+					final Object obj = methodHookParam.args[0];
+					XLog.d("VideoHook" + "get enter uploadReceiverVideo startC2CDownload method");
+					int intField = XposedHelpers.getIntField(obj, "fileType");
+					XLog.d("VideoHook fileType3333:" + intField);
+					if (intField == 3) {
+						new Thread(new Runnable() {
+							public void run() {
+								try {
+									Thread.sleep(3000);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
 								}
-								String[] split = savePath.split("/");
-								XLog.d("VideoHook a_savePath:" + savePath);
-								String str5 = split[split.length - 1];
-								XLog.d("VideoHook video:" + str5);
-								Cursor a2 = WcdbHolder.excute(videoSql(str5.split("\\.")[0]));
-								while (a2.moveToNext()) {
-									String string = a2.getString(a2.getColumnIndex("user"));
-									XLog.d("VideoHook userid:" + string);
+								String aeskey = (String) XposedHelpers.getObjectField(obj, "aeskey");
+								String fileKey = (String) XposedHelpers.getObjectField(obj, "fileKey");
+								String fileid = (String) XposedHelpers.getObjectField(obj, "fileid");
+								String savePath = (String) XposedHelpers.getObjectField(obj, "savePath");
+								XLog.d("VideoHook 判断视频" + savePath.contains("video"));
+								if (savePath.contains("video")) {
+									if (!VideoHook.verify(savePath)) {
+										XLog.d("VideoHook" + "videohook is not allown");
+										return;
+									}
+									String[] split = savePath.split("/");
+									XLog.d("VideoHook a_savePath:" + savePath);
+									String str5 = split[split.length - 1];
+									XLog.d("VideoHook video:" + str5);
+									Cursor a2 = WcdbHolder.excute(videoSql(str5.split("\\.")[0]));
+									while (a2.moveToNext()) {
+										String string = a2.getString(a2.getColumnIndex("user"));
+										XLog.d("VideoHook userid:" + string);
+									}
+									a2.close();
+									VideoHook.b(aeskey, fileKey, fileid, savePath);
+									
 								}
-								a2.close();
-								VideoHook.b(aeskey, fileKey, fileid, savePath);
 							}
-						}
-					}).start();
+						}).start();
+					}
+				} catch (Exception e) {
+					XLog.e("error: " + Log.getStackTraceString(e));
 				}
 			}
 		});

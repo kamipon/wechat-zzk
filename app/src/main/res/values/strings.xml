@@ -51,4 +51,5 @@
     <string name="sns_text">朋友圈文本</string>
     <string name="send_sns">发送朋友圈</string>
     <string name="bind_divce">扫码绑定设备</string>
+    <string name="sync_friend">同步好友</string>
 </resources>

@@ -80,13 +80,13 @@ public class Dibs {
 		XLog.d("requestData  联网请求函数");
 		flag = true;
 		try {
-			Object newInstance = XposedHelpers.newInstance(loadPackageParam.classLoader.loadClass("com.tencent.mm.g.a.ui"));
-			Object objectField = XposedHelpers.getObjectField(newInstance, "cFC");
+			Object newInstance = XposedHelpers.newInstance(loadPackageParam.classLoader.loadClass("com.tencent.mm.g.a.vj"));
+			Object objectField = XposedHelpers.getObjectField(newInstance, "dfn");
 			XposedHelpers.setIntField(objectField, "scene", 1);
-			XposedHelpers.setBooleanField(objectField, "cFE", true);
-			XposedHelpers.setBooleanField(objectField, "cFF", true);
-			final Object objectField2 = XposedHelpers.getObjectField(newInstance, "cFD");
-			XposedHelpers.setObjectField(objectField2, "cFv", new Runnable() {
+			XposedHelpers.setBooleanField(objectField, "dfp", true);
+			XposedHelpers.setBooleanField(objectField, "dfq", true);
+			final Object objectField2 = XposedHelpers.getObjectField(newInstance, "dfo");
+			XposedHelpers.setObjectField(objectField2, "dfg", new Runnable() {
 				public void run() {
 					int errCode = XposedHelpers.getIntField(objectField2, "errCode");
 					if (errCode == 0) {
@@ -96,7 +96,7 @@ public class Dibs {
 					}
 				}
 			});
-			XposedHelpers.callMethod(XposedHelpers.getStaticObjectField(loadPackageParam.classLoader.loadClass("com.tencent.mm.sdk.b.a"), "wKm"), "a", newInstance, Looper.myLooper());
+			XposedHelpers.callMethod(XposedHelpers.getStaticObjectField(loadPackageParam.classLoader.loadClass("com.tencent.mm.sdk.b.a"), "yVI"), "a", newInstance, Looper.myLooper());
 		} catch (Throwable th) {
 			if (z) {
 				StringBuilder sb = new StringBuilder();

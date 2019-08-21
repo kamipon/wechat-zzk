@@ -14,7 +14,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.R;
+import com.gentcent.wechat.zzk.WxBroadcast;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.service.MyService;
 import com.gentcent.wechat.zzk.util.HookParams;
@@ -54,6 +56,16 @@ public class MainActivity extends AppCompatActivity {
 	public void bindDivce(View view) {
 		Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
 		startActivityForResult(intent, Constant.REQ_QR_CODE);
+	}
+	
+	/**
+	 * 同步好友
+	 *
+	 * @param view 代表被点击的视图
+	 */
+	public void syncFriend(View view) {
+		ToastUtils.showShort("开始同步好友信息");
+		WxBroadcast.syncInfo();
 	}
 	
 	@Override

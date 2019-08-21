@@ -6,29 +6,27 @@ import android.util.Log;
 import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.XposedHelpers;
-import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
 import java.util.LinkedList;
 
 public class AddVerifyingFriend {
-	static String a = "com.tencent.mm.model.av";
-	static String b = "XE";
-	static String c = "com.tencent.mm.model.s";
-	static String d = "com.tencent.mm.storage.ad";
+	static String a = "com.tencent.mm.model.aw";
+	static String b = "aeU";
+	static String c = "com.tencent.mm.model.t";
+	static String d = "q";
 	static String e = "com.tencent.mm.kernel.g";
-	static String f = "com.tencent.mm.plugin.messenger.foundation.a.j";
-	static String g = "com.tencent.mm.pluginsdk.model.m";
-	static String h = "L";
-	static String i = "VI";
-	static String j = "anm";
-	static String k = "dia";
+	static String f = "ab";
+	static String g = "acU";
+	static String h = "asX";
+	static String i = "com.tencent.mm.plugin.messenger.foundation.a.j";
+	static String j = "com.tencent.mm.pluginsdk.model.m";
+	static String k = "dLi";
 	static String l = "com.tencent.mm.plugin.report.service.h";
-	static String m = "q";
-	static String n = "Qd";
-	static String o = "evj";
-	static String p = "a";
-	static String q = "ptS";
-	static String r = "e";
+	static String m = "Wa";
+	static String n = "fbW";
+	static String o = "a";
+	static String p = "rdc";
+	static String q = "e";
 	
 	/**
 	 * 如果不是好友发来消息，自动添加好友
@@ -37,17 +35,17 @@ public class AddVerifyingFriend {
 	 */
 	public static void run(String wxID) {
 		try {
-			LoadPackageParam lpparams = MainManager.wxLpparam;
-			XposedHelpers.callStaticMethod(lpparams.classLoader.loadClass(a), b);
-			lpparams.classLoader.loadClass(d);
-			Class loadClass = lpparams.classLoader.loadClass(c);
-			Class loadClass2 = lpparams.classLoader.loadClass(e);
-			Class loadClass3 = lpparams.classLoader.loadClass(f);
-			Object callStaticMethod = XposedHelpers.callStaticMethod(loadClass2, h, loadClass3);
-			Object callMethod = XposedHelpers.callMethod(callStaticMethod, i);
-			Object callMethod2 = XposedHelpers.callMethod(callMethod, j, wxID);
+			XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass(a), b);
+			Class loadClass = MainManager.wxLpparam.classLoader.loadClass(c);
+			Class loadClass2 = MainManager.wxLpparam.classLoader.loadClass(e);
+			Class loadClass3 = MainManager.wxLpparam.classLoader.loadClass(i);
+			Object callStaticMethod = XposedHelpers.callStaticMethod(loadClass2, f, loadClass3);
+			XLog.d("friendHook q ::" + callStaticMethod.getClass().getName());
+			Object callMethod = XposedHelpers.callMethod(callStaticMethod, g);
+			XLog.d("friendHook eo ::" + callMethod.getClass().getName());
+			Object callMethod2 = XposedHelpers.callMethod(callMethod, h, wxID);
 			String str2 = (String) XposedHelpers.getObjectField(callMethod2, k);
-			Class loadClass4 = lpparams.classLoader.loadClass(g);
+			Class loadClass4 = MainManager.wxLpparam.classLoader.loadClass(j);
 			LinkedList linkedList = new LinkedList();
 			linkedList.add(wxID);
 			LinkedList linkedList2 = new LinkedList();
@@ -55,9 +53,9 @@ public class AddVerifyingFriend {
 			LinkedList linkedList3 = new LinkedList();
 			linkedList3.add(str2);
 			Object newInstance = XposedHelpers.newInstance(loadClass4, 1, linkedList, linkedList2, linkedList3, "", "", null, "", "");
-			XposedHelpers.callMethod(XposedHelpers.getObjectField(XposedHelpers.callStaticMethod(loadClass2, n), o), p, newInstance, 0);
-			XposedHelpers.callStaticMethod(loadClass, m, callMethod2);
-			XposedHelpers.callMethod(XposedHelpers.getStaticObjectField(lpparams.classLoader.loadClass(l), q), r, 11004, new Object[]{wxID, 3});
+			XposedHelpers.callMethod(XposedHelpers.getObjectField(XposedHelpers.callStaticMethod(loadClass2, m), n), o, newInstance, 0);
+			XposedHelpers.callStaticMethod(loadClass, d, callMethod2);
+			XposedHelpers.callMethod(XposedHelpers.getStaticObjectField(MainManager.wxLpparam.classLoader.loadClass(l), p), q, 11004, new Object[]{wxID, 3});
 		} catch (Exception e2) {
 			XLog.d("addVerifyingFriend error " + Log.getStackTraceString(e2));
 		}

@@ -65,7 +65,7 @@ public class FileManager {
 			} else {
 				XposedHelpers.setObjectField(newInstance2, "title", fileName);
 			}
-			XposedHelpers.setObjectField(newInstance2, "description", XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.sdk.platformtools.bp"), "fx", file.length()));
+			XposedHelpers.setObjectField(newInstance2, "description", XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.sdk.platformtools.bo"), "hw", file.length()));
 			
 			ThreadPoolUtils.getInstance().run(new Runnable() {
 				@Override
@@ -139,9 +139,9 @@ public class FileManager {
 	
 	public static void a(LoadPackageParam loadPackageParam) {
 		try {
-			XposedHelpers.findAndHookMethod("com.tencent.mm.ui.chatting.AppAttachDownloadUI$7", loadPackageParam.classLoader, "a", Integer.TYPE, Integer.TYPE, loadPackageParam.classLoader.loadClass("com.tencent.mm.ah.m"), new XC_MethodReplacement() {
+			XposedHelpers.findAndHookMethod("com.tencent.mm.ui.chatting.AppAttachDownloadUI$7", loadPackageParam.classLoader, "a", Integer.TYPE, Integer.TYPE, loadPackageParam.classLoader.loadClass("com.tencent.mm.ak.m"), new XC_MethodReplacement() {
 				public Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-					if (XposedHelpers.getObjectField(methodHookParam.thisObject, "xSA") == null) {
+					if (XposedHelpers.getObjectField(methodHookParam.thisObject, "AfG") == null) {
 						int code = (Integer) methodHookParam.args[0];
 						int result = (Integer) methodHookParam.args[1];
 						XLog.d("FileManger hookTargetClass callbackObjlist coed:" + code + ",result:" + result);
@@ -176,10 +176,10 @@ public class FileManager {
 	public void a() {
 		try {
 			this.i = b();
-			Object newInstance = XposedHelpers.newInstance(this.lpparam.classLoader.loadClass("com.tencent.mm.pluginsdk.model.app.ac"), this.msgId, this.g, this.i);
-			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(this.lpparam.classLoader.loadClass("com.tencent.mm.model.av"), "Pw"), "a", newInstance, 0);
+			Object newInstance = XposedHelpers.newInstance(this.lpparam.classLoader.loadClass("com.tencent.mm.plugin.record.b.e"), this.msgId, this.g, this.i);
+			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(this.lpparam.classLoader.loadClass("com.tencent.mm.model.aw"), "Vs"), "a", newInstance, 0);
 			if (this.callMethod != null) {
-				XposedHelpers.callStaticMethod(this.lpparam.classLoader.loadClass("com.tencent.mm.modelsimple.y"), "A", this.callMethod);
+				XposedHelpers.callStaticMethod(this.lpparam.classLoader.loadClass("com.tencent.mm.modelsimple.y"), "C", this.callMethod);
 			}
 		} catch (Throwable th) {
 			XLog.d("FileManger getDownloadcallback friendId:" + Log.getStackTraceString(th));
@@ -188,7 +188,7 @@ public class FileManager {
 	
 	private void c() {
 		try {
-			XposedHelpers.callStaticMethod(this.lpparam.classLoader.loadClass("com.tencent.mm.pluginsdk.model.app.l"), "y", this.msgId, this.content);
+			XposedHelpers.callStaticMethod(this.lpparam.classLoader.loadClass("com.tencent.mm.pluginsdk.model.app.l"), "s", this.msgId, this.content);
 		} catch (Throwable th) {
 			XLog.d("FileManger getDownloadcallback friendId:" + Log.getStackTraceString(th));
 		}
@@ -197,8 +197,8 @@ public class FileManager {
 	public void b(LoadPackageParam loadPackageParam, String str) {
 		try {
 			long longValue = Long.valueOf(str);
-			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.av"), "XE");
-			Object callMethod = XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.c"), "VK"), "iA", longValue);
+			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.aw"), "aeU");
+			Object callMethod = XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.c"), "acW"), "kP", longValue);
 			if (callMethod != null) {
 				this.callMethod = callMethod;
 				String field_talker = (String) XposedHelpers.getObjectField(callMethod, "field_talker");
@@ -207,13 +207,13 @@ public class FileManager {
 				XLog.d(" getWxSysFileObj field_content :" + field_content);
 				this.ischartroom = field_talker != null && field_talker.length() > 0 && field_talker.endsWith("@chatroom");
 				if (this.ischartroom) {
-					field_content = (String) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.be"), "oa", new Object[]{field_content});
+					field_content = (String) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.be"), "qm", new Object[]{field_content});
 				}
 				this.content = field_content;
-				Object callStaticMethod = XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.ae.j$b"), "lE", field_content);
+				Object callStaticMethod = XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.ae.j$b"), "nP", field_content);
 				if (callStaticMethod != null) {
-					this.size = XposedHelpers.getIntField(callStaticMethod, "eRh");
-					this.g = (String) XposedHelpers.getObjectField(callStaticMethod, "chy");
+					this.size = XposedHelpers.getIntField(callStaticMethod, "fBd");
+					this.g = (String) XposedHelpers.getObjectField(callStaticMethod, "cGk");
 				}
 			}
 		} catch (Throwable th) {
@@ -227,9 +227,9 @@ public class FileManager {
 	
 	private Object getObject() {
 		try {
-			Object callMethod = XposedHelpers.callMethod(XposedHelpers.callStaticMethod(this.lpparam.classLoader.loadClass("com.tencent.mm.pluginsdk.model.app.ap"), "aQV"), "ln", this.msgId);
+			Object callMethod = XposedHelpers.callMethod(XposedHelpers.callStaticMethod(this.lpparam.classLoader.loadClass("com.tencent.mm.pluginsdk.model.app.al"), "aZG"), "nM", this.msgId);
 			if (callMethod == null) {
-				callMethod = XposedHelpers.callStaticMethod(this.lpparam.classLoader.loadClass("com.tencent.mm.pluginsdk.model.app.l"), "ahi", this.g);
+				callMethod = XposedHelpers.callStaticMethod(this.lpparam.classLoader.loadClass("com.tencent.mm.pluginsdk.model.app.l"), "amS", this.g);
 			}
 			return callMethod;
 		} catch (ClassNotFoundException e2) {

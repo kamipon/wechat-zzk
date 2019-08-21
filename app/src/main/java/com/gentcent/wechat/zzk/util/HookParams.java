@@ -118,7 +118,7 @@ public class HookParams {
 	public static String platformtools_bp_method = "fx";
 	public static String app_l = "com.tencent.mm.pluginsdk.model.app.l";
 	//@好友
-	public static String model_av = "com.tencent.mm.model.av";
+	public static String model_av = "com.tencent.mm.model.aw";
 	public static String model_av_method1 = "Pw";
 	//发送GIF
 	public static String WXEmojiObject = "com.tencent.mm.opensdk.modelmsg.WXEmojiObject";
@@ -155,6 +155,19 @@ public class HookParams {
 	public static String SnsUploadUI = "com.tencent.mm.plugin.sns.ui.SnsUploadUI";
 	public static String VideoCompressUI = "com.tencent.mm.plugin.mmsight.segment.VideoCompressUI";
 	public static String SnsTimeLineUI = "com.tencent.mm.plugin.sns.ui.SnsTimeLineUI";
+	
+	
+	//接受图片消息
+	public static String receive_imgFile_class1 = "com.tencent.mm.av.o";
+	public static String receive_imgFile_class1_method = "alV";
+	public static String receive_imgFile_class2 = "com.tencent.mm.a.g";
+	public static String receive_imgFile_class2_method = "C";
+	public static String receive_imgFile_method = "q";
+	public static String receive_fileKey_class = "com.tencent.mm.an.c";
+	public static String receive_fileKey_class_method = method_a;
+	public static String receive_imgDownload_parameter = "com.tencent.mars.cdn.CdnLogic$C2CDownloadRequest";
+	public static String receive_imgDownload_class = "com.tencent.mars.cdn.CdnLogic";
+	public static String receive_imgDownload_class_method = "startC2CDownload";
 	
 	static {
 		init706();

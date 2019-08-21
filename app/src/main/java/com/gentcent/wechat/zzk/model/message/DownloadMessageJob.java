@@ -13,6 +13,7 @@ import com.gentcent.wechat.zzk.background.MessageConvert;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.bean.UploadBean;
 import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
+import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.util.ZzkUtil;
@@ -35,10 +36,13 @@ public class DownloadMessageJob extends Job {
 	private int isSend;    //isSend
 	private boolean isChartRoom;    //isChartRoom
 	private String content;    //content
-	private int createTime;    //createTime
+	private String createTime;    //createTime
 	private long msgSvrId;    //msgSvrId
 	private int type;    //type
-	private ContentValues contentValues;    //type
+	private ContentValues contentValues;
+	private String aeskey;
+	private String cdnthumburl;
+	private String length;
 	
 	
 	public DownloadMessageJob(ContentValues contentValues, int mDelay) {
@@ -46,13 +50,16 @@ public class DownloadMessageJob extends Job {
 		this.mDelay = mDelay;
 		this.content = contentValues.getAsString("content");
 		this.talker = contentValues.getAsString("talker");
-		this.createTime = (int) (contentValues.getAsLong("createTime") / 1000L);
+		this.createTime = contentValues.getAsString("createTime");
 		this.isSend = contentValues.getAsInteger("isSend");
 		this.msgId = contentValues.getAsString("msgId");
 		this.msgSvrId = contentValues.getAsLong("msgSvrId");
 		this.type = contentValues.getAsInteger("type");
 		this.isChartRoom = this.talker.endsWith("@chatroom");
 		this.contentValues = contentValues;
+		this.aeskey = MessageResolver.a(content, "aeskey=");
+		this.cdnthumburl = MessageResolver.a(content, "cdnthumburl=");
+		this.length = MessageResolver.a(content, "length=");
 	}
 	
 	@Override
@@ -76,30 +83,69 @@ public class DownloadMessageJob extends Job {
 	private void ImgDownload() throws ClassNotFoundException {
 		Object a2 = ZzkUtil.getMsgObj(MainManager.wxLpparam, Long.valueOf(this.msgId));
 		if (a2 != null) {
-			long longValue = (Long) XposedHelpers.getObjectField(XposedHelpers.callMethod(XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.as.o"), "afi"), "u", a2), "fof");
-			XLog.d("ImgHDHandle downloag fof:" + longValue);
-			Object callStaticMethod = XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.as.o", MainManager.wxLpparam.classLoader), "afi");
-			Class findClass = XposedHelpers.findClass("com.tencent.mm.a.g", MainManager.wxLpparam.classLoader);
-			String sb2 = "SERVERID://" + this.msgSvrId;
-			byte[] bytes = sb2.getBytes();
-			XLog.d("by:" + bytes);
-			String str = (String) XposedHelpers.callStaticMethod(findClass, "u", new Object[]{bytes});
-			String obj = XposedHelpers.callMethod(callStaticMethod, "q", str, "th_", "").toString();
+//			long longValue = (Long) XposedHelpers.getObjectField(XposedHelpers.callMethod(XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.as.o"), "afi"), "u", a2), "fof");
+//			XLog.d("ImgHDHandle downloag fof:" + longValue);
+//			Object callStaticMethod = XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.as.o", MainManager.wxLpparam.classLoader), "afi");
+//			Class findClass = XposedHelpers.findClass("com.tencent.mm.a.g", MainManager.wxLpparam.classLoader);
+//			String sb2 = "SERVERID://" + this.msgSvrId;
+//			byte[] bytes = sb2.getBytes();
+//			XLog.d("by:" + bytes);
+//			String str = (String) XposedHelpers.callStaticMethod(findClass, "u", new Object[]{bytes});
+//			String obj = XposedHelpers.callMethod(callStaticMethod, "q", str, "th_", "").toString();
+//			
+//			String path = obj.replace("th_", "") + ".jpg";
+//			XLog.d("ImgHDHandle receive image path:" + path);
+//			int staticIntField = XposedHelpers.getStaticIntField(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.R$f"), "chat_img_template");
+//			Object callStaticMethod2 = XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.ui.chatting.gallery.l"), "dAR");
+//			XposedHelpers.callMethod(XposedHelpers.getObjectField(callStaticMethod2, "yjP"), "add", Long.valueOf(this.msgId));
+//			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.as.o"), "afj"), "a", longValue, Long.valueOf(this.msgId), 1, 100000, staticIntField, callStaticMethod2, 0, Boolean.TRUE);
+//			XLog.d("ImgHDHandle  downloag");
 			
+			XLog.d("保存图片");
+			Class findClass = XposedHelpers.findClass(HookParams.receive_imgFile_class1, MainManager.wxLpparam.classLoader);
+			XLog.d("ImageHook n:" + findClass);
+			boolean z = false;
+			Object callStaticMethod = XposedHelpers.callStaticMethod(findClass, HookParams.receive_imgFile_class1_method);
+			XLog.d("ImageHook f:" + callStaticMethod);
+			Class findClass2 = XposedHelpers.findClass(HookParams.receive_imgFile_class2, MainManager.wxLpparam.classLoader);
+			XLog.d("ImageHook g:" + findClass2);
+			String sb4 = "SERVERID://" + msgSvrId;
+			byte[] bytes = sb4.getBytes();
+			XLog.d("by:" + bytes);
+			String str9 = (String) XposedHelpers.callStaticMethod(findClass2, HookParams.receive_imgFile_class2_method, new Object[]{bytes});
+			XLog.d("ImageHook str:" + str9);
+			String obj = XposedHelpers.callMethod(callStaticMethod, HookParams.receive_imgFile_method, str9, "th_", "").toString();
+			XLog.d("ImageHook str2:" + obj);
+			String f = UserDao.getMyWxid();
+			XLog.d("ImageHook 图片路径:" + obj + "\n发送id:" + talker + "\n接收id:" + f);
+			Class findClass3 = XposedHelpers.findClass(HookParams.receive_fileKey_class, MainManager.wxLpparam.classLoader);
+			long parseLong = Long.parseLong(createTime.substring(0, 10));
+			XLog.d("ImageHook time is " + parseLong);
+			String str10 = (String) XposedHelpers.callStaticMethod(findClass3, HookParams.receive_fileKey_class_method, new Object[]{"downimg", parseLong, talker, msgId});
+			XLog.d("ImageHook fileKey:" + str10);
+			Class findClass4 = XposedHelpers.findClass(HookParams.receive_imgDownload_parameter, MainManager.wxLpparam.classLoader);
+			Class findClass5 = XposedHelpers.findClass(HookParams.receive_imgDownload_class, MainManager.wxLpparam.classLoader);
+			Object newInstance = XposedHelpers.newInstance(findClass4);
 			String path = obj.replace("th_", "") + ".jpg";
-			XLog.d("ImgHDHandle receive image path:" + path);
-			int staticIntField = XposedHelpers.getStaticIntField(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.R$f"), "chat_img_template");
-			Object callStaticMethod2 = XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.ui.chatting.gallery.l"), "dAR");
-			XposedHelpers.callMethod(XposedHelpers.getObjectField(callStaticMethod2, "yjP"), "add", Long.valueOf(this.msgId));
-			XposedHelpers.callMethod(XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.as.o"), "afj"), "a", longValue, Long.valueOf(this.msgId), 1, 100000, staticIntField, callStaticMethod2, 0, Boolean.TRUE);
-			XLog.d("ImgHDHandle  downloag");
+			XLog.d("ImageHook requestNew:" + newInstance);
+			XposedHelpers.setObjectField(newInstance, "aeskey", aeskey);
+			XposedHelpers.setObjectField(newInstance, "fileid", cdnthumburl);
+			XposedHelpers.setObjectField(newInstance, "fileKey", str10);
+			XposedHelpers.setObjectField(newInstance, "savePath", path);
+			XposedHelpers.setObjectField(newInstance, "queueTimeoutSeconds", 0);
+			XposedHelpers.setObjectField(newInstance, "transforTimeoutSeconds", 0);
+			XposedHelpers.setObjectField(newInstance, "fileSize", Integer.valueOf(length));
+			XposedHelpers.setObjectField(newInstance, "fileType", 2);
+			Object callStaticMethod2 = XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.an.f", MainManager.wxLpparam.classLoader), "aki");
+			XposedHelpers.callStaticMethod(findClass5, HookParams.receive_imgDownload_class_method, newInstance, callStaticMethod2);
+			XLog.d("ImageHook 成功了");
 			
 			MessageBean messageBean = new MessageBean();
 			messageBean.setMyWxId(UserDao.getMyWxid());
 			messageBean.setFriendWxId(talker);
 			messageBean.setIsSend(isSend);
 			messageBean.setStatus(SendMessageManager.getStatusByMsgId(Long.valueOf(msgId)));
-			messageBean.setAddTime(createTime);
+			messageBean.setAddTime(parseLong);
 			messageBean.setServiceGuid("");
 			messageBean.setType(UploadService.mappingType(type));
 			UploadBean uploadBean = new UploadBean(messageBean, MyHelper.readLine("phone-id"));

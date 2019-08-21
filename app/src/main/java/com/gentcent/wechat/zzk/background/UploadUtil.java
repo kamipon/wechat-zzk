@@ -112,12 +112,14 @@ public class UploadUtil {
 	 */
 	public static void bindWeixin(final UserBean u) {
 		if (!isbinded()) return;
+		XLog.e("bindWeixin: " + u.toString());
+		XLog.e("phone-id: " + MyHelper.readLine("phone-id"));
 		OkHttpUtils.post().url(Api.addweixin + MyHelper.readLine("phone-id"))
 				.addParams("weixinID", u.username)
 				.addParams("weixin", u.alias)
 				.addParams("pic", u.reserved2 == null ? "" : u.reserved2)
-				.addParams("province", u.province)
-				.addParams("city", u.region)
+				.addParams("province", u.province == null ? "" : u.province)
+				.addParams("city", u.region == null ? "" : u.region)
 				.addParams("sex", String.valueOf(u.sex))
 				.addParams("nick", String.valueOf(u.nickname))
 				.addParams("signature", String.valueOf(u.signature))
@@ -186,8 +188,8 @@ public class UploadUtil {
 				.addParams("friendWeixinID", u.username)
 				.addParams("friendWeixin", u.alias)
 				.addParams("pic", u.reserved2 == null ? "" : u.reserved2)
-				.addParams("province", u.province)
-				.addParams("city", u.region)
+				.addParams("province", u.province == null ? "" : u.province)
+				.addParams("city", u.region == null ? "" : u.region)
 				.addParams("nick", u.nickname)
 				.addParams("sex", String.valueOf(u.sex))
 				.addParams("desc", u.conRemark)
@@ -217,7 +219,7 @@ public class UploadUtil {
 	/**
 	 * 上传收到的消息
 	 */
-	public static void sendToBack(String serviceGuid, int status, String msgId, int isSend, int type, final String talker, String content, String money, int createTime, int fileSize, String fileName) {
+	public static void sendToBack(String serviceGuid, int status, String msgId, int isSend, int type, final String talker, String content, String money, long createTime, int fileSize, String fileName) {
 		if (!isbinded()) return;
 		XLog.d("sendToBackend serviceGuid " + serviceGuid);
 		if (!verify(talker, type, content)) {

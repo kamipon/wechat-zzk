@@ -102,12 +102,15 @@ public class UserDao {
 	 */
 	public static UserBean getUserBeanByWxId(String wxId) {
 		Cursor c1 = null;
-		UserBean userBean = new UserBean();
 		try {
 			//查询所有联系人（verifyFlag!=0:公众号等类型，群里面非好友的类型为4，未知类型2）
 			String findFriendheadandID = "SELECT * FROM(SELECT r.username as username, r.alias as alias , r.nickname as nickname ,  r.conRemark as conRemark ,  r.pyInitial as pyInitial ,  r.quanPin as quanPin, i.reserved1 as reserved1,  i.reserved2 as reserved2 ,r.showHead as showHead,CASE  WHEN length(r.conRemarkPYFull) > 0  THEN UPPER(r.conRemarkPYFull) ELSE UPPER(r.quanPin) END as PY, CASE   WHEN length(r.conRemark) > 0  THEN UPPER(r.conRemark) ELSE UPPER(r.quanPin) end as byremark,c.memberlist as memberlist,  c.displayname as displayname FROM rcontact r LEFT JOIN img_flag i ON r.username = i.username LEFT JOIN chatroom c ON r.username = c.chatroomname WHERE(type&1 != 0) AND r.type&32 = 0 AND r.type&8 = 0 AND r.verifyFlag&8 = 0   AND (r.username NOT LIKE '%@%' OR (((r.type&1 != 0)  AND r.type&8 = 0 AND r.username LIKE '%@talkroom')) OR (r.type&8 = 0  AND r.username LIKE '%@openim')) AND r.username != 'tmessage' AND r.username != 'officialaccounts' AND r.username != 'helper_entry' AND r.username != 'blogapp' AND r.username != 'weixin' union all SELECT r.username , r.alias as alias , r.nickname , r.conRemark , r.pyInitial, r.quanPin , i.reserved1 , i.reserved2 ,r.showHead ,CASE  WHEN length(r.conRemarkPYFull) > 0  THEN UPPER(r.conRemarkPYFull) ELSE UPPER(r.quanPin) END as PY,CASE   WHEN length(r.conRemark) > 0  THEN UPPER(r.conRemark) ELSE UPPER(r.quanPin) end as byremark, c.memberlist, c.displayname FROM rcontact r  LEFT JOIN img_flag i ON r.username = i.username LEFT JOIN chatroom c ON r.username = c.chatroomname where r.username like '%@chatroom%' ORDER BY r.showHead ASC,PY asc,  byremark asc, quanPin ASC,r.quanPin asc,r.nickname asc,r.username asc) WHERE username = '" + wxId + "'";
 			
 			c1 = WcdbHolder.excute(findFriendheadandID);
+			if (c1.getCount() == 0) {
+				XLog.e("getUserBeanByWxId null");
+				return null;
+			}
 			c1.moveToFirst();
 			String username = c1.getString(c1.getColumnIndex("username"));
 			String alias = c1.getString(c1.getColumnIndex("alias"));
@@ -118,13 +121,14 @@ public class UserDao {
 			String displayname = c1.getString(c1.getColumnIndex("displayname"));
 			String pyInitial = c1.getString(c1.getColumnIndex("pyInitial"));
 			String quanPin = c1.getString(c1.getColumnIndex("quanPin"));
-			userBean = new UserBean(username, alias, nickname, reserved2, conRemark, memberlist, displayname, pyInitial, quanPin);
+			UserBean userBean = new UserBean(username, alias, nickname, reserved2, conRemark, memberlist, displayname, pyInitial, quanPin);
 			//补全信息
 			SyncInfoManager.userCompletion(userBean);
 			XLog.d(userBean.toString());
 			c1.close();
 			return userBean;
 		} catch (Exception e) {
+			XLog.e("erroe: " + Log.getStackTraceString(e));
 			c1.close();
 			return null;
 		}

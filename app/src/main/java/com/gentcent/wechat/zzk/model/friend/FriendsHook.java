@@ -36,7 +36,7 @@ public class FriendsHook{
 				final Intent intent = activity.getIntent();
 				XLog.d("SayHiWithSnsPermissionUI  ");
 				if (FriendsHook.c == 2) {
-					((EditText) XposedHelpers.getObjectField(activity, HookParams.sayHiWithSnsPermissionUI_field)).setText(MyHelper.readLine("addFriendHelloText", ""));
+					((EditText) XposedHelpers.getObjectField(activity, "qmH")).setText(MyHelper.readLine("addFriendHelloText", ""));
 				}
 				ThreadPoolUtils.getInstance().a(new Runnable() {
 					public void run() {
@@ -61,11 +61,6 @@ public class FriendsHook{
 						}
 					}
 				}, 3000, TimeUnit.MILLISECONDS);
-			}
-		});
-		XposedHelpers.findAndHookMethod(HookParams.sayHiWithSnsPermissionUI_6, lpparam.classLoader, "onMenuItemClick", MenuItem.class, new XC_MethodHook() {
-			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-				super.afterHookedMethod(methodHookParam);
 			}
 		});
 		XposedHelpers.findAndHookMethod(HookParams.ContactInfoUI, lpparam.classLoader, "initView", new XC_MethodHook() {
@@ -120,9 +115,9 @@ public class FriendsHook{
 										activity.runOnUiThread(new Runnable() {
 											public void run() {
 												FriendsHook.c = 2;
-												Object objectField = XposedHelpers.getObjectField(activity, HookParams.ContactInfoUI_file);
+												Object objectField = XposedHelpers.getObjectField(activity, "qit");
 												XLog.d("oHt class is " + objectField.getClass().getName());
-												XposedHelpers.callMethod(objectField, HookParams.ContactInfoUI_method, HookParams.ContactInfoUI_method_param);
+												XposedHelpers.callMethod(objectField, "Lj", HookParams.ContactInfoUI_method_param);
 												XLog.d("callMethod a success");
 											}
 										});
@@ -152,14 +147,14 @@ public class FriendsHook{
 					}
 				}
 			});
-			XposedHelpers.findAndHookMethod(HookParams.FTSMainUI2, lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
+			XposedHelpers.findAndHookMethod("com.tencent.mm.ui.widget.b.c", lpparam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
 				protected void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
 					if (FriendManager.isMyTask) {
-						String charSequence = ((TextView) XposedHelpers.getObjectField(methodHookParam.thisObject, "xxr")).getText().toString();
+						String charSequence = ((TextView) XposedHelpers.getObjectField(methodHookParam.thisObject, "zKf")).getText().toString();
 						XLog.d("textView msg is " + charSequence);
 						if (ObjectUtils.isNotEmpty((CharSequence) charSequence) && charSequence.startsWith("操作过于频繁")) {
-							final Button button = (Button) XposedHelpers.getObjectField(methodHookParam.thisObject, "sYz");
+							final Button button = (Button) XposedHelpers.getObjectField(methodHookParam.thisObject, "vcM");
 							button.postDelayed(new Runnable() {
 								public void run() {
 									button.performClick();
@@ -170,7 +165,7 @@ public class FriendsHook{
 					}
 				}
 			});
-			Class loadClass = lpparam.classLoader.loadClass(HookParams.FTSMainUI3);
+			Class loadClass = lpparam.classLoader.loadClass("com.tencent.mm.protocal.protobuf.bxf");
 			XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass(HookParams.FTSMainUI4), "a", Intent.class, loadClass, Integer.TYPE, new XC_MethodHook() {
 				protected void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
@@ -184,7 +179,7 @@ public class FriendsHook{
 				protected void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
 					if (FriendManager.isMyTask) {
-						final EditText editText = (EditText) XposedHelpers.getObjectField(methodHookParam.thisObject, "oLC");
+						final EditText editText = (EditText) XposedHelpers.getObjectField(methodHookParam.thisObject, "qmH");
 						StringBuilder sb2 = new StringBuilder();
 						if (editText != null && !TextUtils.isEmpty(MyHelper.readLine("addFriendHelloText", ""))) {
 							editText.postDelayed(new Runnable() {

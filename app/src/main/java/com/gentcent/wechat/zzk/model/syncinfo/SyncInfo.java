@@ -4,18 +4,17 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.blankj.utilcode.util.StringUtils;
+import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.bean.UserBean;
-import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
-import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.model.sns.SnsHandler;
+import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.DecryptPasw;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.gentcent.wechat.zzk.wcdb.WcdbHolder;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -84,8 +83,8 @@ public class SyncInfo {
 	 */
 	private static void bindWeixin() {
 		try {
+			XLog.d("myWxId: " + UserDao.getMyWxid());
 			UserBean userBean = UserDao.getUserBeanByWxId(UserDao.getMyWxid());
-			XLog.d(userBean.toString());
 			UploadService.bindWeixin(userBean);
 			Thread.sleep(2000);
 			XLog.d("sleep:2000");

@@ -30,7 +30,7 @@ public class ZzkUtil {
 	
 	public static Object getWxCore(LoadPackageParam loadPackageParam) {
 		try {
-			return XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.kernel.g"), "L", loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.messenger.foundation.a.j"));
+			return XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.kernel.g"), "ab", loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.messenger.foundation.a.j"));
 		} catch (Throwable th) {
 			XLog.e("ZzkUtil  getWxCore e:" + Log.getStackTraceString(th));
 			return null;
@@ -38,7 +38,7 @@ public class ZzkUtil {
 	}
 	
 	public static String getImgPath(LoadPackageParam loadPackageParam, String str) throws ClassNotFoundException {
-		String str2 = (String) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.as.o"), "afi"), "H", new Object[]{str, Boolean.TRUE});
+		String str2 = (String) XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.av.o"), "alV"), "J", new Object[]{str, Boolean.TRUE});
 		XLog.d("HToolsgetImgb imagepath :" + str2);
 		return str2;
 	}
@@ -49,11 +49,11 @@ public class ZzkUtil {
 	}
 	
 	public static boolean m(String str) {
-		return (ObjectUtils.isNotEmpty((CharSequence) str) && str.endsWith("@chatroom")) || l(str);
+		return (ObjectUtils.isNotEmpty(str) && str.endsWith("@chatroom")) || l(str);
 	}
 	
 	public static boolean l(String str) {
-		return ObjectUtils.isNotEmpty((CharSequence) str) && !str.startsWith("gh_") && !str.startsWith("fake_") && !str.endsWith("@chatroom") && !Arrays.asList(appList).contains(str);
+		return ObjectUtils.isNotEmpty(str) && !str.startsWith("gh_") && !str.startsWith("fake_") && !str.endsWith("@chatroom") && !Arrays.asList(appList).contains(str);
 	}
 	
 	public class MyConstant {
@@ -111,8 +111,8 @@ public class ZzkUtil {
 	public static Object getMsgObj(LoadPackageParam loadPackageParam, long msgId) {
 		try {
 			XLog.d("HTools getMsgObj");
-			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.av"), "XE");
-			return XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.c"), "VK"), "iA", msgId);
+			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.aw"), "aeU");
+			return XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.c"), "acW"), "kP", msgId);
 		} catch (Throwable th) {
 			XLog.d("HTools  getMsgObj e:" + Log.getStackTraceString(th));
 			return null;

@@ -46,7 +46,7 @@ public class MessageBean implements Serializable {
 	//消息ID
 	private String msgId;
 	//添加时间
-	private int addTime;
+	private long addTime;
 	//状态
 	private int status;
 	//文件大小
@@ -89,11 +89,11 @@ public class MessageBean implements Serializable {
 		this.msgId = msgId;
 	}
 	
-	public int getAddTime() {
+	public long getAddTime() {
 		return addTime;
 	}
 	
-	public void setAddTime(int addTime) {
+	public void setAddTime(long addTime) {
 		this.addTime = addTime;
 	}
 	

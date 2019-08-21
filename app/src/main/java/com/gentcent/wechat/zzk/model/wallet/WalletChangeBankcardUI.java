@@ -21,37 +21,26 @@ public class WalletChangeBankcardUI {
 					if (WalletPayUI.a && WalletPayUI.b != null) {
 						new Handler().postDelayed(new Runnable() {
 							public void run() {
-								ArrayList arrayList = (ArrayList) XposedHelpers.getObjectField(methodHookParam.thisObject, "swm");
+								ArrayList arrayList = (ArrayList) XposedHelpers.getObjectField(methodHookParam.thisObject, "uya");
 								if (arrayList == null || arrayList.size() <= 0) {
 									XLog.d("MYWalletChangeBankcardUI" + " bankcardlist is null");
 									return;
 								}
-								StringBuilder sb = new StringBuilder();
-								sb.append("bankcardlist size ");
-								sb.append(arrayList.size());
-								XLog.d(sb.toString());
+								XLog.d("bankcardlist size " + arrayList.size());
 								int i = 0;
 								while (i < arrayList.size()) {
 									try {
 										String str = (String) XposedHelpers.getObjectField(arrayList.get(i), "field_bindSerial");
-										StringBuilder sb2 = new StringBuilder();
-										sb2.append(" bankcardlist bindSerial:");
-										sb2.append(str);
-										sb2.append("----------WalletPayUI.payinfo.paymethod");
-										sb2.append(WalletPayUI.b.paymethod);
-										XLog.d("MYWalletChangeBankcardUI" + sb2.toString());
+										XLog.d("MYWalletChangeBankcardUI bankcardlist bindSerial:" + str + "----------WalletPayUI.payinfo.paymethod" + WalletPayUI.b.paymethod);
 										if (WalletPayUI.b.paymethod == null || TextUtils.isEmpty(WalletPayUI.b.paymethod)) {
-											StringBuilder sb3 = new StringBuilder();
-											sb3.append("bankcardlist isEquals ");
-											sb3.append(StringUtils.equals(str, "CFT"));
-											XLog.d(sb3.toString());
+											XLog.d("bankcardlist isEquals " + StringUtils.equals(str, "CFT"));
 											if (StringUtils.equals(str, "CFT")) {
 												XLog.d("MYWalletChangeBankcardUI" + "equalsIgnoreCase CFT: true");
-												XposedHelpers.callMethod(methodHookParam.thisObject, "FZ", i);
+												XposedHelpers.callMethod(methodHookParam.thisObject, "Jy", i);
 												return;
 											}
 										} else if (!TextUtils.isEmpty(str) && str.equals(WalletPayUI.b.paymethod)) {
-											XposedHelpers.callMethod(methodHookParam.thisObject, "FZ", i);
+											XposedHelpers.callMethod(methodHookParam.thisObject, "Jy", i);
 											return;
 										}
 										i++;
@@ -68,7 +57,7 @@ public class WalletChangeBankcardUI {
 					}
 				}
 			});
-			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.wallet.pay.ui.WalletChangeBankcardUI", loadPackageParam.classLoader, "cIs", new XC_MethodHook() {
+			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.wallet.pay.ui.WalletChangeBankcardUI", loadPackageParam.classLoader, "cZm", new XC_MethodHook() {
 				public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
 					XLog.d("MYWalletChangeBankcardUI  WalletChangeBankcardUI bPu 1");
@@ -83,7 +72,7 @@ public class WalletChangeBankcardUI {
 						XLog.d("MYWalletChangeBankcardUI  WalletChangeBankcardUI bPu 3");
 						if (!activity.getIntent().getBooleanExtra("shenshou", false)) {
 							XLog.d("MYWalletChangeBankcardUI  WalletChangeBankcardUI bPu 4");
-							Object objectField = XposedHelpers.getObjectField(activity, "swj");
+							Object objectField = XposedHelpers.getObjectField(activity, "uGg");
 							StringBuilder sb2 = new StringBuilder();
 							sb2.append("MYWalletChangeBankcardUI  WalletChangeBankcardUI bPu pBu");
 							sb2.append(objectField);

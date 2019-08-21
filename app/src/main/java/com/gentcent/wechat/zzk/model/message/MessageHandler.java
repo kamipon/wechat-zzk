@@ -57,17 +57,17 @@ public class MessageHandler {
 		final String talker = contentValues.getAsString("talker");
 		//消息内容
 		final String content = contentValues.getAsString("content");
-		final int createTime = (int) (contentValues.getAsLong("createTime") / 1000L);
+		final long createTime =contentValues.getAsLong("createTime") / 1000L;
 		final int status = SendMessageManager.getStatusByMsgId(msgId);
 		XLog.d("message || type=" + type + "; msgId=" + msgId + "; isSend=" + isSend + "; talker=" + talker + "; content=" + content);
 		
+		if (!talker.endsWith("@chatroom")) {
+			if (UserDao.getUserBeanByWxId(talker) == null) {
+				AddVerifyingFriend.run(talker);
+			}
+		}
 		if (isSend == 0) {
 			if (isNeedSendToBack(talker)) {
-				if (!talker.endsWith("@chatroom")) {
-					if (UserDao.getUserBeanByWxId(talker) == null) {
-						AddVerifyingFriend.run(talker);
-					}
-				}
 				if (type == 1) { //文本消息
 					XLog.d("messageHandle" + "MysnedText msgId =" + msgId + " content :" + content);
 					ThreadPoolUtils.getInstance().a(new Runnable() {
@@ -229,12 +229,12 @@ public class MessageHandler {
 			XLog.d("ReceiveArticUtil handle field_talker :" + field_talker);
 			XLog.d("ReceiveArticUtil handle field_content :" + field_content);
 			if (field_talker != null && field_talker.length() > 0 && field_talker.endsWith("@chatroom")) {
-				field_content = (String) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.be"), "oa", field_content);
+				field_content = (String) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.bf"), "qm", field_content);
 				ischartRoom = true;
 			} else {
 				ischartRoom = false;
 			}
-			Object callStaticMethod = XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.ae.j$b"), "lE", field_content);
+			Object callStaticMethod = XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.ah.j$b"), "nP", field_content);
 			if (callStaticMethod != null) {
 				String imgPath = (field_imgPath == null || field_imgPath.length() <= 0) ? null : ZzkUtil.getImgPath(loadPackageParam, field_imgPath);
 				String url = (String) XposedHelpers.getObjectField(callStaticMethod, "url");

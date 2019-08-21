@@ -67,7 +67,7 @@ public class UploadService {
 	 * 同步群聊
 	 */
 	public static void bindGroup(UserBean userBean) {
-		UploadUtil.bindGroup(userBean);
+//		UploadUtil.bindGroup(userBean);
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class UploadService {
 	/**
 	 * 接收纯文本消息
 	 */
-	public static void receiveTextMessage(int status, int isSend, String talker, String content, int createTime, long msgId) {
+	public static void receiveTextMessage(int status, int isSend, String talker, String content, long createTime, long msgId) {
 		XLog.d("doText content " + content);
 		if (!TextUtils.isEmpty(content)) {
 			XLog.d("发送/接收 文字消息 ");
@@ -91,7 +91,7 @@ public class UploadService {
 	/**
 	 * 接收图片消息
 	 */
-	public static void receiveAnimationMessage(int status, int isSend, String talker, String content, int createTime, long msgId) {
+	public static void receiveAnimationMessage(int status, int isSend, String talker, String content, long createTime, long msgId) {
 		XLog.d("doAnimation content " + content);
 		if (!TextUtils.isEmpty(content)) {
 			XLog.d("发送/接收 表情包 ");

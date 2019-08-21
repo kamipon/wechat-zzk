@@ -33,8 +33,8 @@ public class SyncInfoManager {
 				if (userBean.username.endsWith("@chatroom")) {
 					setChatroom(userBean);
 				} else {
-					XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.model.av"), "XE");
-					Object user = XposedHelpers.callMethod(XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.model.c"), "VI"), "anm", userBean.username);
+					XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.model.aw"), "aeU");
+					Object user = XposedHelpers.callMethod(XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.model.c"), "acU"), "asX", userBean.username);
 					setSex(user, userBean);
 					setAddress(user, userBean);
 					setSignature(user, userBean);
@@ -52,10 +52,10 @@ public class SyncInfoManager {
 	 * @param wxId 微信ID
 	 */
 	public static String getHeadImgUrlByWxId(String wxId) throws ClassNotFoundException {
-		Object obj = XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.ag.o"), "aaq");
-		Object obj2 = XposedHelpers.callMethod(obj, "pN", wxId);
+		Object obj = XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.aj.o"), "ahz");
+		Object obj2 = XposedHelpers.callMethod(obj, "sa", wxId);
 		if (obj2 != null) {
-			return (String) XposedHelpers.callMethod(obj2, "aag");
+			return (String) XposedHelpers.callMethod(obj2, "ahr");
 		}
 		return "";
 	}
@@ -73,26 +73,27 @@ public class SyncInfoManager {
 		}
 		String[] split = memberlist.split(";");
 		String[] split2 = namelist.split("、");
-		Object callMethod = XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.model.av", MainManager.wxLpparam.classLoader), "XE"), "VI");
+		Object callMethod = XposedHelpers.callMethod(XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.model.aw", MainManager.wxLpparam.classLoader), "aeU"), "acU");
 		Object a2 = initChatRoom(username, MainManager.wxLpparam);
 		if (a2 != null) {
 			for (int i = 0; i < split.length; i++) {
 				String wxId = split[i];
-				String chartRoomNick = (String) XposedHelpers.callMethod(a2, "mk", wxId);
+				String chartRoomNick = (String) XposedHelpers.callMethod(a2, "ov", wxId);
 				if (!TextUtils.isEmpty(chartRoomNick)) {
 					list.add(new ChartRoomFriendBean(wxId, split2[i], chartRoomNick, getHeadImgUrlByWxId(wxId)));
 				} else {
-					chartRoomNick = (String) XposedHelpers.getObjectField(XposedHelpers.callMethod(callMethod, "anl", wxId), "field_nickname");
+					chartRoomNick = (String) XposedHelpers.getObjectField(XposedHelpers.callMethod(callMethod, "asW", wxId), "field_nickname");
 					list.add(new ChartRoomFriendBean(wxId, split2[i], chartRoomNick, getHeadImgUrlByWxId(wxId)));
 				}
 			}
 		} else {
 			for (int i = 0; i < split.length; i++) {
 				String wxId = split[i];
-				String chartRoomNick = (String) XposedHelpers.getObjectField(XposedHelpers.callMethod(callMethod, "anl", wxId), "field_nickname");
+				String chartRoomNick = (String) XposedHelpers.getObjectField(XposedHelpers.callMethod(callMethod, "asW", wxId), "field_nickname");
 				list.add(new ChartRoomFriendBean(wxId, split2[i], chartRoomNick, getHeadImgUrlByWxId(wxId)));
 			}
 		}
+		XLog.d("resultMap length is ");
 		return list;
 	}
 	
@@ -104,7 +105,7 @@ public class SyncInfoManager {
 	private static Object initChatRoom(String username, LoadPackageParam loadPackageParam) {
 		try {
 			Object[] objArr = {username};
-			return XposedHelpers.callMethod(XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.kernel.g"), "L", loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.chatroom.a.c")), "VR"), "nB", objArr);
+			return XposedHelpers.callMethod(XposedHelpers.callMethod(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.kernel.g"), "ab", loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.chatroom.a.c")), "ade"), "pM", objArr);
 		} catch (Exception unused) {
 			XLog.d(" initChatRoom error ");
 			return null;
@@ -133,7 +134,7 @@ public class SyncInfoManager {
 	 */
 	public static String findNotice(String roomId) {
 		try {
-			return (String) XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.model.m"), "md", roomId);
+			return (String) XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.model.n"), "oo", roomId);
 		} catch (Exception e) {
 			XLog.e("room_notice error is " + Log.getStackTraceString(e));
 			return "";
@@ -149,11 +150,11 @@ public class SyncInfoManager {
 	public static boolean findIsAddAddressBook(String roomId) {
 		try {
 			Class loadClass = MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.plugin.messenger.foundation.a.j");
-			Object callMethod = XposedHelpers.callMethod(XposedHelpers.callMethod(XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.kernel.g"), "L", loadClass), "VI"), "anm", roomId);
+			Object callMethod = XposedHelpers.callMethod(XposedHelpers.callMethod(XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.kernel.g"), "ab", loadClass), "acU"), "asX", roomId);
 			if (callMethod == null) {
 				return false;
 			}
-			return (Boolean) XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.m.a"), "iv", new Object[]{XposedHelpers.getObjectField(callMethod, "field_type")});
+			return (Boolean) XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.n.a"), "jK", new Object[]{XposedHelpers.getObjectField(callMethod, "field_type")});
 		} catch (Exception unused) {
 			return false;
 		}
@@ -179,7 +180,7 @@ public class SyncInfoManager {
 	//获取性别
 	public static void setSex(Object user, UserBean userBean) {
 		try {
-			userBean.sex = (Integer) XposedHelpers.getObjectField(user, "sex");
+			userBean.sex = (Integer) XposedHelpers.getObjectField(user, "dKK");
 		} catch (Exception unused) {
 			XLog.e("User get sex error");
 		}
@@ -188,8 +189,8 @@ public class SyncInfoManager {
 	//获取地区
 	public static void setAddress(Object user, UserBean userBean) {
 		try {
-			userBean.province = (String) XposedHelpers.getObjectField(user, "dhK");
-			userBean.region = (String) XposedHelpers.getObjectField(user, "dhL");
+			userBean.province = (String) XposedHelpers.getObjectField(user, "dKs");
+			userBean.region = (String) XposedHelpers.getObjectField(user, "dKt");
 		} catch (Exception unused) {
 			XLog.e("User setAddress error");
 		}
@@ -208,7 +209,7 @@ public class SyncInfoManager {
 	private static void setSource(Object user, UserBean userBean) {
 		try {
 			int intValue = (Integer) XposedHelpers.callMethod(user, "getSource");
-			int intValue2 = (Integer) XposedHelpers.callMethod(user, "MD");
+			int intValue2 = (Integer) XposedHelpers.callMethod(user, "Ss");
 			if (intValue != 8) {
 				if (intValue != 10) {
 					if (intValue == 48) {

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.model.wallet.bean.PayInfo;
@@ -44,7 +45,7 @@ public class LuckyMoney {
 			sb.append(MainManager.activity != null);
 			XLog.d(str + sb.toString());
 			if (MainManager.activity != null) {
-				XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.br.d"), "b", MainManager.activity, "luckymoney", ".ui.LuckyMoneyPrepareUI", intent);
+				XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.bs.d"), "b", MainManager.activity, "luckymoney", ".ui.LuckyMoneyPrepareUI", intent);
 			}
 			XLog.d("MyLuckyMoney" + "startActivity success");
 		} catch (Throwable th) {
@@ -59,11 +60,8 @@ public class LuckyMoney {
 	public static void b(LoadPackageParam loadPackageParam, PayInfo payInfo) {
 		try {
 			Intent intent = new Intent();
-			int intValue = (Integer) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.m"), "mb", new Object[]{payInfo.receiver_name});
-			StringBuilder sb = new StringBuilder();
-			sb.append("gI : ");
-			sb.append(intValue);
-			XLog.d("MyLuckyMoney" + sb.toString());
+			int intValue = (Integer) XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.model.n"), "om", new Object[]{payInfo.receiver_name});
+			XLog.d("MyLuckyMoney gI : " + intValue);
 			intent.putExtra("key_way", 1);
 			intent.putExtra("key_chatroom_num", intValue);
 			intent.putExtra("key_type", 1);
@@ -74,11 +72,7 @@ public class LuckyMoney {
 			intent.putExtra(PayInfo.Intent_Tag, GsonUtils.GsonString(payInfo));
 			a(loadPackageParam, intent);
 		} catch (Throwable th) {
-			StringBuilder sb2 = new StringBuilder();
-			sb2.append(" send_chroom e:");
-			sb2.append(th.getMessage());
-			XLog.d("MyLuckyMoney" + sb2.toString());
-			th.printStackTrace();
+			XLog.d("MyLuckyMoney send_chroom e:" + Log.getStackTraceString(th));
 		}
 	}
 	
@@ -100,7 +94,7 @@ public class LuckyMoney {
 										WalletPayUI.a = true;
 										WalletPayUI.c = false;
 										WalletPayUI.b = payInfo;
-										XposedHelpers.callMethod(activity, "b", new Object[]{a2, Boolean.valueOf(false)});
+										XposedHelpers.callMethod(activity, "doSceneProgress", a2, Boolean.FALSE);
 									}
 								}
 							}, 1000);
@@ -149,18 +143,18 @@ public class LuckyMoney {
 		PayInfo payInfo2 = payInfo;
 		try {
 			long j2 = (long) (payInfo2.money * 100.0d);
-			String str = (String) XposedHelpers.callStaticMethod(loadPackageParam2.classLoader.loadClass("com.tencent.mm.plugin.luckymoney.model.w"), "bHy", new Object[0]);
+			String str = (String) XposedHelpers.callStaticMethod(loadPackageParam2.classLoader.loadClass("com.tencent.mm.plugin.luckymoney.model.x"), "bTS", new Object[0]);
 			String stringExtra = activity.getIntent().getStringExtra("key_username");
-			String str2 = (String) XposedHelpers.callStaticMethod(loadPackageParam2.classLoader.loadClass("com.tencent.mm.plugin.luckymoney.model.w"), "mj", new Object[]{stringExtra});
-			String str3 = (String) XposedHelpers.callStaticMethod(loadPackageParam2.classLoader.loadClass("com.tencent.mm.model.q"), "Wt", new Object[0]);
-			String str4 = (String) XposedHelpers.callStaticMethod(loadPackageParam2.classLoader.loadClass("com.tencent.mm.model.q"), "Wv", new Object[0]);
+			String str2 = (String) XposedHelpers.callStaticMethod(loadPackageParam2.classLoader.loadClass("com.tencent.mm.plugin.luckymoney.model.x"), "ou", new Object[]{stringExtra});
+			String str3 = (String) XposedHelpers.callStaticMethod(loadPackageParam2.classLoader.loadClass("com.tencent.mm.model.r"), "adI", new Object[0]);
+			String str4 = (String) XposedHelpers.callStaticMethod(loadPackageParam2.classLoader.loadClass("com.tencent.mm.model.r"), "adK", new Object[0]);
 			if (payInfo2.chatroom_type != 1) {
 				if (payInfo2.chatroom_type != 0) {
 					j = j2;
 					i3 = 1;
 					i2 = 0;
 					i = 0;
-					return XposedHelpers.newInstance(loadPackageParam2.classLoader.loadClass("com.tencent.mm.plugin.luckymoney.model.an"), i3, j2, j, i2, payInfo2.Remarks, str, stringExtra, str2, str3, str4, Integer.valueOf(i), "");
+					return XposedHelpers.newInstance(loadPackageParam2.classLoader.loadClass("com.tencent.mm.plugin.luckymoney.model.ao"), i3, j2, j, i2, payInfo2.Remarks, str, stringExtra, str2, str3, str4, i, "");
 				}
 			}
 			i3 = payInfo2.chatroom_num;
@@ -175,13 +169,9 @@ public class LuckyMoney {
 				j = 0;
 				i = 1;
 			}
-			return XposedHelpers.newInstance(loadPackageParam2.classLoader.loadClass("com.tencent.mm.plugin.luckymoney.model.an"), i3, j2, j, i2, payInfo2.Remarks, str, stringExtra, str2, str3, str4, Integer.valueOf(i), "");
+			return XposedHelpers.newInstance(loadPackageParam2.classLoader.loadClass("com.tencent.mm.plugin.luckymoney.model.ao"), i3, j2, j, i2, payInfo2.Remarks, str, stringExtra, str2, str3, str4, i, "");
 		} catch (Throwable th) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(" getMsgObj e:");
-			sb.append(th.getMessage());
-			XLog.d("MyLuckyMoney" + sb.toString());
-			th.printStackTrace();
+			XLog.d("MyLuckyMoney getMsgObj e:" + Log.getStackTraceString(th));
 			return null;
 		}
 	}
