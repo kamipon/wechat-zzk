@@ -93,7 +93,7 @@ public class Remittance {
 					return XposedBridge.invokeOriginalMethod(methodHookParam.method, methodHookParam.thisObject, methodHookParam.args);
 				}
 			});
-			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.remittance.ui.RemittanceUI", loadPackageParam.classLoader, "a", String.class, Integer.TYPE, String.class, String.class, String.class, String.class, String.class, loadPackageParam.classLoader.loadClass("com.tencent.mm.g.a.fu"), new XC_MethodHook() {
+			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.remittance.ui.RemittanceUI", loadPackageParam.classLoader, "a", String.class, Integer.TYPE, String.class, String.class, String.class, String.class, String.class, loadPackageParam.classLoader.loadClass("com.tencent.mm.g.a.fy"), new XC_MethodHook() {
 				public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
 					String sb = "  send info :" +

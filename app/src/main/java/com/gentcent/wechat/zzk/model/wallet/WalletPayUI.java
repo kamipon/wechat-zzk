@@ -26,7 +26,7 @@ public class WalletPayUI {
 	
 	public static void a(LoadPackageParam loadPackageParam) {
 		try {
-			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.wallet.pay.ui.WalletPayUI", loadPackageParam.classLoader, "oe", new XC_MethodHook() {
+			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.wallet.pay.ui.WalletPayUI", loadPackageParam.classLoader, "oe", Boolean.TYPE, new XC_MethodHook() {
 				public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
 					XLog.d("MyWalletPayUI  WalletPayUI bPu 1");
