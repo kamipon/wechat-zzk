@@ -56,7 +56,7 @@ public class SendSnsManager {
 			intent.putExtra("Ksnsupload_type", 9);
 			intent.putExtra("Kdescription", snsBean.getContent());
 			intent.putExtra("WechatForwarderText", true);
-			intent.putExtra("zzk", true);
+			intent.putExtra("shenshou", true);
 //			intent.putExtra("shenshoutaskid", num);
 			intent.putExtra("snsfriendsnsuploadui", true);
 			intent.putExtra("LookUpType", snsBean.getLookUpType());
@@ -121,7 +121,7 @@ public class SendSnsManager {
 			intent.setClassName(HookParams.WECHAT_PACKAGE_NAME, HookParams.SnsUploadUI);
 			intent.putExtra("Kdescription", snsBean.getContent());
 			intent.putExtra("Ksnsupload_type", 0);
-			intent.putExtra("zzk", true);
+			intent.putExtra("shenshou", true);
 //			intent.putExtra("shenshoutaskid", num);
 			intent.putExtra("snsfriendsnsuploadui", true);
 			ArrayList arrayList = new ArrayList();
@@ -186,7 +186,7 @@ public class SendSnsManager {
 				intent.putExtra("KSightThumbPath", videoImgPath);
 				intent.putExtra("SendType", "SSRJVideo");
 				intent.putExtra("KSightPath", videoPath);
-				intent.putExtra("zzk", true);
+				intent.putExtra("shenshou", true);
 //				intent.putExtra("shenshoutaskid", num);
 				intent.putExtra("Select_Contact", snsBean.getRemind());
 				intent.putExtra("sight_md5", FileUtils.getFileMD5(videoPath));
@@ -265,7 +265,7 @@ public class SendSnsManager {
 			intent.putExtra("Ksnsupload_title", snsBean.getArticleTitle());
 			intent.putExtra("Ksnsupload_imgurl", snsBean.getArticleImage());
 			intent.putExtra("Ksnsupload_type", 1);
-			intent.putExtra("zzk", true);
+			intent.putExtra("shenshou", true);
 //			intent.putExtra("shenshoutaskid", num);
 			intent.putExtra("Select_Contact", snsBean.getRemind());
 			intent.putExtra("snsfriendsnsuploadui", true);

@@ -45,7 +45,7 @@ public class SendSnsHook {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				XLog.d("SnsUploadUI onCreate sleep");
 				final Activity activity = (Activity) methodHookParam.thisObject;
-				boolean booleanExtra = activity.getIntent().getBooleanExtra("zzk", false);
+				boolean booleanExtra = activity.getIntent().getBooleanExtra("shenshou", false);
 				boolean booleanExtra2 = activity.getIntent().getBooleanExtra("snsfriendsnsuploadui", false);
 				XLog.d("isMoreChatSendFalg  " + booleanExtra + "  snsfriendFlag is " + booleanExtra2);
 				if (booleanExtra || booleanExtra2) {
@@ -139,7 +139,7 @@ public class SendSnsHook {
 		try {
 			Intent intent = new Intent();
 			intent.setClassName(HookParams.WECHAT_PACKAGE_NAME, HookParams.SnsTimeLineUI);
-			intent.putExtra("zzk", true);
+			intent.putExtra("shenshou", true);
 			intent.putExtra("sendComplete", true);
 			MainManager.activity.startActivity(intent);
 		} catch (Exception e) {
@@ -157,7 +157,7 @@ public class SendSnsHook {
 			Intent intent = new Intent();
 			intent.setClassName(HookParams.WECHAT_PACKAGE_NAME, HookParams.SnsTimeLineUI);
 			intent.putExtra("comment", selfComment);
-			intent.putExtra("zzk", true);
+			intent.putExtra("shenshou", true);
 			intent.putExtra("sendComplete", true);
 			MainManager.activity.startActivity(intent);
 			SnsHandler.SelfCommend = selfComment;

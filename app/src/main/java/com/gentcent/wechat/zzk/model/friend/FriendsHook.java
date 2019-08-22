@@ -23,7 +23,7 @@ import com.gentcent.zzk.xped.callbacks.XC_LoadPackage;
 import java.util.concurrent.TimeUnit;
 
 
-public class FriendsHook{
+public class FriendsHook {
 	//添加好友的页面
 	public static Activity activity;
 	public static int c;
@@ -67,16 +67,13 @@ public class FriendsHook{
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
 				Activity activity = (Activity) methodHookParam.thisObject;
-				XLog.d(" ContactInfoUI initView() ");
-				boolean booleanExtra = activity.getIntent().getBooleanExtra("zzk", false);
+				boolean booleanExtra = activity.getIntent().getBooleanExtra("shenshou", false);
+				XLog.d(" ContactInfoUI initView() booleanExtra:" + booleanExtra + "   FriendsHook.c:" + FriendsHook.c);
 				if (booleanExtra) {
 					Intent intent = activity.getIntent();
 					String stringExtra = intent.getStringExtra("Contact_Search_Mobile");
-					StringBuilder sb2 = new StringBuilder();
-					sb2.append("phone is ");
-					sb2.append(stringExtra);
-					XLog.d("AddFriendHook" + sb2.toString());
-					if (ObjectUtils.isNotEmpty((CharSequence) stringExtra)) {
+					XLog.d("AddFriendHook phone is " + stringExtra);
+					if (ObjectUtils.isNotEmpty(stringExtra)) {
 						String stringExtra2 = intent.getStringExtra("Contact_Nick");
 						XLog.d("AddFriendHook" + "nickName is " + stringExtra2);
 						String stringExtra3 = intent.getStringExtra("Contact_QuanPin");
@@ -98,7 +95,7 @@ public class FriendsHook{
 				ThreadPoolUtils.getInstance().a(new Runnable() {
 					public void run() {
 						XLog.d("ContactInfoUI   onResume  run()" + FriendsHook.c);
-						if (intent.getBooleanExtra("zzk", false)) {
+						if (intent.getBooleanExtra("shenshou", false)) {
 							try {
 								FriendsHook.activity = activity;
 								if (FriendsHook.c == 2) {
@@ -169,8 +166,9 @@ public class FriendsHook{
 			XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass(HookParams.FTSMainUI4), "a", Intent.class, loadClass, Integer.TYPE, new XC_MethodHook() {
 				protected void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
+					XLog.e("!!!FTSMainUI4.a!!!");
 					if (FriendManager.isMyTask) {
-						((Intent) methodHookParam.args[0]).putExtra("zzk", true);
+						((Intent) methodHookParam.args[0]).putExtra("shenshou", true);
 						FriendsHook.c = 4;
 					}
 				}

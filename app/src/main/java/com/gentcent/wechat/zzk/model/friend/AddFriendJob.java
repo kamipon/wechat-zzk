@@ -39,6 +39,7 @@ public class AddFriendJob extends Job {
 		this.mDelay = mDelay;
 		this.mFriendId = mFriendId;
 		this.mFriends = mFriends;
+		this.helloText = helloText;
 	}
 	
 	@Override
@@ -50,7 +51,7 @@ public class AddFriendJob extends Job {
 	public void onRun() {
 		try {
 			//添加好友打招呼语句
-			MyHelper.writeLine("addFriendHelloText", helloText);
+			MyHelper.writeLine("addFriendHelloText", helloText == null ? "" : helloText);
 			
 			Intent intent2 = new Intent();
 			intent2.setClassName(HookParams.WECHAT_PACKAGE_NAME, HookParams.FTSMainUI);

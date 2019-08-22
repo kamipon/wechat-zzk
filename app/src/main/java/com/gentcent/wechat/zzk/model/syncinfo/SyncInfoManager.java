@@ -3,6 +3,7 @@ package com.gentcent.wechat.zzk.model.syncinfo;
 import android.database.Cursor;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.EditText;
 
 import com.blankj.utilcode.util.ObjectUtils;
 import com.gentcent.wechat.zzk.MainManager;
@@ -191,8 +192,8 @@ public class SyncInfoManager {
 		try {
 			userBean.province = (String) XposedHelpers.getObjectField(user, "dKs");
 			userBean.region = (String) XposedHelpers.getObjectField(user, "dKt");
-		} catch (Exception unused) {
-			XLog.e("User setAddress error");
+		} catch (Exception e) {
+			XLog.e("User setAddress error:" + Log.getStackTraceString(e));
 		}
 	}
 	
@@ -200,8 +201,8 @@ public class SyncInfoManager {
 	public static void setSignature(Object user, UserBean userBean) {
 		try {
 			userBean.signature = (String) XposedHelpers.getObjectField(user, "signature");
-		} catch (Exception unused) {
-			XLog.e("User setSignature error");
+		} catch (Exception e) {
+			XLog.e("User setSignature error:" + Log.getStackTraceString(e));
 		}
 	}
 	

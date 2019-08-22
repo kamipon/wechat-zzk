@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * @since 2019-08-15
  */
 public class MessageHandler {
-	public static void message(ContentValues contentValues) {
+	public static void message(final ContentValues contentValues) {
 		/*
 		 * 1：纯文本消息√
 		 * 3：图片√
@@ -81,8 +81,13 @@ public class MessageHandler {
 						}
 					}, 350, TimeUnit.MILLISECONDS);
 				} else if (type == 3) { //图片消息
-					JobManager jobManager = TaskManager.getInstance().getJobManager();
-					jobManager.addJobInBackground(new DownloadMessageJob(contentValues, 2));
+					ThreadPoolUtils.getInstance().run(new Runnable() {
+						@Override
+						public void run() {
+							DownloadMessageJob downloadMessageJob = new DownloadMessageJob(contentValues, 2);
+							downloadMessageJob.onRun();
+						}
+					});
 				} else if (type == 47) { //表情
 					UploadService.receiveAnimationMessage(status, isSend, talker, content, createTime, msgId);
 				} else if (type == 34) { //语音

@@ -32,10 +32,10 @@ public class MessageHook {
 //				}
 					if (param.args[2] != null) {
 						final ContentValues contentValues = (ContentValues) param.args[2];
-						if (str.equals("AppMessage")) {
-							MessageHandler.AppMessageHandle(contentValues);
-							return;
-						}
+//						if (str.equals("AppMessage")) {
+//							MessageHandler.AppMessageHandle(contentValues);
+//							return;
+//						}
 						if (str.equals("WxFileIndex2")) {
 							ThreadPoolUtils.getInstance().a(new Runnable() {
 								public void run() {

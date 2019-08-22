@@ -11,6 +11,7 @@ import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.bean.UploadBean;
 import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
 import com.gentcent.wechat.zzk.util.MyHelper;
+import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.util.ZzkUtil;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
@@ -21,6 +22,7 @@ import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -111,7 +113,7 @@ public class VideoHook {
 					int intField = XposedHelpers.getIntField(obj, "fileType");
 					XLog.d("VideoHook fileType3333:" + intField);
 					if (intField == 3) {
-						new Thread(new Runnable() {
+						ThreadPoolUtils.getInstance().run(new Runnable() {
 							public void run() {
 								try {
 									Thread.sleep(3000);
@@ -142,7 +144,7 @@ public class VideoHook {
 									
 								}
 							}
-						}).start();
+						});
 					}
 				} catch (Exception e) {
 					XLog.e("error: " + Log.getStackTraceString(e));
@@ -153,56 +155,66 @@ public class VideoHook {
 	
 	public static synchronized void b(String str, String str2, String str3, String str4) {
 		synchronized (VideoHook.class) {
-			String[] split = str2.split("_");
-			String[] split2 = str4.split("/");
-			String[] split3 = split2[split2.length - 1].split("\\.");
-			Class findClass = XposedHelpers.findClass("com.tencent.mars.cdn.CdnLogic$C2CDownloadRequest", MainManager.wxLpparam.classLoader);
-			Class findClass2 = XposedHelpers.findClass("com.tencent.mars.cdn.CdnLogic", MainManager.wxLpparam.classLoader);
-			Object newInstance = XposedHelpers.newInstance(findClass);
-			XposedHelpers.setObjectField(newInstance, "aeskey", str);
-			XposedHelpers.setObjectField(newInstance, "fileid", str3);
-			XposedHelpers.setObjectField(newInstance, "fileKey", "adownvideo_" + split[1] + "_" + split[2] + "_" + split3[0]);
-			XposedHelpers.setObjectField(newInstance, "savePath", str4.replace("jpg", "mp4").replace(".tmp", ""));
-			XposedHelpers.setObjectField(newInstance, "queueTimeoutSeconds", 0);
-			XposedHelpers.setObjectField(newInstance, "transforTimeoutSeconds", 0);
-			Cursor a2 = WcdbHolder.excute(videoSql(split3[0]));
-			String totallen = "";
-			String user = "";
-			String reserved4 = "";
-			String replace = str4.replace("jpg", "mp4").replace(".tmp", "");
-			String md5 = null;
-			while (a2.moveToNext()) {
-				totallen = a2.getString(a2.getColumnIndex("totallen"));
-				user = a2.getString(a2.getColumnIndex("user"));
-				reserved4 = a2.getString(a2.getColumnIndex("reserved4"));
-				md5 = ZzkUtil.a(reserved4, "md5");
-			}
-			a2.close();
-			if (ObjectUtils.isNotEmpty(totallen)) {
-				XposedHelpers.setObjectField(newInstance, "fileSize", Integer.valueOf(totallen));
-			}
-			XposedHelpers.setObjectField(newInstance, "fileType", 4);
-			XposedHelpers.callStaticMethod(findClass2, "startC2CDownload", newInstance);
-			String myWxid = UserDao.getMyWxid();
-			if (myWxid.equals("")) {
-				Cursor a3 = WcdbHolder.excute("select value from userinfo where id='2'");
-				while (a3.moveToNext()) {
-					myWxid = a3.getString(a3.getColumnIndex("value"));
+			try {
+				String[] split = str2.split("_");
+				String[] split2 = str4.split("/");
+				String[] split3 = split2[split2.length - 1].split("\\.");
+				XLog.e("str2:" + str2);
+				XLog.e("str4:" + str4);
+				XLog.e("split:" + Arrays.toString(split));
+				XLog.e("split2:" + Arrays.toString(split2));
+				XLog.e("split3:" + Arrays.toString(split3));
+				Class findClass = XposedHelpers.findClass("com.tencent.mars.cdn.CdnLogic$C2CDownloadRequest", MainManager.wxLpparam.classLoader);
+				Class findClass2 = XposedHelpers.findClass("com.tencent.mars.cdn.CdnLogic", MainManager.wxLpparam.classLoader);
+				Object newInstance = XposedHelpers.newInstance(findClass);
+				XposedHelpers.setObjectField(newInstance, "aeskey", str);
+				XposedHelpers.setObjectField(newInstance, "fileid", str3);
+				String sb = "adownvideo_" + split[1] + "_" + split[2] + "_" + split3[0];
+				XposedHelpers.setObjectField(newInstance, "fileKey", sb);
+				XposedHelpers.setObjectField(newInstance, "savePath", str4.replace("jpg", "mp4").replace(".tmp", ""));
+				XposedHelpers.setObjectField(newInstance, "queueTimeoutSeconds", 0);
+				XposedHelpers.setObjectField(newInstance, "transforTimeoutSeconds", 0);
+				Cursor a2 = WcdbHolder.excute(videoSql(split3[0]));
+				String totallen = "";
+				String user = "";
+				String reserved4 = "";
+				String replace = str4.replace("jpg", "mp4").replace(".tmp", "");
+				String md5 = null;
+				while (a2.moveToNext()) {
+					totallen = a2.getString(a2.getColumnIndex("totallen"));
+					user = a2.getString(a2.getColumnIndex("user"));
+					reserved4 = a2.getString(a2.getColumnIndex("reserved4"));
+					md5 = ZzkUtil.a(reserved4, "md5");
 				}
-				a3.close();
-			}
-			d = 0;
-			e = 0;
-			XLog.d("VideoHook start reserved4 is " + reserved4);
-			if (!TextUtils.isEmpty(reserved4)) {
-				if (reserved4.startsWith("<?xml")) {
-					reserved4 = MessageResolver.a(reserved4);
-				} else if (reserved4.contains(":")) {
-					reserved4 = reserved4.split(":")[0];
+				a2.close();
+				if (ObjectUtils.isNotEmpty(totallen)) {
+					XposedHelpers.setObjectField(newInstance, "fileSize", Integer.valueOf(totallen));
 				}
+				XposedHelpers.setObjectField(newInstance, "fileType", 4);
+				XposedHelpers.callStaticMethod(findClass2, "startC2CDownload", newInstance, XposedHelpers.callStaticMethod(XposedHelpers.findClass("com.tencent.mm.an.f", MainManager.wxLpparam.classLoader), "aki"));
+				String myWxid = UserDao.getMyWxid();
+				if (myWxid.equals("")) {
+					Cursor a3 = WcdbHolder.excute("select value from userinfo where id='2'");
+					while (a3.moveToNext()) {
+						myWxid = a3.getString(a3.getColumnIndex("value"));
+					}
+					a3.close();
+				}
+				d = 0;
+				e = 0;
+				XLog.d("VideoHook start reserved4 is " + reserved4);
+				if (!TextUtils.isEmpty(reserved4)) {
+					if (reserved4.startsWith("<?xml")) {
+						reserved4 = MessageResolver.a(reserved4);
+					} else if (reserved4.contains(":")) {
+						reserved4 = reserved4.split(":")[0];
+					}
+				}
+				XLog.d("VideoHook end reserved4 is " + reserved4);
+				a(myWxid, user, reserved4, replace, md5);
+			} catch (Exception e) {
+				XLog.e("downloadVideo: " + Log.getStackTraceString(e));
 			}
-			XLog.d("VideoHook end reserved4 is " + reserved4);
-			a(myWxid, user, reserved4, replace, md5);
 		}
 	}
 	

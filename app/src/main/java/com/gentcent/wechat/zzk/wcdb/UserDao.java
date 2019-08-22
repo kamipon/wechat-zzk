@@ -124,6 +124,7 @@ public class UserDao {
 			UserBean userBean = new UserBean(username, alias, nickname, reserved2, conRemark, memberlist, displayname, pyInitial, quanPin);
 			//补全信息
 			SyncInfoManager.userCompletion(userBean);
+			
 			XLog.d(userBean.toString());
 			c1.close();
 			return userBean;

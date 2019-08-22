@@ -274,7 +274,7 @@ public class SnsHandler {
 	 */
 	public static Object GetWSnsContentBean_By_RowID(LoadPackageParam lpparam, String rowId) {
 		try {
-			return GetWSnsContentBean(lpparam, "XB", rowId);
+			return GetWSnsContentBean(lpparam, "acI", rowId);
 		} catch (Throwable unused) {
 			return null;
 		}
@@ -287,7 +287,7 @@ public class SnsHandler {
 	 * @return wSnsContentBean    微信朋友圈对象
 	 */
 	public static Object GetWSnsContentBean_By_snsID(LoadPackageParam lpparam, String snsId) {
-		return GetWSnsContentBean(lpparam, "XA", snsId);
+		return GetWSnsContentBean(lpparam, "acH", snsId);
 	}
 	
 	/**
