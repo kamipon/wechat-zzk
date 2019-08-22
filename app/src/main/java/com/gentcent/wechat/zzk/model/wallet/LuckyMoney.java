@@ -76,7 +76,7 @@ public class LuckyMoney {
 		}
 	}
 	
-	public static void a(final LoadPackageParam loadPackageParam) {
+	public static void hook(final LoadPackageParam loadPackageParam) {
 		try {
 			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyPrepareUI", loadPackageParam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
 				public void beforeHookedMethod(MethodHookParam methodHookParam) throws Throwable {

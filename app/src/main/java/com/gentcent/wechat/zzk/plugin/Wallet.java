@@ -6,6 +6,7 @@ import com.gentcent.wechat.zzk.model.wallet.Remittance;
 import com.gentcent.wechat.zzk.model.wallet.WalletBaseUI;
 import com.gentcent.wechat.zzk.model.wallet.WalletChangeBankcardUI;
 import com.gentcent.wechat.zzk.model.wallet.WalletPayUI;
+import com.gentcent.wechat.zzk.model.wallet.WcPayCashierDialog;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
 /**
@@ -15,11 +16,12 @@ import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 public class Wallet implements IPlugin {
 	@Override
 	public void hook(LoadPackageParam lpparam) {
-		MyKeyboardWindow.a(lpparam);
-		WalletChangeBankcardUI.a(lpparam);
-		WalletPayUI.a(lpparam);
-		WalletBaseUI.a(lpparam);
-		LuckyMoney.a(lpparam);
-		Remittance.a(lpparam);
+		MyKeyboardWindow.hook(lpparam);
+		WalletChangeBankcardUI.hook(lpparam);
+		WalletPayUI.hook(lpparam);
+		WalletBaseUI.hook(lpparam);
+		LuckyMoney.hook(lpparam);
+		Remittance.hook(lpparam);
+		WcPayCashierDialog.hook(lpparam);
 	}
 }

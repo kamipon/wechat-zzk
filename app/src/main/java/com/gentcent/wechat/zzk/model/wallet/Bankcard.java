@@ -82,7 +82,7 @@ public class Bankcard {
 		ArrayList arrayList2 = new ArrayList();
 		try {
 			XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.wallet.a.s"), "cYZ");
-			Object callStaticMethod = XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.wallet.a.s"), "cIh");
+			Object callStaticMethod = XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.wallet.a.s"), "cZa");
 			boolean booleanValue = (Boolean) XposedHelpers.callMethod(callStaticMethod, "dbK", new Object[0]);
 			if (!booleanValue) {
 				XposedHelpers.callMethod(callStaticMethod, "f", arrayList, arrayList2);

@@ -14,7 +14,7 @@ import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 import java.util.ArrayList;
 
 public class WalletChangeBankcardUI {
-	public static void a(LoadPackageParam loadPackageParam) {
+	public static void hook(LoadPackageParam loadPackageParam) {
 		try {
 			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.wallet.pay.ui.WalletChangeBankcardUI", loadPackageParam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
 				public void afterHookedMethod(final MethodHookParam methodHookParam) throws Throwable {

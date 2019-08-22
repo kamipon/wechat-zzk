@@ -23,7 +23,7 @@ public class MyKeyboardWindow {
 	public static OnClickListener b;
 	public static Handler c;
 	
-	public static void a(final LoadPackageParam loadPackageParam) {
+	public static void hook(final LoadPackageParam loadPackageParam) {
 		try {
 			XposedHelpers.findAndHookMethod("com.tenpay.android.wechat.MyKeyboardWindow", loadPackageParam.classLoader, "init", Context.class, new XC_MethodHook() {
 				public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {

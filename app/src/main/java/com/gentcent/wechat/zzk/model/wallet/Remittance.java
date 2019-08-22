@@ -58,7 +58,7 @@ public class Remittance {
 		}
 	}
 	
-	public static void a(final LoadPackageParam loadPackageParam) {
+	public static void hook(final LoadPackageParam loadPackageParam) {
 		try {
 			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.remittance.ui.RemittanceAdapterUI", loadPackageParam.classLoader, "c", String.class, Integer.TYPE, Intent.class, new XC_MethodReplacement() {
 				public Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {

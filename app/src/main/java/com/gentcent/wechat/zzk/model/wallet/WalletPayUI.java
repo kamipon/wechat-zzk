@@ -24,26 +24,25 @@ public class WalletPayUI {
 		}
 	}
 	
-	public static void a(LoadPackageParam loadPackageParam) {
+	public static void hook(LoadPackageParam loadPackageParam) {
 		try {
 			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.wallet.pay.ui.WalletPayUI", loadPackageParam.classLoader, "oe", Boolean.TYPE, new XC_MethodHook() {
 				public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
-					XLog.d("MyWalletPayUI  WalletPayUI bPu 1");
+					XLog.d("MyWalletPayUI  WalletPayUI InputPasswording:" + WalletPayUI.a);
 					Activity activity = (Activity) methodHookParam.thisObject;
-					XLog.d("MyWalletPayUI  WalletPayUI bPu 2");
+					XLog.d("MyWalletPayUI  WalletPayUI payinfo:" + WalletPayUI.b);
 					if (WalletPayUI.a && WalletPayUI.b != null && WalletPayUI.b.passward != null) {
 						XLog.d("MyWalletPayUI  WalletPayUI bPu 3");
 						if (!activity.getIntent().getBooleanExtra("shenshou", false)) {
 							XLog.d("MyWalletPayUI  WalletPayUI bPu 4");
 							Object objectField = XposedHelpers.getObjectField(activity, "uHr");
 							Object objectField2 = XposedHelpers.getObjectField(activity, "uGk");
-							StringBuilder sb = new StringBuilder();
-							sb.append("MyWalletPayUI  WalletPayUI bPu pBu");
-							sb.append(objectField);
-							sb.append(",pHD =");
-							sb.append(objectField2);
-							XLog.d(sb.toString());
+							String sb = "MyWalletPayUI  WalletPayUI bPu pBu" +
+									objectField +
+									",pHD =" +
+									objectField2;
+							XLog.d(sb);
 							if (!(objectField == null || objectField2 == null)) {
 								View view = (View) XposedHelpers.getObjectField(objectField, "vfy");
 								if (view != null) {

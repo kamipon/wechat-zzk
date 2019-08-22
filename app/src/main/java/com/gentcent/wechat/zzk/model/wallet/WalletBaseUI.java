@@ -22,7 +22,7 @@ public class WalletBaseUI {
 		}
 	}
 	
-	public static void a(LoadPackageParam loadPackageParam) {
+	public static void hook(LoadPackageParam loadPackageParam) {
 		try {
 			Class loadClass = loadPackageParam.classLoader.loadClass("com.tencent.mm.wallet_core.ui.WalletBaseUI");
 			XposedHelpers.findAndHookMethod(loadClass, "onDestroy", new XC_MethodHook() {

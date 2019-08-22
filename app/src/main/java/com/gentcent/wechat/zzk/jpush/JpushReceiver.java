@@ -108,7 +108,7 @@ public class JpushReceiver extends JPushMessageReceiver {
 		Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 		Ringtone r = RingtoneManager.getRingtone(MyApplication.getAppContext(), notification);
 		r.play();
-		XLog.d(customMessage.toString());
+//		XLog.d(customMessage.toString());
 		try {
 			WxBroadcast.onMessage(customMessage);
 		} catch (Exception e) {
