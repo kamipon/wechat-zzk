@@ -3,6 +3,7 @@ package com.gentcent.wechat.zzk.plugin;
 import com.gentcent.wechat.zzk.model.wallet.LuckyMoney;
 import com.gentcent.wechat.zzk.model.wallet.MyKeyboardWindow;
 import com.gentcent.wechat.zzk.model.wallet.ReceivableManger;
+import com.gentcent.wechat.zzk.model.wallet.ReceiverLuckyMoney;
 import com.gentcent.wechat.zzk.model.wallet.Remittance;
 import com.gentcent.wechat.zzk.model.wallet.WalletBaseUI;
 import com.gentcent.wechat.zzk.model.wallet.WalletChangeBankcardUI;
@@ -28,5 +29,6 @@ public class Wallet implements IPlugin {
 		//接收
 		ReceivableManger.hook(lpparam);
 		ReceivableManger.hook2(lpparam);
+		new ReceiverLuckyMoney().hook(lpparam);
 	}
 }

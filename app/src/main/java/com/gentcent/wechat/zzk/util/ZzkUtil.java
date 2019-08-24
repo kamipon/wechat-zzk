@@ -2,6 +2,7 @@ package com.gentcent.wechat.zzk.util;
 
 import android.util.Base64;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.blankj.utilcode.util.ObjectUtils;
 import com.gentcent.zzk.xped.XposedHelpers;
@@ -9,8 +10,11 @@ import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
 import org.json.JSONObject;
 
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,8 +47,8 @@ public class ZzkUtil {
 		return str2;
 	}
 	
-	public static String b(String str) {
-		JSONObject build = new XmlToJson.Builder(str).build();
+	public static String xmlToJson(String xml) {
+		JSONObject build = new XmlToJson.Builder(xml).build();
 		return build.toString();
 	}
 	
@@ -54,6 +58,13 @@ public class ZzkUtil {
 	
 	public static boolean l(String str) {
 		return ObjectUtils.isNotEmpty(str) && !str.startsWith("gh_") && !str.startsWith("fake_") && !str.endsWith("@chatroom") && !Arrays.asList(appList).contains(str);
+	}
+	
+	public static double arith(double d, double d2, int i) {
+		if (i >= 0) {
+			return new BigDecimal(Double.toString(d)).divide(new BigDecimal(Double.toString(d2)), i, 4).doubleValue();
+		}
+		throw new IllegalArgumentException("The scale must be a positive integer or zero");
 	}
 	
 	public class MyConstant {
@@ -117,5 +128,52 @@ public class ZzkUtil {
 			XLog.d("HTools  getMsgObj e:" + Log.getStackTraceString(th));
 			return null;
 		}
+	}
+	
+	
+	public static String GetClassFieldAndValue(Object obj) {
+		StringBuilder stringBuffer = new StringBuilder();
+		stringBuffer.append("GetClassFieldAndValueUtils ::");
+		if (obj == null) {
+			return "GetClassFieldAndValueUtils :: is null";
+		}
+		ArrayList arrayList = new ArrayList();
+		Class cls = obj.getClass();
+		while (cls != null && !cls.getName().toLowerCase().equals("java.lang.object")) {
+			arrayList.addAll(Arrays.asList(cls.getDeclaredFields()));
+			cls = cls.getSuperclass();
+		}
+		for (int i = 0; i < arrayList.size(); i++) {
+			try {
+				((Field) arrayList.get(i)).setAccessible(true);
+				PrintStream printStream = System.out;
+				printStream.print(((Field) arrayList.get(i)).getName() + ",");
+				if (!((Field) arrayList.get(i)).getType().getName().equals(String.class.getName())) {
+					if (!((Field) arrayList.get(i)).getType().getName().equals("string")) {
+						if (!((Field) arrayList.get(i)).getType().getName().equals(Integer.class.getName())) {
+							if (!((Field) arrayList.get(i)).getType().getName().equals("int")) {
+								if (!((Field) arrayList.get(i)).getType().getName().equals(Boolean.class.getName())) {
+									if (!((Field) arrayList.get(i)).getType().getName().equals("boolean")) {
+										if (!((Field) arrayList.get(i)).getType().getName().equals(TextView.class.getName())) {
+											if (!((Field) arrayList.get(i)).getType().getName().equals("android.widget.TextView")) {
+												stringBuffer.append("  lishi-").append(((Field) arrayList.get(i)).getName()).append("-::").append(((Field) arrayList.get(i)).get(obj));
+											}
+										}
+										TextView textView = (TextView) ((Field) arrayList.get(i)).get(obj);
+										stringBuffer.append(((Field) arrayList.get(i)).getName()).append("::").append(textView.getText()).append("  ;;;  ");
+									}
+								}
+								stringBuffer.append("boolean  :: ").append(((Field) arrayList.get(i)).getName()).append("::").append(((Field) arrayList.get(i)).getBoolean(obj)).append("  ;;;  ");
+							}
+						}
+						stringBuffer.append("  int :: ").append(((Field) arrayList.get(i)).getName()).append("::").append(((Field) arrayList.get(i)).getInt(obj)).append("  ;;;  ");
+					}
+				}
+				stringBuffer.append("  String :: ").append(((Field) arrayList.get(i)).getName()).append("::").append(((Field) arrayList.get(i)).get(obj)).append("  ;;;  ");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return stringBuffer.toString();
 	}
 }

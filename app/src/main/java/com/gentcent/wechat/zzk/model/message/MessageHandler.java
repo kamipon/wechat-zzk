@@ -1,19 +1,23 @@
 package com.gentcent.wechat.zzk.model.message;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.util.Log;
 
-import com.birbit.android.jobqueue.JobManager;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.gentcent.wechat.zzk.MainManager;
 import com.gentcent.wechat.zzk.background.MessageConvert;
 import com.gentcent.wechat.zzk.background.UploadService;
+import com.gentcent.wechat.zzk.background.UploadUtil;
 import com.gentcent.wechat.zzk.bean.UploadBean;
 import com.gentcent.wechat.zzk.model.friend.AddVerifyingFriend;
 import com.gentcent.wechat.zzk.model.message.FileManager.C0378b;
+import com.gentcent.wechat.zzk.model.wallet.bean.ErrorGroupRedPocket;
 import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
+import com.gentcent.wechat.zzk.model.wallet.bean.ReceiveRedPocketBean;
 import com.gentcent.wechat.zzk.model.wallet.ReceivableManger;
-import com.gentcent.wechat.zzk.service.TaskManager;
+import com.gentcent.wechat.zzk.model.wallet.ReceiverLuckyMoney;
+import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.VoiceManager;
@@ -116,12 +120,86 @@ public class MessageHandler {
 				} catch (Exception e) {
 					XLog.d("419430449 转账 error: " + Log.getStackTraceString(e));
 				}
-			}else if(type == 436207665){ //红包
-				try {
-				
-				} catch (Exception e) {
-					XLog.d("436207665 红包 error: " + Log.getStackTraceString(e));
-				}
+			} else if (type == 436207665) {
+				ThreadPoolUtils.getInstance().a(new Runnable() {
+					public void run() {
+						String xml;
+						if (!content.startsWith("<msg>")) {
+							XLog.d(" content !startsWith <msg>");
+							xml = content.substring(content.indexOf("<msg>"));
+							XLog.d(" contentJson !startsWith <msg>" + xml);
+						} else {
+							xml = content;
+						}
+						String b2 = ZzkUtil.xmlToJson(xml);
+						XLog.d(" 微信红包 jsonString  ::: " + content);
+						if (isSend == 1) {
+							try {
+								int indexOf = content.indexOf("<nativeurl><![CDATA[");
+								String substring = content.substring(indexOf + 20, content.indexOf("]]></nativeurl>", indexOf));
+								final Intent intent = new Intent(MainManager.activity, MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyDetailUI"));
+								intent.putExtra("key_native_url", substring);
+								intent.putExtra("key_username", talker);
+								intent.putExtra("shen_shou", true);
+								intent.putExtra("send_red_package", true);
+								MainManager.activity.runOnUiThread(new Runnable() {
+									public void run() {
+										MainManager.activity.startActivity(intent);
+									}
+								});
+							} catch (Exception e) {
+								XLog.d(" error e " + Log.getStackTraceString(e));
+								try {
+									ErrorGroupRedPocket errorGroupRedPocket = GsonUtils.GsonToBean(b2, ErrorGroupRedPocket.class);
+									String str3 = errorGroupRedPocket.msg.appmsg.wcpayinfo.nativeurl;
+									int indexOf2 = str3.indexOf("sendid=");
+									str3.substring(indexOf2 + 7, str3.indexOf("&", indexOf2));
+									final Intent intent2 = new Intent(MainManager.activity, MainManager.wxLpparam.classLoader.loadClass("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyDetailUI"));
+									intent2.putExtra("key_native_url", errorGroupRedPocket.msg.appmsg.wcpayinfo.nativeurl);
+									intent2.putExtra("key_username", talker);
+									intent2.putExtra("send_red_package", true);
+									MainManager.activity.runOnUiThread(new Runnable() {
+										public void run() {
+											MainManager.activity.startActivity(intent2);
+										}
+									});
+								} catch (Exception e2) {
+									XLog.d(" ErrorGroupRedPocket error e " + Log.getStackTraceString(e2));
+								}
+							}
+						} else if (isSend == 0) {
+							try {
+								if (talker.endsWith("@chatroom")) {
+									ReceiveRedPocketBean receiveRedPocketBean = GsonUtils.GsonToBean(b2, ReceiveRedPocketBean.class);
+									String linkUrl = receiveRedPocketBean.msg.appmsg.wcpayinfo.nativeurl;
+									int indexOf3 = linkUrl.indexOf("sendid=");
+									MessageBean messageBean = MessageBean.builderGroupMoneyMessageBean(linkUrl.substring(indexOf3 + 7, linkUrl.indexOf("&", indexOf3)), 1, talker, subString2(content), receiveRedPocketBean.msg.appmsg.wcpayinfo.receivertitle, "", "", linkUrl, 1, 0, null);
+									XLog.d("收到群红包 ：：  " + GsonUtils.GsonString(messageBean));
+									messageBean.setMyWxId(UserDao.getMyWxid());
+									UploadBean uploadBean = new UploadBean(messageBean, MyHelper.readLine("phone-id"));
+									MessageConvert.a(uploadBean, talker);
+									UploadUtil.sendToBack(uploadBean);
+									ReceiverLuckyMoney.autoReceive(MainManager.wxLpparam, talker, linkUrl);
+									return;
+								}
+								XLog.d("收红包");
+								ReceiveRedPocketBean receiveRedPocketBean2 = GsonUtils.GsonToBean(b2, ReceiveRedPocketBean.class);
+								String linkUrl = receiveRedPocketBean2.msg.appmsg.wcpayinfo.nativeurl;
+								int indexOf4 = linkUrl.indexOf("sendid=");
+								String msgId = linkUrl.substring(indexOf4 + 7, linkUrl.indexOf("&", indexOf4));
+								MessageBean messageBean = MessageBean.buldeMoneyMessageBean(msgId, 1, talker, receiveRedPocketBean2.msg.appmsg.wcpayinfo.receivertitle, "", linkUrl, 0);
+								XLog.d("收到个人红包 ：：" + GsonUtils.GsonString(messageBean));
+								messageBean.setMyWxId(UserDao.getMyWxid());
+								UploadBean uploadBean = new UploadBean(messageBean, MyHelper.readLine("phone-id"));
+								MessageConvert.a(uploadBean, talker);
+								UploadUtil.sendToBack(uploadBean);
+								ReceiverLuckyMoney.autoReceive(MainManager.wxLpparam, talker, linkUrl);
+							} catch (Exception e3) {
+								XLog.d(" messagehandle 436207665 error ::" + Log.getStackTraceString(e3));
+							}
+						}
+					}
+				}, 2000, TimeUnit.MILLISECONDS);
 			}
 		}
 	}
@@ -296,6 +374,14 @@ public class MessageHandler {
 	
 	public static boolean isNeedSendToBack(String wxId) {
 		return (ObjectUtils.isNotEmpty(wxId) && wxId.endsWith("@chatroom")) || isNotAppWxId(wxId);
+	}
+	
+	public static String subString2(String str) {
+		return subString1(str) ? str.substring(0, str.indexOf(":")).trim() : "";
+	}
+	
+	public static boolean subString1(String str) {
+		return str != null && str.length() != 0 && !str.startsWith("<") && str.contains(":");
 	}
 	
 	private static String[] appNameList = {"filehelper", "qqmail", "floatbottle", "shakeapp", "lbsapp", "medianote", "newsapp", "facebookapp", "qqfriend", "masssendapp", "feedsapp", "voipapp", "officialaccounts", "voicevoipapp", "voiceinputapp", "linkedinplugin", "notifymessage", "fmessage", "weixin", "qmessage", "tmessage"};

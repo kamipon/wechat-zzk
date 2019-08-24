@@ -23,12 +23,12 @@ public class ChatRoomRedPocketMemberBean implements Parcelable {
         return 0;
     }
 
-    public ChatRoomRedPocketMemberBean(String str, String str2, String str3, String str4, String str5) {
-        this.userName = str;
-        this.note = str2;
-        this.userNick = str3;
-        this.moneyNumber = str4;
-        this.time = str5;
+    public ChatRoomRedPocketMemberBean(String userName, String note, String userNick, String moneyNumber, String time) {
+        this.userName = userName;
+        this.note = note;
+        this.userNick = userNick;
+        this.moneyNumber = moneyNumber;
+        this.time = time;
     }
 
     protected ChatRoomRedPocketMemberBean(Parcel parcel) {

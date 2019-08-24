@@ -2,9 +2,11 @@ package com.gentcent.wechat.zzk.model.message.bean;
 
 import android.util.Log;
 
+import com.gentcent.wechat.zzk.model.chatroom.bean.ChatRoomRedPocketMemberBean;
 import com.gentcent.wechat.zzk.util.XLog;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author zuozhi
@@ -64,6 +66,8 @@ public class MessageBean implements Serializable {
 	private int fileSize;
 	//钱包
 	private String money;
+	//群聊红包领取列表
+	private List<ChatRoomRedPocketMemberBean> MemberInfo;
 	
 	
 	public static MessageBean buldeMoneyMessageBean(String msgId, int isSend, String friendWxId, String content, String money, String linkUrl, int status) {
@@ -87,6 +91,32 @@ public class MessageBean implements Serializable {
 			messageBean.Type = 6;
 		}
 		return messageBean;
+	}
+	
+	public static MessageBean builderGroupMoneyMessageBean(String MessageId, int isSend, String FriendWxId, String ChatroomMemberWxId, String Content, String Money, String LinkDescription, String LinkUrl, int FileSize, int MoneyStatus, List<ChatRoomRedPocketMemberBean> MemberInfo) {
+		MessageBean messageBean = new MessageBean();
+		messageBean.msgId = MessageId;
+		messageBean.FriendWxId = FriendWxId;
+		messageBean.Content = Content;
+		messageBean.LinkDescription = LinkDescription;
+		messageBean.isSend = isSend;
+		messageBean.ChatroomMemberWxId = ChatroomMemberWxId;
+		messageBean.money = Money;
+		messageBean.addTime = (int) (System.currentTimeMillis() / 1000);
+		messageBean.LinkUrl = LinkUrl;
+		messageBean.status = MoneyStatus;
+		messageBean.fileSize = FileSize;
+		messageBean.Type = 5;
+		messageBean.MemberInfo = MemberInfo;
+		return messageBean;
+	}
+	
+	public List<ChatRoomRedPocketMemberBean> getMemberInfo() {
+		return MemberInfo;
+	}
+	
+	public void setMemberInfo(List<ChatRoomRedPocketMemberBean> memberInfo) {
+		MemberInfo = memberInfo;
 	}
 	
 	public String getMoney() {

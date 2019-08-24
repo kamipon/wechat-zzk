@@ -328,7 +328,7 @@ public class ReceivableManger {
 		int isSend = contentValues.getAsInteger("isSend");
 		long msgId = contentValues.getAsLong("msgId");
 		String talker = contentValues.getAsString("talker");
-		String content = ZzkUtil.b(contentValues.getAsString("content"));
+		String content = ZzkUtil.xmlToJson(contentValues.getAsString("content"));
 		XLog.d("ReceivableManger isSend" + isSend + " ReceivableManger 转账他人  ::::::::" + content);
 		TransferBean transferBean = GsonUtils.GsonToBean(content, TransferBean.class);
 		XLog.d("transferBean.msg.appmsg.wcpayinfo.paysubtype" + transferBean.msg.appmsg.wcpayinfo.paysubtype);
