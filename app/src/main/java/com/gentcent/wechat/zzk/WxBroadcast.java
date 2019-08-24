@@ -32,22 +32,24 @@ public class WxBroadcast {
 		XLog.d("act: " + act + " | Message: " + jsonStr);
 		switch (act) {
 			case "send_message":
-				sendMessage(jsonStr);
+				sendMessage(act, jsonStr);
 				break;
 			case "add_friend":
-				addFriend(jsonStr);
+				addFriend(act, jsonStr);
 				break;
 			case "send_sns":
-				sendSns(jsonStr);
-				break;
-			case "sync_info":
-				syncInfo();
-				break;
-			case "send_wallet_notice":
-				sendWalletNotice();
+				sendSns(act, jsonStr);
 				break;
 			case "send_redpocket":
-				moneySend(jsonStr);
+				moneySend(act, jsonStr);
+				break;
+			case "transfer_refund":
+			case "transfer_receive":
+				transferReference(act, jsonStr);
+				break;
+			case "send_wallet_notice":
+			case "sync_info":
+				sendAct(act);
 				break;
 			default:
 				XLog.e("not found act: null | Message: " + customMessage.message);
@@ -56,14 +58,30 @@ public class WxBroadcast {
 	}
 	
 	/**
+	 * 转账相关 ，msgId
+	 */
+	private static void transferReference(String act, String jsonStr) {
+		try {
+			String msgId = (String) GsonUtils.GsonToMaps(jsonStr).get("msgId");
+			Context context = MyApplication.getAppContext();
+			Intent intent = new Intent("WxAction");
+			intent.putExtra("act", act);
+			intent.putExtra("msgId", msgId);
+			context.sendBroadcast(intent);
+		} catch (Exception e) {
+			XLog.e("错误：" + Log.getStackTraceString(e));
+		}
+	}
+	
+	/**
 	 * 发送消息
 	 */
-	public static void sendMessage(String jsonStr) {
+	public static void sendMessage(String act, String jsonStr) {
 		try {
 			XLog.d("发送消息");
 			Context context = MyApplication.getAppContext();
 			Intent intent = new Intent("WxAction");
-			intent.putExtra("act", "send_message");
+			intent.putExtra("act", act);
 			intent.putExtra("sendmsgbean", jsonStr);
 			context.sendBroadcast(intent);
 		} catch (Exception e) {
@@ -74,7 +92,7 @@ public class WxBroadcast {
 	/**
 	 * 添加好友
 	 */
-	public static void addFriend(String jsonStr) {
+	public static void addFriend(String act, String jsonStr) {
 		try {
 			XLog.d("添加好友");
 			Map<String, Object> map = GsonUtils.GsonToMaps(jsonStr);
@@ -83,7 +101,7 @@ public class WxBroadcast {
 			
 			Context context = MyApplication.getAppContext();
 			Intent intent = new Intent("WxAction");
-			intent.putExtra("act", "add_friend");
+			intent.putExtra("act", act);
 			intent.putExtra("addFriendName", addFriendName);
 			intent.putExtra("helloText", helloText);
 			context.sendBroadcast(intent);
@@ -95,12 +113,12 @@ public class WxBroadcast {
 	/**
 	 * 发送朋友圈
 	 */
-	public static void sendSns(String jsonStr) {
+	public static void sendSns(String act, String jsonStr) {
 		try {
 			XLog.d("发送朋友圈");
 			Context context = MyApplication.getAppContext();
 			Intent intent = new Intent("WxAction");
-			intent.putExtra("act", "send_sns");
+			intent.putExtra("act", act);
 			intent.putExtra("snsJson", jsonStr);
 			context.sendBroadcast(intent);
 		} catch (Exception e) {
@@ -111,12 +129,12 @@ public class WxBroadcast {
 	/**
 	 * 转账发红包
 	 */
-	public static void moneySend(String jsonStr) {
+	public static void moneySend(String act, String jsonStr) {
 		try {
 			XLog.d("转账发红包");
 			Context context = MyApplication.getAppContext();
 			Intent intent = new Intent("WxAction");
-			intent.putExtra("act", "send_redpocket");
+			intent.putExtra("act", act);
 			intent.putExtra("payInfoJson", jsonStr);
 			context.sendBroadcast(intent);
 		} catch (Exception e) {
@@ -125,29 +143,13 @@ public class WxBroadcast {
 	}
 	
 	/**
-	 * 读取微信数据库
+	 * 无参数
 	 */
-	public static void syncInfo() {
+	public static void sendAct(String act) {
 		try {
-			XLog.d("读取微信数据库");
 			Context context = MyApplication.getAppContext();
 			Intent intent = new Intent("WxAction");
-			intent.putExtra("act", "sync_info");
-			context.sendBroadcast(intent);
-		} catch (Exception e) {
-			XLog.e("错误：" + Log.getStackTraceString(e));
-		}
-	}
-	
-	/**
-	 * 安全检查
-	 */
-	private static void sendWalletNotice() {
-		try {
-			XLog.d("安全检查");
-			Context context = MyApplication.getAppContext();
-			Intent intent = new Intent("WxAction");
-			intent.putExtra("act", "send_wallet_notice");
+			intent.putExtra("act", act);
 			context.sendBroadcast(intent);
 		} catch (Exception e) {
 			XLog.e("错误：" + Log.getStackTraceString(e));

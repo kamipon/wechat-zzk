@@ -36,12 +36,6 @@ public class GsonUtils {
 	private GsonUtils() {
 	}
 	
-	public static <T> T a(String str, Type type) {
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.serializeNulls();
-		return gsonBuilder.create().fromJson(str, type);
-	}
-	
 	/**
 	 * 将对象转成json格式
 	 *

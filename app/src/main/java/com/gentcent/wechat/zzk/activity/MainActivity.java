@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 	 */
 	public void syncFriend(View view) {
 		ToastUtils.showShort("开始同步好友信息");
-		WxBroadcast.syncInfo();
+		WxBroadcast.sendAct("sync_info");
 	}
 	
 	@Override

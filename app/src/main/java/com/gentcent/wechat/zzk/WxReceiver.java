@@ -6,20 +6,20 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.birbit.android.jobqueue.JobManager;
-import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
-import com.gentcent.wechat.zzk.model.sns.bean.SendSnsBean;
 import com.gentcent.wechat.zzk.model.friend.AddFriendJob;
-import com.gentcent.wechat.zzk.model.wallet.MoneySendJob;
-import com.gentcent.wechat.zzk.model.sns.SendSnsJob;
 import com.gentcent.wechat.zzk.model.message.SendMessageManager;
+import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
+import com.gentcent.wechat.zzk.model.sns.SendSnsJob;
+import com.gentcent.wechat.zzk.model.sns.bean.SendSnsBean;
+import com.gentcent.wechat.zzk.model.syncinfo.SyncInfo;
+import com.gentcent.wechat.zzk.model.wallet.Dibs;
+import com.gentcent.wechat.zzk.model.wallet.MoneySendJob;
+import com.gentcent.wechat.zzk.model.wallet.ReceivableManger;
+import com.gentcent.wechat.zzk.model.wallet.bean.PayInfo;
+import com.gentcent.wechat.zzk.model.wallet.bean.SendRedPocketBean;
 import com.gentcent.wechat.zzk.service.TaskManager;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.XLog;
-import com.gentcent.wechat.zzk.model.wallet.Dibs;
-import com.gentcent.wechat.zzk.model.wallet.bean.PayInfo;
-import com.gentcent.wechat.zzk.model.wallet.bean.SendRedPocketBean;
-import com.gentcent.wechat.zzk.model.syncinfo.SyncInfo;
-import com.gentcent.wechat.zzk.wcdb.UserDao;
 
 /**
  * 微信广播接收器
@@ -64,6 +64,14 @@ public class WxReceiver extends BroadcastReceiver {
 						XLog.d("payInfo" + payInfo.toString());
 						JobManager jobManager = TaskManager.getInstance().getJobManager();
 						jobManager.addJobInBackground(new MoneySendJob(10, payInfo));
+						break;
+					}
+					case "transfer_refund": { // 退款（转账）
+						ReceivableManger.refund(Long.parseLong(intent.getStringExtra("msgId")));
+						break;
+					}
+					case "transfer_receive": { //收款（转账）
+						ReceivableManger.recieve(Long.parseLong(intent.getStringExtra("msgId")));
 						break;
 					}
 					default: {

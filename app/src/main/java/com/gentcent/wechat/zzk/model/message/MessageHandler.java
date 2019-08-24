@@ -12,6 +12,7 @@ import com.gentcent.wechat.zzk.bean.UploadBean;
 import com.gentcent.wechat.zzk.model.friend.AddVerifyingFriend;
 import com.gentcent.wechat.zzk.model.message.FileManager.C0378b;
 import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
+import com.gentcent.wechat.zzk.model.wallet.ReceivableManger;
 import com.gentcent.wechat.zzk.service.TaskManager;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
@@ -57,7 +58,7 @@ public class MessageHandler {
 		final String talker = contentValues.getAsString("talker");
 		//消息内容
 		final String content = contentValues.getAsString("content");
-		final long createTime =contentValues.getAsLong("createTime") / 1000L;
+		final long createTime = contentValues.getAsLong("createTime") / 1000L;
 		final int status = SendMessageManager.getStatusByMsgId(msgId);
 		XLog.d("message || type=" + type + "; msgId=" + msgId + "; isSend=" + isSend + "; talker=" + talker + "; content=" + content);
 		
@@ -66,8 +67,8 @@ public class MessageHandler {
 				AddVerifyingFriend.run(talker);
 			}
 		}
-		if (isSend == 0) {
-			if (isNeedSendToBack(talker)) {
+		if (isNeedSendToBack(talker)) {
+			if (isSend == 0) {
 				if (type == 1) { //文本消息
 					XLog.d("messageHandle" + "MysnedText msgId =" + msgId + " content :" + content);
 					ThreadPoolUtils.getInstance().a(new Runnable() {
@@ -109,6 +110,19 @@ public class MessageHandler {
 					XLog.d("messageHandle MysnedVideo msgId =" + msgId + " content :" + content + ",imgPath:" + imgPath);
 				}
 			}
+			if (type == 419430449) { //转账
+				try {
+					ReceivableManger.handel(contentValues);
+				} catch (Exception e) {
+					XLog.d("419430449 转账 error: " + Log.getStackTraceString(e));
+				}
+			}else if(type == 436207665){ //红包
+				try {
+				
+				} catch (Exception e) {
+					XLog.d("436207665 红包 error: " + Log.getStackTraceString(e));
+				}
+			}
 		}
 	}
 	
@@ -132,7 +146,7 @@ public class MessageHandler {
 						C0378b a2 = aV.a(MainManager.wxLpparam, "" + msgId);
 						if (ObjectUtils.isNotEmpty(a2)) {
 							XLog.d("WxFileIndex2Handle   insertWithOnConflict WxFileIndex2 xxxx res  " + a2.toString());
-							
+
 //							QNUploadUtil.path(a2.isSend == 1 ? QNUploadUtil.friendId : QNUploadUtil.ischatroom, a2.talker, a2.path, a2.friendId, a2.size, a2.ischatroom, msgtime);
 						}
 					}

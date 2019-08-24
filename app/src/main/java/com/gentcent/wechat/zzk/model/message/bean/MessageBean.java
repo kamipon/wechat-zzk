@@ -1,5 +1,9 @@
 package com.gentcent.wechat.zzk.model.message.bean;
 
+import android.util.Log;
+
+import com.gentcent.wechat.zzk.util.XLog;
+
 import java.io.Serializable;
 
 /**
@@ -21,6 +25,8 @@ public class MessageBean implements Serializable {
 	 * 1：图片（.gif和其他）
 	 * 2：语音
 	 * 3：视频
+	 * 5: 微信红包
+	 * 6: 微信转账
 	 * 7：链接
 	 * 8：文件
 	 * 9：群聊
@@ -47,12 +53,41 @@ public class MessageBean implements Serializable {
 	private String msgId;
 	//添加时间
 	private long addTime;
-	//状态
+	/*
+	状态：
+		0: 已发出
+		1: 已收款
+		2: 已退款
+	 */
 	private int status;
 	//文件大小
 	private int fileSize;
 	//钱包
 	private String money;
+	
+	
+	public static MessageBean buldeMoneyMessageBean(String msgId, int isSend, String friendWxId, String content, String money, String linkUrl, int status) {
+		MessageBean messageBean = new MessageBean();
+		messageBean.msgId = msgId;
+		messageBean.isSend = isSend;
+		messageBean.FriendWxId = friendWxId;
+		messageBean.Content = content;
+		messageBean.money = money;
+		messageBean.LinkUrl = linkUrl;
+		messageBean.status = status;
+		messageBean.addTime = (System.currentTimeMillis() / 1000);
+		if (linkUrl != null) {
+			if (linkUrl.startsWith("wxpay://")) {
+				messageBean.Type = 5;
+			} else {
+				messageBean.Type = 6;
+			}
+			XLog.e("builderMoenyMessageBean  Type:: " + messageBean.Type);
+		} else {
+			messageBean.Type = 6;
+		}
+		return messageBean;
+	}
 	
 	public String getMoney() {
 		return money;
@@ -196,9 +231,23 @@ public class MessageBean implements Serializable {
 	@Override
 	public String toString() {
 		return "MessageBean{" +
-				"FriendWxId='" + FriendWxId + '\'' +
+				"MyWxId='" + MyWxId + '\'' +
+				", FriendWxId='" + FriendWxId + '\'' +
 				", Content='" + Content + '\'' +
+				", isSend=" + isSend +
 				", Type=" + Type +
+				", LinkImg='" + LinkImg + '\'' +
+				", LinkTitle='" + LinkTitle + '\'' +
+				", LinkDescription='" + LinkDescription + '\'' +
+				", LinkUrl='" + LinkUrl + '\'' +
+				", FileName='" + FileName + '\'' +
+				", ChatroomMemberWxId='" + ChatroomMemberWxId + '\'' +
+				", ServiceGuid='" + ServiceGuid + '\'' +
+				", msgId='" + msgId + '\'' +
+				", addTime=" + addTime +
+				", status=" + status +
+				", fileSize=" + fileSize +
+				", money='" + money + '\'' +
 				'}';
 	}
 }

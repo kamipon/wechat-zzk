@@ -14,7 +14,6 @@ import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 public class AppInstallerHook {
 	public static void hook(final LoadPackageParam lpparam) {
 		try {
-			XLog.e("进入AppInstallerHook！");
 			AppUpdaterUIHook.hook(lpparam);
 			XposedHelpers.findAndHookMethod(lpparam.classLoader.loadClass("com.tencent.mm.sandbox.updater.AppInstallerUI"), "onCreate", Bundle.class, new XC_MethodHook() {
 				public void afterHookedMethod(MethodHookParam methodHookParam) {

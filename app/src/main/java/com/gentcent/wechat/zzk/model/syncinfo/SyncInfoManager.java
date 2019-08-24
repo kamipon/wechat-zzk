@@ -193,7 +193,7 @@ public class SyncInfoManager {
 			userBean.province = (String) XposedHelpers.getObjectField(user, "dKs");
 			userBean.region = (String) XposedHelpers.getObjectField(user, "dKt");
 		} catch (Exception e) {
-			XLog.e("User setAddress error:" + Log.getStackTraceString(e));
+			XLog.e("User setAddress error:" + e.getMessage());
 		}
 	}
 	

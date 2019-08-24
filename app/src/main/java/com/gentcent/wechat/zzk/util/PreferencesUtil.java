@@ -19,7 +19,7 @@ public class PreferencesUtil {
 	
 	//自动开红包
 	public static boolean open() {
-		return Boolean.valueOf(MyHelper.readLine("open", "true"));
+		return Boolean.valueOf(MyHelper.readLine("open", "false"));
 	}
 	
 	//自己发的红包不开
@@ -54,7 +54,7 @@ public class PreferencesUtil {
 	
 	//自动接收转账
 	public static boolean receiveTransfer() {
-		return Boolean.valueOf(MyHelper.readLine("receive_transfer", "true"));
+		return Boolean.valueOf(MyHelper.readLine("receive_transfer", "false"));
 	}
 	
 	//快速拆包（弃用）
