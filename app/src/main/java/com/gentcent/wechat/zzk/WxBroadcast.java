@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.gentcent.wechat.zzk.bean.LuckyMoneyBean;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 
@@ -48,12 +49,51 @@ public class WxBroadcast {
 				transferReference(act, jsonStr);
 				break;
 			case "send_wallet_notice":
+				walletNotice(act, jsonStr);
+				break;
 			case "sync_info":
 				sendAct(act);
+				break;
+			case "group_recevice":
+			case "personal_recevice":
+				redpacketReference(act, jsonStr);
 				break;
 			default:
 				XLog.e("not found act: null | Message: " + customMessage.message);
 				break;
+		}
+	}
+	
+	/**
+	 * 获取钱包信息
+	 */
+	private static void walletNotice(String act, String jsonStr) {
+		try {
+			String serverId = (String) GsonUtils.GsonToMaps(jsonStr).get("serverId");
+			Context context = MyApplication.getAppContext();
+			Intent intent = new Intent("WxAction");
+			intent.putExtra("act", act);
+			intent.putExtra("serverId", serverId);
+			context.sendBroadcast(intent);
+		} catch (Exception e) {
+			XLog.e("错误：" + Log.getStackTraceString(e));
+		}
+	}
+	
+	/**
+	 * 红包相关
+	 */
+	private static void redpacketReference(String act, String jsonStr) {
+		try {
+			LuckyMoneyBean luckyMoneyBean = GsonUtils.GsonToBean(jsonStr, LuckyMoneyBean.class);
+			Context context = MyApplication.getAppContext();
+			Intent intent = new Intent("WxAction");
+			intent.putExtra("act", act);
+			intent.putExtra("sessionName", luckyMoneyBean.sessionName);
+			intent.putExtra("linkUrl", luckyMoneyBean.linkUrl);
+			context.sendBroadcast(intent);
+		} catch (Exception e) {
+			XLog.e("错误：" + Log.getStackTraceString(e));
 		}
 	}
 	

@@ -6,7 +6,7 @@ package com.gentcent.wechat.zzk.background;
  */
 public class Api {
 	public static String prefix = "http://192.168.0.33/";
-	public static String getWallet = prefix + "card/get";
+	public static String walletInfo = prefix + "appRedPocket/notice";
 	public static String sendMoneyResult = prefix + "sendMoney/result";
 	public static String blank = prefix + ""; //占位 ，测试用
 	

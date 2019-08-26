@@ -57,7 +57,7 @@ public class ReceiverLuckyMoney {
 					try {
 						Thread.sleep(1000);
 						try {
-							ReceiverLuckyMoney.autoRecevice(lpparam, talker, linkUrl);
+							ReceiverLuckyMoney.personalRecevice(talker, linkUrl);
 						} catch (Throwable th) {
 							XLog.e("error: " + Log.getStackTraceString(th));
 						}
@@ -478,10 +478,11 @@ public class ReceiverLuckyMoney {
 	}
 	
 	/**
-	 * 自动接受转账
+	 * 个人接受转账
 	 */
-	public static void autoRecevice(LoadPackageParam lpparam, String talker, String linkUrl) {
+	public static void personalRecevice(String talker, String linkUrl) {
 		try {
+			LoadPackageParam lpparam = MainManager.wxLpparam;
 			Intent intent = new Intent(MainManager.activity, lpparam.classLoader.loadClass(HookLuckMoney.LuckyMoneyReceiveUI));
 			intent.putExtra(HookLuckMoney.key_native_url, linkUrl);
 			intent.putExtra(HookLuckMoney.key_username, talker);
@@ -495,10 +496,11 @@ public class ReceiverLuckyMoney {
 	}
 	
 	/**
-	 * 接收转账
+	 * 群聊接收转账
 	 */
-	public static void recevice(LoadPackageParam lpparam, String talker, String linkUrl) {
+	public static void groupRecevice(String talker, String linkUrl) {
 		try {
+			LoadPackageParam lpparam = MainManager.wxLpparam;
 			Intent intent = new Intent(MainManager.activity, lpparam.classLoader.loadClass(HookLuckMoney.LuckyMoneyReceiveUI));
 			intent.putExtra(HookLuckMoney.key_native_url, linkUrl);
 			intent.putExtra(HookLuckMoney.key_username, talker);

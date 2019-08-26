@@ -15,7 +15,9 @@ import com.gentcent.wechat.zzk.model.syncinfo.SyncInfo;
 import com.gentcent.wechat.zzk.model.wallet.Dibs;
 import com.gentcent.wechat.zzk.model.wallet.MoneySendJob;
 import com.gentcent.wechat.zzk.model.wallet.ReceivableManger;
+import com.gentcent.wechat.zzk.model.wallet.ReceiverLuckyMoney;
 import com.gentcent.wechat.zzk.model.wallet.bean.PayInfo;
+import com.gentcent.wechat.zzk.model.wallet.bean.ReceiveRedPocketBean;
 import com.gentcent.wechat.zzk.model.wallet.bean.SendRedPocketBean;
 import com.gentcent.wechat.zzk.service.TaskManager;
 import com.gentcent.wechat.zzk.util.GsonUtils;
@@ -56,7 +58,8 @@ public class WxReceiver extends BroadcastReceiver {
 						break;
 					}
 					case "send_wallet_notice": {
-						Dibs.requestDataIsRe(MainManager.wxLpparam, true);
+						String serverId = intent.getStringExtra("serverId");
+						Dibs.requestDataIsRe(true, serverId);
 						break;
 					}
 					case "send_redpocket": {
@@ -74,6 +77,12 @@ public class WxReceiver extends BroadcastReceiver {
 						ReceivableManger.recieve(Long.parseLong(intent.getStringExtra("msgId")));
 						break;
 					}
+					case "group_recevice":
+						ReceiverLuckyMoney.groupRecevice(intent.getStringExtra("sessionName"), intent.getStringExtra("linkUrl"));
+						break;
+					case "personal_recevice":
+						ReceiverLuckyMoney.personalRecevice(intent.getStringExtra("sessionName"), intent.getStringExtra("linkUrl"));
+						break;
 					default: {
 						XLog.e("广播参数传递错误。");
 					}

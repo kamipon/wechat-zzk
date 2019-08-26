@@ -359,18 +359,18 @@ public class UploadUtil {
 		if (!isbinded()) return;
 		ThreadPoolUtils.getInstance().a(new Runnable() {
 			public void run() {
-				XLog.d("sendWalletNotice url is " + Api.getWallet);
-				String json = new GsonBuilder().disableHtmlEscaping().create().toJson(enWalletBean);
+				XLog.d("sendWalletNotice url is " + Api.walletInfo);
+				String json = GsonUtils.GsonString(enWalletBean);
 				XLog.d("sendWalletNotice json is " + json);
-				OkHttpUtils.postString().url(Api.getWallet).content(json).mediaType(MediaType.parse("application/json; charset=utf-8")).build().execute(new StringCallback() {
-					@Override
-					public void onError(Call call, Exception e, int id) {
-						XLog.d("sendWalletNotice error " + e.getMessage());
+				OkHttpUtils.post().url(Api.walletInfo)
+						.addParams("walletInfo", json)
+						.build().execute(new StringCallback() {
+					public void onError(Call call, Exception exc, int i) {
+						XLog.e("error: " + Log.getStackTraceString(exc));
 					}
 					
-					@Override
-					public void onResponse(String response, int id) {
-						XLog.d("sendWalletNotice success " + response);
+					public void onResponse(String response, int i) {
+						XLog.d("sendToBackend success " + response);
 					}
 				});
 			}
