@@ -31,7 +31,7 @@ public class SyncInfo {
 		getRcontact();
 //		getChatRoom();
 //		getMessage();
-//		getSnsData();
+		getSnsData();
 	}
 	
 	
@@ -142,15 +142,19 @@ public class SyncInfo {
 	 * 获取朋友圈数据
 	 */
 	private static void getSnsData() {
-		List<SnsContentItemBean> selfAllDatas = SnsHandler.getSelfAllDatas(MainManager.wxLpparam);
-		XLog.d("openWxDb:  " + "自己的朋友圈数据=====================================================================================");
-		for (SnsContentItemBean selfAllData : selfAllDatas) {
-			XLog.e(selfAllData.toString());
-		}
-		List<SnsContentItemBean> allDatas = SnsHandler.getAllDatas(MainManager.wxLpparam);
-		XLog.d("openWxDb:  " + "所有的朋友圈数据=====================================================================================");
-		for (SnsContentItemBean allData : allDatas) {
-			XLog.e(allData.toString());
+		try {
+//			List<SnsContentItemBean> selfAllDatas = SnsHandler.getSelfAllDatas(MainManager.wxLpparam);
+//			XLog.d("openWxDb:  " + "自己的朋友圈数据=====================================================================================");
+//			for (SnsContentItemBean selfAllData : selfAllDatas) {
+//				XLog.e(selfAllData.toString());
+//			}
+			List<SnsContentItemBean> allDatas = SnsHandler.getAllDatas(MainManager.wxLpparam);
+			XLog.d("openWxDb:  " + "所有的朋友圈数据=====================================================================================");
+			for (SnsContentItemBean allData : allDatas) {
+				XLog.e(allData.toString());
+			}
+		} catch (Exception e) {
+			XLog.e("erroe:" + Log.getStackTraceString(e));
 		}
 	}
 }

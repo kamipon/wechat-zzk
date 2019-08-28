@@ -66,9 +66,10 @@ public class UserDao {
 	public static String getMyWxidByWXMethod(XC_LoadPackage.LoadPackageParam lpparam) {
 		String wxid = "";
 		try {
-			wxid = (String) XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.model.q"), "Wt");
+			wxid = (String) XposedHelpers.callStaticMethod(lpparam.classLoader.loadClass("com.tencent.mm.model.r"), "adI");
+			XLog.d("HToolsUSERNAME :" + wxid);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			XLog.e("error:" + Log.getStackTraceString(e));
 		}
 		return wxid;
 	}

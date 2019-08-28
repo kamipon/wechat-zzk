@@ -213,7 +213,8 @@ public class SnsHandler {
 	
 	/**
 	 * 删除朋友圈
-	 * @param wSnsContentBean	微信朋友圈对象
+	 *
+	 * @param wSnsContentBean 微信朋友圈对象
 	 */
 	private static void delete_SnsContentBean(Object wSnsContentBean, LoadPackageParam loadPackageParam) {
 		try {
@@ -313,19 +314,25 @@ public class SnsHandler {
 	 * @param list rowid集合
 	 */
 	public static List<SnsContentItemBean> getSnsContentItemBeanList_By_Rowids(LoadPackageParam lpparam, List<String> list) {
-		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-		for (String str : list) {
-			String rowid = "sns_table_" + str;
-			Object GetWSnsContentBean_By_RowID = GetWSnsContentBean_By_RowID(lpparam, rowid);
-			if (GetWSnsContentBean_By_RowID != null) {
-				hashMap.put(rowid, GetWSnsContentBean_By_RowID);
+		
+		try {
+			HashMap<String, Object> hashMap = new HashMap<String, Object>();
+			for (String str : list) {
+				String rowid = "sns_table_" + str;
+				Object GetWSnsContentBean_By_RowID = GetWSnsContentBean_By_RowID(lpparam, rowid);
+				if (GetWSnsContentBean_By_RowID != null) {
+					hashMap.put(rowid, GetWSnsContentBean_By_RowID);
+				}
 			}
+			ArrayList<SnsContentItemBean> arrayList = new ArrayList<>();
+			for (Map.Entry<String, Object> entry : hashMap.entrySet()) {
+				arrayList.add(getSnsContentItemBean(lpparam, entry.getValue(), entry.getKey()));
+			}
+			return arrayList;
+		} catch (Exception e) {
+			XLog.e("error:" + Log.getStackTraceString(e));
+			return null;
 		}
-		ArrayList<SnsContentItemBean> arrayList = new ArrayList<>();
-		for (Map.Entry<String, Object> entry : hashMap.entrySet()) {
-			arrayList.add(getSnsContentItemBean(lpparam, entry.getValue(), entry.getKey()));
-		}
-		return arrayList;
 	}
 	
 	/**
