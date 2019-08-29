@@ -10,6 +10,7 @@ import com.gentcent.wechat.zzk.bean.SystemInfoBean;
 import com.gentcent.wechat.zzk.bean.UploadBean;
 import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
+import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.model.wallet.bean.BackMoneyResult;
 import com.gentcent.wechat.zzk.model.wallet.bean.EnWalletBean;
 import com.gentcent.wechat.zzk.util.GsonUtils;
@@ -23,6 +24,7 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -196,6 +198,34 @@ public class UploadUtil {
 				.addParams("fromType", String.valueOf(u.sourceType))
 				.addParams("from", u.sourceText)
 				.addParams("signature", u.signature)
+				.build().execute(
+				new StringCallback() {
+					@Override
+					public void onError(Call call, Exception e, int id) {
+						XLog.e("error: " + Log.getStackTraceString(e));
+						ToastUtils.showShort("同步失败，请检查网络后重新再试");
+					}
+					
+					@Override
+					public void onResponse(String response, int id) {
+						XLog.d("response: " + response);
+						Map<String, Object> map = GsonUtils.GsonToMaps(response);
+						if ((boolean) map.get("flag")) {
+						} else {
+							ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));
+						}
+					}
+				});
+	}
+	
+	/**
+	 * 同步朋友圈
+	 */
+	public static void syncSns(final List<SnsContentItemBean> allDatas) {
+		if (!isbinded()) return;
+		OkHttpUtils.post().url(Api.appfriend)
+				.addParams("snsInfoList", GsonUtils.GsonString(allDatas))
+				.addParams("myWxId", UserDao.getMyWxid())
 				.build().execute(
 				new StringCallback() {
 					@Override

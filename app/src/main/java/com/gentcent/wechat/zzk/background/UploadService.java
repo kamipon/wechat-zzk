@@ -9,12 +9,14 @@ import com.blankj.utilcode.util.PhoneUtils;
 import com.gentcent.wechat.zzk.bean.PhoneInfoBean;
 import com.gentcent.wechat.zzk.bean.UploadBean;
 import com.gentcent.wechat.zzk.bean.UserBean;
+import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.util.ZzkUtil;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @author zuozhi
@@ -68,6 +70,13 @@ public class UploadService {
 	 */
 	public static void bindGroup(UserBean userBean) {
 //		UploadUtil.bindGroup(userBean);
+	}
+	
+	/**
+	 * 同步朋友圈
+	 */
+	public static void syncSns(List<SnsContentItemBean> allDatas) {
+		UploadUtil.syncSns(allDatas);
 	}
 	
 	/**

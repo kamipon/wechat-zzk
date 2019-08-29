@@ -150,6 +150,7 @@ public class SyncInfo {
 //			}
 			List<SnsContentItemBean> allDatas = SnsHandler.getAllDatas(MainManager.wxLpparam);
 			XLog.d("openWxDb:  " + "所有的朋友圈数据=====================================================================================");
+			UploadService.syncSns(allDatas);
 			for (SnsContentItemBean allData : allDatas) {
 				XLog.e(allData.toString());
 			}
