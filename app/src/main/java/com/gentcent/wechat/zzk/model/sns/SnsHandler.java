@@ -343,23 +343,24 @@ public class SnsHandler {
 	 */
 	public static SnsContentItemBean getSnsContentItemBean(LoadPackageParam lpparam, Object wSnsContentBean, String rowId) {
 		SnsContentItemBean snsContentItemBean = new SnsContentItemBean();
-		snsContentItemBean.setNickName(UserDao.getMyName());
 		snsContentItemBean.setSnsWxid((String) XposedHelpers.getObjectField(wSnsContentBean, "field_userName"));
+		snsContentItemBean.setNickName(UserDao.getNickByWxid(snsContentItemBean.getSnsWxid()));
 		snsContentItemBean.setSnsID((String) XposedHelpers.callMethod(wSnsContentBean, "getSnsId"));
 		Object cmi = XposedHelpers.callMethod(wSnsContentBean, "czu");
 		snsContentItemBean.setTimestamp((long) (Integer) XposedHelpers.getObjectField(cmi, "CreateTime"));
+		snsContentItemBean.setTimestamp(snsContentItemBean.getTimestamp() * 1000);
 		snsContentItemBean.setContent((String) XposedHelpers.getObjectField(cmi, "yDp"));
 		snsContentItemBean.setSelfLike((Integer) XposedHelpers.getObjectField(wSnsContentBean, "field_likeFlag") == 1);
 		snsContentItemBean.setImages(new ArrayList<String>());
 		Object wsx = XposedHelpers.getObjectField(cmi, "yDs");
 		int type = (Integer) XposedHelpers.getObjectField(wsx, "xxw");
 		if (type == IMAGE) {
-			snsContentItemBean.setType(1);
+			snsContentItemBean.setType(2);
 			for (Object o : ((LinkedList) XposedHelpers.getObjectField(wsx, "xxx"))) {
 				snsContentItemBean.getImages().add((String) XposedHelpers.getObjectField(o, "Url"));
 			}
 		} else if (type == ARTICLE) {
-			snsContentItemBean.setType(3);
+			snsContentItemBean.setType(4);
 			String title = (String) XposedHelpers.getObjectField(wsx, "Title");
 			String url = (String) XposedHelpers.getObjectField(wsx, "Url");
 			LinkedList linkedList = (LinkedList) XposedHelpers.getObjectField(wsx, "xxx");
@@ -369,9 +370,9 @@ public class SnsHandler {
 			snsContentItemBean.setArticleTitle(title);
 			snsContentItemBean.setArticleUrl(url);
 		} else if (type != VIDEO) {
-			snsContentItemBean.setType(0);
+			snsContentItemBean.setType(1);
 		} else {
-			snsContentItemBean.setType(2);
+			snsContentItemBean.setType(3);
 			LinkedList linkedList2 = (LinkedList) XposedHelpers.getObjectField(wsx, "xxx");
 			if (linkedList2 != null && linkedList2.size() > 0) {
 				Object obj2 = linkedList2.get(0);

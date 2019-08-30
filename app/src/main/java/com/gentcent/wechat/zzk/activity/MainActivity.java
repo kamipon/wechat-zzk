@@ -11,11 +11,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
-import com.bigkoo.convenientbanner.holder.Holder;
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.R;
@@ -31,13 +34,53 @@ import com.google.zxing.activity.CaptureActivity;
 import com.google.zxing.util.Constant;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dalvik.system.PathClassLoader;
 
 public class MainActivity extends AppCompatActivity {
+	@BindView(R.id.iv_setting)
+	ImageView ivSetting;
+	@BindView(R.id.lly_scan)
+	LinearLayout llyScan;
+	@BindView(R.id.lly_device_info)
+	LinearLayout llyDeviceInfo;
+	@BindView(R.id.lly_sync)
+	LinearLayout llySync;
+	@BindView(R.id.lly_sync_sns)
+	LinearLayout llySyncSns;
+	@BindView(R.id.linearLayout2)
+	LinearLayout linearLayout2;
+	@BindView(R.id.rly_header)
+	RelativeLayout rlyHeader;
+	@BindView(R.id.tv_xposed)
+	TextView tvXposed;
+	@BindView(R.id.tv_wechat)
+	TextView tvWechat;
+	@BindView(R.id.lly_state)
+	LinearLayout llyState;
+	@BindView(R.id.rly_content)
+	LinearLayout rlyContent;
+	@BindView(R.id.tv_wechat_current_version)
+	TextView tvWechatCurrentVersion;
+	@BindView(R.id.tv_wechat_adaptation_version)
+	TextView tvWechatAdaptationVersion;
+	@BindView(R.id.tv_service_current_version)
+	TextView tvServiceCurrentVersion;
+	@BindView(R.id.tv_service_adaptation_version)
+	TextView tvServiceAdaptationVersion;
+	@BindView(R.id.linearLayout3)
+	LinearLayout linearLayout3;
+	@BindView(R.id.linearLayout)
+	LinearLayout linearLayout;
+	@BindView(R.id.tv_version_adaptation)
+	TextView tvVersionAdaptation;
+	@BindView(R.id.tv_result)
+	TextView tvResult;
 	private ConvenientBanner convenientBanner;
 	private ArrayList<Integer> localImages = new ArrayList<Integer>();
 	
@@ -45,6 +88,21 @@ public class MainActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		ButterKnife.bind(this);
+		initBanner();
+		initDetection();
+	}
+	
+	/**
+	 * 初始化版本信息
+	 */
+	private void initDetection() {
+	}
+	
+	/**
+	 * 初始化轮播图
+	 */
+	private void initBanner() {
 		convenientBanner = findViewById(R.id.convenientBanner);
 		//获取本地的图片，循环播放
 		for (int position = 0; position < 2; position++) {
@@ -68,22 +126,11 @@ public class MainActivity extends AppCompatActivity {
 	
 	/**
 	 * 扫码绑定设备
-	 *
-	 * @param view 代表被点击的视图
 	 */
+	@OnClick(R.id.lly_scan)
 	public void bindDivce(View view) {
 		Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
 		startActivityForResult(intent, Constant.REQ_QR_CODE);
-	}
-	
-	/**
-	 * 同步好友
-	 *
-	 * @param view 代表被点击的视图
-	 */
-	public void syncFriend(View view) {
-		ToastUtils.showShort("开始同步好友信息");
-		WxBroadcast.sendAct("sync_info");
 	}
 	
 	@Override
@@ -97,6 +144,15 @@ public class MainActivity extends AppCompatActivity {
 			XLog.d(scanResult);
 			UploadService.bindDevice(scanResult);
 		}
+	}
+	
+	/**
+	 * 同步好友
+	 */
+	@OnClick(R.id.lly_sync)
+	public void syncFriend(View view) {
+		ToastUtils.showShort("开始同步好友信息");
+		WxBroadcast.sendAct("sync_info");
 	}
 	
 	/**

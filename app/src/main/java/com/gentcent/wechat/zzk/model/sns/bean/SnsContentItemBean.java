@@ -41,7 +41,7 @@ public class SnsContentItemBean {
 	private boolean SelfLike;
 	//wcdb的sbsid
 	private String SnsID;
-	//snsid
+	//所属好友的wxid
 	private String SnsWxid;
 	//时间戳
 	private long Timestamp;
