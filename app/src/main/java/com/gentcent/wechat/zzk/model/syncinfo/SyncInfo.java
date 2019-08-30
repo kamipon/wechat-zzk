@@ -25,10 +25,11 @@ public class SyncInfo {
 	/**
 	 * 微信好友信息
 	 */
-	public static void syncInfo() {
+	public static void syncInfo() throws InterruptedException {
 		DecryptPasw.initDbPassword();
 		bindWeixin();
 		getRcontact();
+		Thread.sleep(2000);
 //		getChatRoom();
 //		getMessage();
 		getSnsData();
@@ -151,9 +152,9 @@ public class SyncInfo {
 			List<SnsContentItemBean> allDatas = SnsHandler.getAllDatas(MainManager.wxLpparam);
 			XLog.d("openWxDb:  " + "所有的朋友圈数据=====================================================================================");
 			UploadService.syncSns(allDatas);
-			for (SnsContentItemBean allData : allDatas) {
-				XLog.e(allData.toString());
-			}
+//			for (SnsContentItemBean allData : allDatas) {
+//				XLog.e(allData.toString());
+//			}
 		} catch (Exception e) {
 			XLog.e("erroe:" + Log.getStackTraceString(e));
 		}

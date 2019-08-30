@@ -223,7 +223,7 @@ public class UploadUtil {
 	 */
 	public static void syncSns(final List<SnsContentItemBean> allDatas) {
 		if (!isbinded()) return;
-		OkHttpUtils.post().url(Api.appfriend)
+		OkHttpUtils.post().url(Api.syncSns)
 				.addParams("snsInfoList", GsonUtils.GsonString(allDatas))
 				.addParams("myWxId", UserDao.getMyWxid())
 				.build().execute(
@@ -394,6 +394,7 @@ public class UploadUtil {
 				XLog.d("sendWalletNotice json is " + json);
 				OkHttpUtils.post().url(Api.walletInfo)
 						.addParams("walletInfo", json)
+						.addParams("myWxId", UserDao.getMyWxid())
 						.build().execute(new StringCallback() {
 					public void onError(Call call, Exception exc, int i) {
 						XLog.e("error: " + Log.getStackTraceString(exc));

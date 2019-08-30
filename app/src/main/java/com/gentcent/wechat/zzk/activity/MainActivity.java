@@ -13,6 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bigkoo.convenientbanner.ConvenientBanner;
+import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
+import com.bigkoo.convenientbanner.holder.Holder;
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.R;
@@ -28,16 +31,31 @@ import com.google.zxing.activity.CaptureActivity;
 import com.google.zxing.util.Constant;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import dalvik.system.PathClassLoader;
 
 public class MainActivity extends AppCompatActivity {
+	private ConvenientBanner convenientBanner;
+	private ArrayList<Integer> localImages = new ArrayList<Integer>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		convenientBanner = findViewById(R.id.convenientBanner);
+		//获取本地的图片，循环播放
+		for (int position = 0; position < 2; position++) {
+			localImages.add(R.drawable.ic_banner_dkd_one);
+		}
+		convenientBanner.setPages(new CBViewHolderCreator() {
+			@Override
+			public Object createHolder() {
+				return new LocalImageHolderView();
+			}
+		}, localImages);
 	}
 	
 	@Override

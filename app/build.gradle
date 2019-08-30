@@ -37,6 +37,7 @@ android {
 dependencies {
     implementation project(':zxing-lib')
     compileOnly files('libs/XposedBridge.jar')
+    implementation 'com.bigkoo:convenientbanner:2.0.5'
     implementation 'com.alibaba:fastjson:1.1.70.android'
     implementation 'cn.jiguang.sdk:jpush:3.3.4'
     implementation 'cn.jiguang.sdk:jcore:2.1.2'
