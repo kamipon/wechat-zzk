@@ -24,6 +24,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.R;
 import com.gentcent.wechat.zzk.WxBroadcast;
 import com.gentcent.wechat.zzk.background.UploadService;
+import com.gentcent.wechat.zzk.service.ActivityService;
 import com.gentcent.wechat.zzk.service.MyService;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
@@ -81,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
 	TextView tvVersionAdaptation;
 	@BindView(R.id.tv_result)
 	TextView tvResult;
-	private ConvenientBanner convenientBanner;
-	private ArrayList<Integer> localImages = new ArrayList<Integer>();
+	@BindView(R.id.convenientBanner)
+	ConvenientBanner convenientBanner;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,13 +98,17 @@ public class MainActivity extends AppCompatActivity {
 	 * 初始化版本信息
 	 */
 	private void initDetection() {
+		String wxVersion = ActivityService.getWxVersion();
+		String zzkVersion = ActivityService.getZzkVersion();
+		tvWechatCurrentVersion.setText("当前版本:" + wxVersion);
+		tvServiceCurrentVersion.setText("当前版本:" + zzkVersion);
 	}
 	
 	/**
 	 * 初始化轮播图
 	 */
 	private void initBanner() {
-		convenientBanner = findViewById(R.id.convenientBanner);
+		ArrayList<Integer> localImages = new ArrayList<Integer>();
 		//获取本地的图片，循环播放
 		for (int position = 0; position < 2; position++) {
 			localImages.add(R.drawable.ic_banner_dkd_one);
