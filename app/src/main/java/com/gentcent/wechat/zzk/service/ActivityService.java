@@ -10,6 +10,9 @@ import com.gentcent.wechat.zzk.util.HookParams;
  */
 public class ActivityService {
 	
+	/**
+	 * 微信当前版本号
+	 */
 	public static String getWxVersion() {
 		String wxVersion;
 		if (!AppUtils.isAppInstalled(HookParams.WECHAT_PACKAGE_NAME)) {
@@ -21,6 +24,9 @@ public class ActivityService {
 		return wxVersion;
 	}
 	
+	/**
+	 * 增长客当前版本号
+	 */
 	public static String getZzkVersion() {
 		String zzkVersion;
 		if (!AppUtils.isAppInstalled(HookParams.MY_PACKAGE_NAME)) {
