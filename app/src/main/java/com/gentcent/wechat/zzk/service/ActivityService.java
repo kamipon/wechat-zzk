@@ -16,7 +16,7 @@ public class ActivityService {
 	public static String getWxVersion() {
 		String wxVersion;
 		if (!AppUtils.isAppInstalled(HookParams.WECHAT_PACKAGE_NAME)) {
-			wxVersion = "异常";
+			wxVersion = "未知";
 		} else {
 			AppInfo appInfo = AppUtils.getAppInfo(HookParams.WECHAT_PACKAGE_NAME);
 			wxVersion = appInfo.getVersionName();
@@ -30,7 +30,7 @@ public class ActivityService {
 	public static String getZzkVersion() {
 		String zzkVersion;
 		if (!AppUtils.isAppInstalled(HookParams.MY_PACKAGE_NAME)) {
-			zzkVersion = "异常";
+			zzkVersion = "未知";
 		} else {
 			AppInfo appInfo = AppUtils.getAppInfo(HookParams.MY_PACKAGE_NAME);
 			zzkVersion = appInfo.getVersionName();

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">增长客</string>
     <string name="app_desc">增长客</string>
     <string name="pref_open">抢红包</string>
@@ -52,4 +52,5 @@
     <string name="send_sns">发送朋友圈</string>
     <string name="bind_divce">扫码绑定设备</string>
     <string name="sync_friend">同步好友</string>
+    <string name="title_device_info">设备信息</string>
 </resources>

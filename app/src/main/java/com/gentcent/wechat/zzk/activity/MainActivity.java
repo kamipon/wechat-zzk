@@ -43,7 +43,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dalvik.system.PathClassLoader;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 	@BindView(R.id.iv_setting)
 	ImageView ivSetting;
 	@BindView(R.id.lly_scan)
@@ -86,7 +86,17 @@ public class MainActivity extends AppCompatActivity {
 	ConvenientBanner convenientBanner;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public int bindLayout() {
+		return R.layout.activity_main;
+	}
+	
+	@Override
+	public View bindView() {
+		return null;
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
@@ -158,6 +168,14 @@ public class MainActivity extends AppCompatActivity {
 	public void syncFriend(View view) {
 		ToastUtils.showShort("开始同步好友信息");
 		WxBroadcast.sendAct("sync_info");
+	}
+	
+	/**
+	 * 设备信息
+	 */
+	@OnClick(R.id.lly_device_info)
+	public void goDeviceInfo(View view) {
+		startActivity(new Intent(getBaseContext(), DeviceInfoAct.class));
 	}
 	
 	/**

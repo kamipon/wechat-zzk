@@ -143,20 +143,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_result">
 
-            <RelativeLayout
-                android:id="@+id/rly_header"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:background="@mipmap/ic_back_state">
-
-                <!--                <pl.droidsonroids.gif.GifImageView-->
-                <!--                    android:id="@+id/giv_find"-->
-                <!--                    android:layout_width="150dp"-->
-                <!--                    android:layout_height="120dp"-->
-                <!--                    android:layout_centerInParent="true"-->
-                <!--                    android:src="@mipmap/ic_check_state" />-->
-            </RelativeLayout>
-
             <LinearLayout
                 android:id="@+id/lly_state"
                 android:layout_width="match_parent"
@@ -220,6 +206,20 @@
 
                 <include layout="@layout/line_view_1" />
             </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rly_header"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:background="@mipmap/ic_back_state">
+
+                <!--                <pl.droidsonroids.gif.GifImageView-->
+                <!--                    android:id="@+id/giv_find"-->
+                <!--                    android:layout_width="150dp"-->
+                <!--                    android:layout_height="120dp"-->
+                <!--                    android:layout_centerInParent="true"-->
+                <!--                    android:src="@mipmap/ic_check_state" />-->
+            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -264,7 +264,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="适配版本: 1.0.4"
+                    android:text="最新版本: 7.0.6"
                     android:textColor="#ff333333"
                     android:textSize="15sp" />
             </LinearLayout>
@@ -300,7 +300,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:layout_weight="1"
-                    android:text="适配版本: 1.0.4"
+                    android:text="最新版本: 1.9.1"
                     android:textColor="#ff333333"
                     android:textSize="15sp" />
             </LinearLayout>
@@ -343,20 +343,18 @@
             app:layout_constraintVertical_bias="0.5"
             app:layout_goneMarginLeft="5dp" />
 
-        <com.bigkoo.convenientbanner.ConvenientBanner
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.bigkoo.convenientbanner.ConvenientBanner xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/convenientBanner"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            app:canLoop="true"
-        />
-<!--        <ImageView-->
-<!--            android:id="@+id/banner"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="195dp"-->
-<!--            android:src="@drawable/ic_banner_dkd_one"-->
-<!--            tools:layout_editor_absoluteX="0dp"-->
-<!--            tools:layout_editor_absoluteY="0dp" />-->
+            app:canLoop="true" />
+        <!--        <ImageView-->
+        <!--            android:id="@+id/banner"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="195dp"-->
+        <!--            android:src="@drawable/ic_banner_dkd_one"-->
+        <!--            tools:layout_editor_absoluteX="0dp"-->
+        <!--            tools:layout_editor_absoluteY="0dp" />-->
     </android.support.constraint.ConstraintLayout>
 
     <!--    <LinearLayout-->

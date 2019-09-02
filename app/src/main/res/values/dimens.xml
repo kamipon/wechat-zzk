@@ -2,4 +2,6 @@
 <resources>
     <dimen name="margin_menu">5dp</dimen>
     <dimen name="margin_border">15dp</dimen>
+    <dimen name="offset_64">64dp</dimen>
+    <dimen name="header_height">45dp</dimen>
 </resources>

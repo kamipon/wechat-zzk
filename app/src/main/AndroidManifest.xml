@@ -93,6 +93,8 @@
 
         <!--扫码-->
         <activity android:name="com.google.zxing.activity.CaptureActivity" />
+
+        <activity android:name=".activity.DeviceInfoAct" />
     </application>
 
 </manifest>

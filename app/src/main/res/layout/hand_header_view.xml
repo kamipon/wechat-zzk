@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:internal="http://schemas.android.com/apk/prv/res/android"
+    android:id="@+id/rly_header"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/header_height"
+    android:background="@color/header_color"
+    android:maxHeight="@dimen/header_height">
+
+    <ImageView
+        android:id="@+id/img_left_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingLeft="17dp"
+        android:paddingTop="10dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
+        android:src="@mipmap/ic_back"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/img_right_image"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="12dp"
+        android:padding="5dp"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="title"
+        android:textColor="@color/title_color"
+        android:textSize="16sp"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_right_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:paddingRight="15dp"
+        android:text=""
+        android:textColor="@color/title_color"
+        android:textSize="15sp"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_left_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_toRightOf="@+id/img_left_image"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:text="111"
+        android:textColor="@color/title_color"
+        android:textSize="15sp"
+        android:visibility="visible" />
+</RelativeLayout>
