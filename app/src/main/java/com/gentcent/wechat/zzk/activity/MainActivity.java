@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,10 +21,12 @@ import com.android.tu.loadingdialog.LoadingDailog;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.ObjectUtils;
 import com.gentcent.wechat.zzk.R;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.service.ActivityService;
 import com.gentcent.wechat.zzk.service.MyService;
+import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.SearchClasses;
@@ -31,10 +34,13 @@ import com.gentcent.wechat.zzk.util.XLog;
 import com.google.gson.Gson;
 import com.google.zxing.activity.CaptureActivity;
 import com.google.zxing.util.Constant;
+import com.mylhyl.circledialog.CircleDialog;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,11 +99,16 @@ public class MainActivity extends BaseActivity {
 		return null;
 	}
 	
+	LoadingDailog dialog;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		ButterKnife.bind(this);
+		//创建等待弹窗
+		LoadingDailog.Builder loadBuilder = new LoadingDailog.Builder(this)
+				.setMessage("同步中...");
+		dialog = loadBuilder.create();
+		
 		initBanner();
 		initDetection();
 	}
@@ -138,6 +149,41 @@ public class MainActivity extends BaseActivity {
 	}
 	
 	/**
+	 * 扫码回调轮询
+	 */
+	public int mTimes;
+	private Timer timer;
+	@SuppressLint("HandlerLeak")
+	public Handler mHandler = new Handler() {
+		public void handleMessage(Message message) {
+			if (message.what == 1) {
+				mTimes = mTimes + 1;
+				String bindCompany = MyHelper.readLine("bindCompany", "false");
+				String sysInfo = MyHelper.readLine("sys-info", "");
+				String phoneId = MyHelper.readLine("phone-id", "");
+				String company = MyHelper.readLine("company", "");
+				
+				if (ObjectUtils.equals(bindCompany, "true")) {
+					if (!ObjectUtils.equals(sysInfo, "")) {
+						if (!ObjectUtils.equals(phoneId, "")) {
+							if (!ObjectUtils.equals(company, "")) {
+								timer.cancel();
+								dialog.hide();
+								confirmLayer("绑定成功！");
+							}
+						}
+					}
+				} else if (mTimes >= 30) {
+					timer.cancel();
+					dialog.hide();
+					confirmLayer("绑定设备超时");
+				}
+			}
+			super.handleMessage(message);
+		}
+	};
+	
+	/**
 	 * 扫码绑定设备
 	 */
 	@OnClick(R.id.lly_scan)
@@ -154,7 +200,18 @@ public class MainActivity extends BaseActivity {
 			Bundle bundle = data.getExtras();
 			String scanResult = bundle.getString(Constant.INTENT_EXTRA_KEY_QR_SCAN);
 			//将扫描出的信息显示出来
-			XLog.d(scanResult);
+			dialog.show();
+			timer = new Timer();
+			timer.schedule(new TimerTask() {
+				public void run() {
+					MainActivity.this.mHandler.sendEmptyMessage(1);
+				}
+			}, 1000, 1000);
+			mTimes = 0;
+			MyHelper.writeLine("bindCompany", "false");
+			MyHelper.writeLine("sys-info", "");
+			MyHelper.writeLine("phone-id", "");
+			MyHelper.writeLine("company", "");
 			UploadService.bindDevice(scanResult);
 		}
 	}
@@ -164,11 +221,6 @@ public class MainActivity extends BaseActivity {
 	 */
 	@OnClick(R.id.lly_sync)
 	public void syncFriend(View view) {
-//		LoadingDailog.Builder loadBuilder=new LoadingDailog.Builder(this)
-//				.setMessage("同步中...");
-//		LoadingDailog dialog=loadBuilder.create();
-//		dialog.show();
-//		WxBroadcast.sendAct("sync_info");
 		startActivity(new Intent(getContext(), SyncFriendAct.class));
 	}
 	
@@ -184,12 +236,10 @@ public class MainActivity extends BaseActivity {
 	 * 群友头像
 	 */
 	@OnClick(R.id.lly_sync_sns)
-	public void syncGroup(View view){
-//		LoadingDailog.Builder loadBuilder=new LoadingDailog.Builder(this)
-//				.setMessage("同步中...");
-//		LoadingDailog dialog=loadBuilder.create();
-//		dialog.show();
+	public void syncGroup(View view) {
+		confirmLayer("群聊功能正在开发中..");
 	}
+	
 	
 	/**
 	 * 初始化
@@ -276,5 +326,12 @@ public class MainActivity extends BaseActivity {
 		AppUtils.uninstallApp("com.ssrj.xposedcheck");
 	}
 	
+	
+	public void confirmLayer(String text) {
+		new CircleDialog.Builder().setTitle("提示").setCancelable(false).setCanceledOnTouchOutside(false).setText(text).setNeutral("确定", new View.OnClickListener() {
+			public void onClick(View view) {
+			}
+		}).show(getSupportFragmentManager());
+	}
 	
 }

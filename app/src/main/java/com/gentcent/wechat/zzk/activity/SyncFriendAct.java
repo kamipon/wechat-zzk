@@ -120,7 +120,7 @@ public class SyncFriendAct extends BaseActivity {
 		super.onCreate(bundle);
 		String phoneId = MyHelper.readLine("phone-id");
 		if (StringUtils.equals(phoneId, "")) {
-			new CircleDialog.Builder().setTitle("提示").setText("请先绑定公司，才可同步好友").setCancelable(false).setCanceledOnTouchOutside(false).setNeutral("确定", new OnClickListener() {
+			new CircleDialog.Builder().setTitle("提示").setText("请先绑定设备，才可同步好友").setCancelable(false).setCanceledOnTouchOutside(false).setNeutral("确定", new OnClickListener() {
 				public void onClick(View view) {
 					SyncFriendAct.this.finish();
 				}
@@ -280,7 +280,7 @@ public class SyncFriendAct extends BaseActivity {
 	}
 	
 	public void syncError(String str) {
-		new CircleDialog.Builder().setTitle("标题").setCancelable(false).setCanceledOnTouchOutside(false).setText(str).setNeutral("确定", new OnClickListener() {
+		new CircleDialog.Builder().setTitle("提示").setCancelable(false).setCanceledOnTouchOutside(false).setText(str).setNeutral("确定", new OnClickListener() {
 			public void onClick(View view) {
 				SyncFriendAct.this.finish();
 			}

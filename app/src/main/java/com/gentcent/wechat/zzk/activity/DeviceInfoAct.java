@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.PhoneUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.R;
+import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.XLog;
 
 import java.io.BufferedReader;
@@ -95,23 +97,22 @@ public class DeviceInfoAct extends BaseActivity {
 		this.tv_nc.setText(getRomInfoString());
 		this.tv_version_name.setText(DeviceUtils.getSDKVersionName());
 		this.tv_device_code.setText(AppUtils.getAppVersionName());
-//		String str = (String) SharedPreferencesUtil.b(getContext(), "company", "");
-//		String str2 = (String) SharedPreferencesUtil.b(getContext(), "deviceMemo", "");
-//		boolean booleanValue = (Boolean) SharedPreferencesUtil.b(getContext(), "bindCompany", Boolean.FALSE);
-//		this.mBindCompany = booleanValue;
-//		if (booleanValue) {
-//			this.iv_auth.setImageResource(R.mipmap.ic_device_auth);
-//			this.tv_name.setVisibility(View.VISIBLE);
-//			this.tv_name.setText(str);
-//			this.tv_mode.setVisibility(View.VISIBLE);
-//			TextView textView2 = this.tv_mode;
-//			String sb3 = "设备编号：" + MyHelper.readLine("phone-id", "未绑定设备");
-//			textView2.setText(sb3);
-//			if (!TextUtils.isEmpty(str2)) {
-//				this.tv_memo.setVisibility(View.VISIBLE);
-//				this.tv_memo.setText(str2);
-//			}
-//		}
+		String company = MyHelper.readLine("company", "");
+		String deviceMemo = MyHelper.readLine("deviceMemo", "");
+		boolean bindCompany = Boolean.valueOf(MyHelper.readLine("bindCompany", "false"));
+		this.mBindCompany = bindCompany;
+		if (bindCompany) {
+			this.iv_auth.setImageResource(R.mipmap.ic_device_auth);
+			this.tv_name.setVisibility(View.VISIBLE);
+			this.tv_name.setText(company);
+			String phoneId = "设备编号：" + MyHelper.readLine("phone-id", "未绑定设备");
+			this.tv_memo.setVisibility(View.VISIBLE);
+			this.tv_memo.setText(phoneId);
+			if (!TextUtils.isEmpty(deviceMemo)) {
+				this.tv_mode.setVisibility(View.VISIBLE);
+				this.tv_mode.setText(deviceMemo);
+			}
+		}
 	}
 	
 	public void copy(String str, Context context) {

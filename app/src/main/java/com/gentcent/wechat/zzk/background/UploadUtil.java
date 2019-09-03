@@ -96,12 +96,15 @@ public class UploadUtil {
 								if (jsonObject.getBoolean("flag")) {
 									SystemInfoBean systemInfoBean = new SystemInfoBean();
 									systemInfoBean.phoneId = jsonObject.getString("phoneId");
+									systemInfoBean.phoneName = jsonObject.getString("phoneName");
 									systemInfoBean.actId = jsonObject.getString("actId");
 									systemInfoBean.actName = jsonObject.getString("actName");
 									systemInfoBean.keepMan = jsonObject.getString("keepMan");
 									systemInfoBean.picUrl = jsonObject.getString("picUrl");
 									MyHelper.writeLine("sys-info", GsonUtils.GsonString(systemInfoBean));
-									MyHelper.writeLine("phone-id", jsonObject.getString("phoneId"));
+									MyHelper.writeLine("phone-id", systemInfoBean.phoneId);
+									MyHelper.writeLine("company", systemInfoBean.actName);
+									MyHelper.writeLine("bindCompany", "true");
 								}
 							}
 						});

@@ -7,6 +7,8 @@ package com.gentcent.wechat.zzk.bean;
 public class SystemInfoBean {
 	//设备Id
 	public String phoneId;
+	//设备昵称
+	public String phoneName;
 	//商家Id
 	public String actId;
 	//商家名称
