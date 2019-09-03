@@ -13,10 +13,8 @@ import android.widget.ProgressBar;
 
 import com.alibaba.fastjson.JSONObject;
 import com.android.tu.loadingdialog.LoadingDailog;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.StringUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.R;
 import com.gentcent.wechat.zzk.WxBroadcast;
 import com.gentcent.wechat.zzk.background.Api;
@@ -24,7 +22,6 @@ import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.XLog;
-import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.mylhyl.circledialog.CircleDialog;
 import com.mylhyl.circledialog.callback.ConfigButton;
 import com.mylhyl.circledialog.params.ButtonParams;
@@ -32,15 +29,12 @@ import com.mylhyl.circledialog.res.values.CircleColor;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
-import java.util.Map;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import okhttp3.Call;
-import okhttp3.MediaType;
 
 public class SyncFriendAct extends BaseActivity {
 	CircleDialog.Builder mDialog;
