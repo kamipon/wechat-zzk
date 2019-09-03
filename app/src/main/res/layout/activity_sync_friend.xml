@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+    <com.gentcent.wechat.zzk.activity.HandHeaderView
+        android:id="@+id/header_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_height"
+        app:layout_constraintHorizontal_bias="0"
+        app:left_drawable="@mipmap/ic_back"
+        app:middle_text="@string/title_sync_friend" />
+
+    <Button
+        android:id="@+id/btn_start"
+        style="@style/normal_bt_style"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:text="确认下一步"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="@+id/header_view"
+        tools:layout_editor_absoluteX="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_border"
+            android:layout_marginTop="@dimen/margin_border"
+            android:text="同步好友"
+            android:textColor="@color/text_color"
+            android:textSize="17sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_border"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="@dimen/margin_border"
+            android:text="同步好友后，您的好友数据将会覆盖之前的数据"
+            android:textColor="#999999"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="137dp"
+        android:layout_marginBottom="159dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/btn_start"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.506"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="181dp" />
+</android.support.constraint.ConstraintLayout>

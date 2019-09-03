@@ -13,13 +13,14 @@ import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.R;
+import com.githang.statusbar.StatusBarCompat;
 
 import butterknife.ButterKnife;
 
 public abstract class BaseActivity extends AppCompatActivity {
 	public static boolean mOpenScan = false;
 	private boolean isAllowScreenRotate = false;
-	private boolean isSetStatusBar = true;
+	private boolean isSetStatusBar = false;
 	private boolean mAllowFullScreen = false;
 	protected boolean mConflictTimer;
 	private View mContextView;
@@ -39,9 +40,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 		setContentView(this.mContextView);
 		ButterKnife.bind(this);
 		setDefaultHeaderEvent(this.mContextView);
-		if (this.isSetStatusBar) {
-			BarUtils.setStatusBarLightMode(this, true);
-		}
+		
+		StatusBarCompat.setStatusBarColor(this, 1000);
+//		if (this.isSetStatusBar) {
+//			BarUtils.setStatusBarLightMode(this, true);
+//		}
 		if (this.mAllowFullScreen) {
 			requestWindowFeature(1);
 		}
@@ -50,11 +53,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 		}
 	}
 	
-	/* access modifiers changed from: protected */
 	public void onResume() {
 		super.onResume();
-		if (VERSION.SDK_INT >= 17 && !isDestroyed()) {
-		}
 	}
 	
 	public Context getContext() {
@@ -62,7 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 	}
 	
 	private void setDefaultHeaderEvent(View view) {
-		HandHeaderView handHeaderView = (HandHeaderView) view.findViewById(R.id.header_view);
+		HandHeaderView handHeaderView = view.findViewById(R.id.header_view);
 		if (ObjectUtils.isNotEmpty(handHeaderView)) {
 			handHeaderView.setLeftClickListener(new OnClickListener() {
 				public void onClick(View view) {
@@ -72,7 +72,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 		}
 	}
 	
-	/* access modifiers changed from: protected */
 	public void onDestroy() {
 		super.onDestroy();
 		resetToast();

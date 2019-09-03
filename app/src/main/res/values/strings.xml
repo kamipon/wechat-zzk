@@ -53,4 +53,5 @@
     <string name="bind_divce">扫码绑定设备</string>
     <string name="sync_friend">同步好友</string>
     <string name="title_device_info">设备信息</string>
+    <string name="title_sync_friend">同步好友</string>
 </resources>

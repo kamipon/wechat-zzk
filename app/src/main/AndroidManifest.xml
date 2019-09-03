@@ -95,6 +95,7 @@
         <activity android:name="com.google.zxing.activity.CaptureActivity" />
 
         <activity android:name=".activity.DeviceInfoAct" />
+        <activity android:name=".activity.SyncFriendAct" />
     </application>
 
 </manifest>

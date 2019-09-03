@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,12 +16,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.tu.loadingdialog.LoadingDailog;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.blankj.utilcode.util.AppUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.R;
-import com.gentcent.wechat.zzk.WxBroadcast;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.service.ActivityService;
 import com.gentcent.wechat.zzk.service.MyService;
@@ -166,8 +164,12 @@ public class MainActivity extends BaseActivity {
 	 */
 	@OnClick(R.id.lly_sync)
 	public void syncFriend(View view) {
-		ToastUtils.showShort("开始同步好友信息");
-		WxBroadcast.sendAct("sync_info");
+//		LoadingDailog.Builder loadBuilder=new LoadingDailog.Builder(this)
+//				.setMessage("同步中...");
+//		LoadingDailog dialog=loadBuilder.create();
+//		dialog.show();
+//		WxBroadcast.sendAct("sync_info");
+		startActivity(new Intent(getContext(), SyncFriendAct.class));
 	}
 	
 	/**
@@ -176,6 +178,17 @@ public class MainActivity extends BaseActivity {
 	@OnClick(R.id.lly_device_info)
 	public void goDeviceInfo(View view) {
 		startActivity(new Intent(getBaseContext(), DeviceInfoAct.class));
+	}
+	
+	/**
+	 * 群友头像
+	 */
+	@OnClick(R.id.lly_sync_sns)
+	public void syncGroup(View view){
+//		LoadingDailog.Builder loadBuilder=new LoadingDailog.Builder(this)
+//				.setMessage("同步中...");
+//		LoadingDailog dialog=loadBuilder.create();
+//		dialog.show();
 	}
 	
 	/**

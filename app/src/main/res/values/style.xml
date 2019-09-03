@@ -1,5 +1,17 @@
 <resources>
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="normal_bt_style">
+        <item name="android:textSize">@dimen/sure_text_size</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/btn_sure_blue</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">46dp</item>
+    </style>
+    <style name="upsdkDlDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 </resources>

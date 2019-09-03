@@ -10,11 +10,14 @@ import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.model.sns.SnsHandler;
 import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.util.GsonUtils;
+import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.wcdb.DecryptPasw;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.gentcent.wechat.zzk.wcdb.WcdbHolder;
+import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,12 +32,24 @@ public class SyncInfo {
 		DecryptPasw.initDbPassword();
 		bindWeixin();
 		getRcontact();
-		Thread.sleep(2000);
 //		getChatRoom();
 //		getMessage();
 		getSnsData();
 	}
 	
+	/**
+	 * 绑定微信
+	 */
+	private static void bindWeixin() {
+		try {
+			XLog.d("myWxId: " + UserDao.getMyWxid());
+			UserBean userBean = UserDao.getUserBeanByWxId(UserDao.getMyWxid());
+//			UploadService.bindWeixin(userBean);
+			MyHelper.writeLine("userInfo", GsonUtils.GsonString(userBean));
+		} catch (Exception e) {
+			XLog.e("bindWeixin error:" + Log.getStackTraceString(e));
+		}
+	}
 	
 	/**
 	 * 同步好友列表
@@ -42,9 +57,10 @@ public class SyncInfo {
 	private static void getRcontact() {
 		Cursor c1 = null;
 		try {
+			List<UserBean> list = new ArrayList<>();
+			
 			//查询所有联系人（verifyFlag!=0:公众号等类型，群里面非好友的类型为4，未知类型2）
 			String findFriendheadandID = "SELECT r.username as username, r.alias as alias , r.nickname as nickname ,  r.conRemark as conRemark ,  r.pyInitial as pyInitial ,  r.quanPin as quanPin, i.reserved1 as reserved1,  i.reserved2 as reserved2 ,r.showHead as showHead,CASE  WHEN length(r.conRemarkPYFull) > 0  THEN UPPER(r.conRemarkPYFull) ELSE UPPER(r.quanPin) END as PY, CASE   WHEN length(r.conRemark) > 0  THEN UPPER(r.conRemark) ELSE UPPER(r.quanPin) end as byremark,c.memberlist as memberlist,  c.displayname as displayname FROM rcontact r LEFT JOIN img_flag i ON r.username = i.username LEFT JOIN chatroom c ON r.username = c.chatroomname WHERE(type&1 != 0) AND r.type&32 = 0 AND r.type&8 = 0 AND r.verifyFlag&8 = 0   AND (r.username NOT LIKE '%@%' OR (((r.type&1 != 0)  AND r.type&8 = 0 AND r.username LIKE '%@talkroom')) OR (r.type&8 = 0  AND r.username LIKE '%@openim')) AND r.username != 'tmessage' AND r.username != 'officialaccounts' AND r.username != 'helper_entry' AND r.username != 'blogapp' AND r.username != 'weixin' union all SELECT r.username , r.alias as alias , r.nickname , r.conRemark , r.pyInitial, r.quanPin , i.reserved1 , i.reserved2 ,r.showHead ,CASE  WHEN length(r.conRemarkPYFull) > 0  THEN UPPER(r.conRemarkPYFull) ELSE UPPER(r.quanPin) END as PY,CASE   WHEN length(r.conRemark) > 0  THEN UPPER(r.conRemark) ELSE UPPER(r.quanPin) end as byremark, c.memberlist, c.displayname FROM rcontact r  LEFT JOIN img_flag i ON r.username = i.username LEFT JOIN chatroom c ON r.username = c.chatroomname where r.username like '%@chatroom%' ORDER BY r.showHead ASC,PY asc,  byremark asc, quanPin ASC,r.quanPin asc,r.nickname asc,r.username asc";
-			
 			c1 = WcdbHolder.excute(findFriendheadandID);
 			XLog.d("openWxDb:  " + "好友列表分割线=====================================================================================");
 			while (c1.moveToNext()) {
@@ -64,14 +80,17 @@ public class SyncInfo {
 				XLog.d(GsonUtils.GsonString(userBean));
 				if (username.endsWith("@chatroom")) {
 					//是群聊
-					UploadService.bindGroup(userBean);
+//					UploadService.bindGroup(userBean);
 				} else {
 					//除了我自己
 					if (!StringUtils.equals(username, UserDao.getMyWxid())) {
-						UploadService.bindFriend(userBean);
+//						UploadService.bindFriend(userBean);
+						list.add(userBean);
 					}
 				}
 			}
+			MyHelper.writeLine("userFriendsInfo", GsonUtils.GsonString(list));
+			MyHelper.writeLine("sync_over", "true");
 			c1.close();
 		} catch (Exception e) {
 			c1.close();
@@ -80,17 +99,22 @@ public class SyncInfo {
 	}
 	
 	/**
-	 * 绑定微信
+	 * 获取朋友圈数据
 	 */
-	private static void bindWeixin() {
+	private static void getSnsData() {
 		try {
-			XLog.d("myWxId: " + UserDao.getMyWxid());
-			UserBean userBean = UserDao.getUserBeanByWxId(UserDao.getMyWxid());
-			UploadService.bindWeixin(userBean);
-			Thread.sleep(2000);
-			XLog.d("sleep:2000");
-		} catch (InterruptedException e) {
-			XLog.e("bindWeixin error:" + Log.getStackTraceString(e));
+//			List<SnsContentItemBean> selfAllDatas = SnsHandler.getSelfAllDatas(MainManager.wxLpparam);
+//			XLog.d("openWxDb:  " + "自己的朋友圈数据=====================================================================================");
+//			for (SnsContentItemBean selfAllData : selfAllDatas) {
+//				XLog.e(selfAllData.toString());
+//			}
+			List<SnsContentItemBean> allDatas = SnsHandler.getAllDatas(MainManager.wxLpparam);
+			XLog.d("openWxDb:  " + "所有的朋友圈数据=====================================================================================");
+//			UploadService.syncSns(allDatas);
+			MyHelper.writeLine("self_sns_info", GsonUtils.GsonString(allDatas));
+			MyHelper.writeLine("sync_sns_over", "true");
+		} catch (Exception e) {
+			XLog.e("erroe:" + Log.getStackTraceString(e));
 		}
 	}
 	
@@ -136,27 +160,6 @@ public class SyncInfo {
 		} catch (Exception e) {
 			c1.close();
 			XLog.e("openWxDb:  " + "读取数据库信息失败" + Log.getStackTraceString(e));
-		}
-	}
-	
-	/**
-	 * 获取朋友圈数据
-	 */
-	private static void getSnsData() {
-		try {
-//			List<SnsContentItemBean> selfAllDatas = SnsHandler.getSelfAllDatas(MainManager.wxLpparam);
-//			XLog.d("openWxDb:  " + "自己的朋友圈数据=====================================================================================");
-//			for (SnsContentItemBean selfAllData : selfAllDatas) {
-//				XLog.e(selfAllData.toString());
-//			}
-			List<SnsContentItemBean> allDatas = SnsHandler.getAllDatas(MainManager.wxLpparam);
-			XLog.d("openWxDb:  " + "所有的朋友圈数据=====================================================================================");
-			UploadService.syncSns(allDatas);
-//			for (SnsContentItemBean allData : allDatas) {
-//				XLog.e(allData.toString());
-//			}
-		} catch (Exception e) {
-			XLog.e("erroe:" + Log.getStackTraceString(e));
 		}
 	}
 }
