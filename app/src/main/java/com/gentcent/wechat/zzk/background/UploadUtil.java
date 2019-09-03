@@ -3,6 +3,7 @@ package com.gentcent.wechat.zzk.background;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSONObject;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.bean.PhoneInfoBean;
@@ -91,17 +92,16 @@ public class UploadUtil {
 							@Override
 							public void onResponse(String response, int id) {
 								XLog.d("response: " + response);
-								Map<String, Object> map = GsonUtils.GsonToMaps(response);
-								ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));
-								if ((boolean) map.get("flag")) {
+								JSONObject jsonObject = JSONObject.parseObject(response);
+								if (jsonObject.getBoolean("flag")) {
 									SystemInfoBean systemInfoBean = new SystemInfoBean();
-									systemInfoBean.phoneId = (String) map.get("phoneId");
-									systemInfoBean.actId = (String) map.get("actId");
-									systemInfoBean.actName = (String) map.get("actName");
-									systemInfoBean.keepMan = (String) map.get("keepMan");
-									systemInfoBean.picUrl = (String) map.get("picUrl");
+									systemInfoBean.phoneId = jsonObject.getString("phoneId");
+									systemInfoBean.actId = jsonObject.getString("actId");
+									systemInfoBean.actName = jsonObject.getString("actName");
+									systemInfoBean.keepMan = jsonObject.getString("keepMan");
+									systemInfoBean.picUrl = jsonObject.getString("picUrl");
 									MyHelper.writeLine("sys-info", GsonUtils.GsonString(systemInfoBean));
-									MyHelper.writeLine("phone-id", (String) map.get("phoneId"));
+									MyHelper.writeLine("phone-id", jsonObject.getString("phoneId"));
 								}
 							}
 						});
@@ -136,11 +136,10 @@ public class UploadUtil {
 					@Override
 					public void onResponse(String response, int id) {
 						XLog.d("response: " + response);
-						Map<String, Object> map = GsonUtils.GsonToMaps(response);
-						if ((boolean) map.get("flag")) {
-							MyHelper.writeLine("self-wx", u.toString());
+						JSONObject jsonObject = JSONObject.parseObject(response);
+						if (jsonObject.getBoolean("flag")) {
 						} else {
-							ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));
+							ToastUtils.showShort(jsonObject.getString("msg"));
 						}
 					}
 				});
@@ -170,11 +169,10 @@ public class UploadUtil {
 					@Override
 					public void onResponse(String response, int id) {
 						XLog.d("response: " + response);
-						Map<String, Object> map = GsonUtils.GsonToMaps(response);
-						if ((boolean) map.get("flag")) {
-							MyHelper.writeLine("self-wx", u.toString());
+						JSONObject jsonObject = JSONObject.parseObject(response);
+						if (jsonObject.getBoolean("flag")) {
 						} else {
-							ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));
+							ToastUtils.showShort(jsonObject.getString("msg"));
 						}
 					}
 				});
@@ -209,10 +207,10 @@ public class UploadUtil {
 					@Override
 					public void onResponse(String response, int id) {
 						XLog.d("response: " + response);
-						Map<String, Object> map = GsonUtils.GsonToMaps(response);
-						if ((boolean) map.get("flag")) {
+						JSONObject jsonObject = JSONObject.parseObject(response);
+						if (jsonObject.getBoolean("flag")) {
 						} else {
-							ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));
+							ToastUtils.showShort(jsonObject.getString("msg"));
 						}
 					}
 				});
@@ -237,10 +235,10 @@ public class UploadUtil {
 					@Override
 					public void onResponse(String response, int id) {
 						XLog.d("response: " + response);
-						Map<String, Object> map = GsonUtils.GsonToMaps(response);
-						if ((boolean) map.get("flag")) {
+						JSONObject jsonObject = JSONObject.parseObject(response);
+						if (jsonObject.getBoolean("flag")) {
 						} else {
-							ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));
+							ToastUtils.showShort(jsonObject.getString("msg"));
 						}
 					}
 				});
@@ -360,9 +358,9 @@ public class UploadUtil {
 							@Override
 							public void onResponse(String response, int id) {
 								XLog.d("uploadFileToBack success: " + response);
-								Map<String, Object> map = GsonUtils.GsonToMaps(response);
-								if ((boolean) map.get("flag")) {
-									String src = (String) map.get("src");
+								JSONObject jsonObject = JSONObject.parseObject(response);
+								if (jsonObject.getBoolean("flag")) {
+									String src = jsonObject.getString("src");
 									if (uploadBean.messageBean.getType() == 7) {
 										uploadBean.messageBean.setLinkImg(src);
 									} else {
@@ -370,7 +368,7 @@ public class UploadUtil {
 									}
 									sendToBack(uploadBean);
 								} else {
-									ToastUtils.showShort((String) Objects.requireNonNull(map.get("msg")));
+									ToastUtils.showShort(jsonObject.getString("msg"));
 								}
 							}
 						});

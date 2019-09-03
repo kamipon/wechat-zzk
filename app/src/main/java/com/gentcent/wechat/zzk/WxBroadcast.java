@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSONObject;
 import com.gentcent.wechat.zzk.bean.LuckyMoneyBean;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.XLog;
@@ -135,9 +136,9 @@ public class WxBroadcast {
 	public static void addFriend(String act, String jsonStr) {
 		try {
 			XLog.d("添加好友");
-			Map<String, Object> map = GsonUtils.GsonToMaps(jsonStr);
-			String helloText = (String) map.get("helloText");
-			String addFriendName = (String) map.get("addFriendName");
+			JSONObject jsonObject = JSONObject.parseObject(jsonStr);
+			String helloText = jsonObject.getString("helloText");
+			String addFriendName = jsonObject.getString("addFriendName");
 			
 			Context context = MyApplication.getAppContext();
 			Intent intent = new Intent("WxAction");

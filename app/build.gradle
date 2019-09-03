@@ -6,7 +6,7 @@ android {
     buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "com.gentcent.wechat.zzk"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 22
         versionCode 46
         versionName "1.9.1"
@@ -40,7 +40,7 @@ dependencies {
     implementation project(':zxing-lib')
     compileOnly files('libs/XposedBridge.jar')
     implementation 'com.github.gittjy:LoadingDialog:1.0.2' //等待弹窗
-    implementation 'com.mylhyl:circleDialog:3.0.0' //确认弹窗
+    implementation 'com.mylhyl:circleDialog:4.0.0' //确认弹窗
     implementation 'com.android.support:cardview-v7:28.0.0' //确认弹窗
     implementation 'com.githang:status-bar-compat:0.7' //状态栏
     implementation 'com.bigkoo:convenientbanner:2.0.5' //轮播图
