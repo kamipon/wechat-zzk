@@ -34,7 +34,6 @@ public class ScreenReceiverUtil {
 		}
 	}
 	
-	/* renamed from: android.support.v7.widget.keepalive.pixe.ScreenReceiverUtil$a */
 	public interface C0415a {
 		void onScreenOff();
 		

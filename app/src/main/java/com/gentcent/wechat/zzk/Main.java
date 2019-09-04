@@ -1,11 +1,9 @@
 package com.gentcent.wechat.zzk;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.blankj.utilcode.util.AppUtils;
@@ -24,10 +22,10 @@ import com.gentcent.wechat.zzk.plugin.LuckMoney;
 import com.gentcent.wechat.zzk.plugin.Message;
 import com.gentcent.wechat.zzk.plugin.Sns;
 import com.gentcent.wechat.zzk.plugin.Wallet;
-import com.gentcent.wechat.zzk.service.WechatSupport;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.SearchClasses;
+import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.zzk.xped.IXposedHookLoadPackage;
 import com.gentcent.zzk.xped.XC_MethodHook;
@@ -35,6 +33,8 @@ import com.gentcent.zzk.xped.XC_MethodReplacement;
 import com.gentcent.zzk.xped.XposedBridge;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
+
+import java.util.concurrent.TimeUnit;
 
 import static com.gentcent.zzk.xped.XposedHelpers.findAndHookMethod;
 

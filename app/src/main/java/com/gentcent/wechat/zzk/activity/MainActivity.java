@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -24,10 +25,17 @@ import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ObjectUtils;
+import com.gentcent.wechat.zzk.MainManager;
+import com.gentcent.wechat.zzk.MyApplication;
 import com.gentcent.wechat.zzk.R;
 import com.gentcent.wechat.zzk.WxBroadcast;
+import com.gentcent.wechat.zzk.WxReceiver;
+import com.gentcent.wechat.zzk.ZzkReceiver;
 import com.gentcent.wechat.zzk.activity.keepalive.KeepAlive;
 import com.gentcent.wechat.zzk.activity.keepalive.daemon.DaemonService;
+import com.gentcent.wechat.zzk.activity.keepalive.pixe.ScreenManager;
+import com.gentcent.wechat.zzk.activity.keepalive.pixe.ScreenReceiverUtil;
+import com.gentcent.wechat.zzk.activity.keepalive.pixe.ScreenReceiverUtil.C0415a;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.service.ActivityService;
 import com.gentcent.wechat.zzk.service.WechatSupport;
@@ -102,6 +110,26 @@ public class MainActivity extends BaseActivity {
 	boolean mIsResume = false;
 	boolean mHadOpen = false;
 	Context context;
+	public ScreenManager mScreenManager;
+	private C0415a mScreenStateListener = new C0415a() {
+		public void onScreenOn() {
+			XLog.d("screen onScreenOn");
+			if (ObjectUtils.isNotEmpty(MainActivity.this.mScreenManager)) {
+				MainActivity.this.mScreenManager.b();
+			}
+		}
+		
+		public void onScreenOff() {
+			XLog.d("screen onScreenOff");
+			if (ObjectUtils.isNotEmpty((Object) MainActivity.this.mScreenManager)) {
+				MainActivity.this.mScreenManager.a();
+			}
+		}
+		
+		public void onUserPresent() {
+			XLog.d("screen onUserPresent");
+		}
+	};
 	
 	@Override
 	public int bindLayout() {
@@ -118,9 +146,11 @@ public class MainActivity extends BaseActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//注册接收器
+		IntentFilter intentFilter = new IntentFilter("ZzkAction");
+		MyApplication.getAppContext().registerReceiver(new ZzkReceiver(), intentFilter);
 		//创建等待弹窗
-		LoadingDailog.Builder loadBuilder = new LoadingDailog.Builder(this)
-				.setMessage("认证中...");
+		LoadingDailog.Builder loadBuilder = new LoadingDailog.Builder(this).setMessage("认证中...");
 		dialog = loadBuilder.create();
 		//设置样式
 		getWindow().getDecorView().setSystemUiVisibility(1280);
@@ -129,6 +159,9 @@ public class MainActivity extends BaseActivity {
 		//keepAlive
 		KeepAlive.a(getContext(), "com.tencent.mm", 20000);
 		startService(new Intent(getApplicationContext(), DaemonService.class));
+		
+		new ScreenReceiverUtil(this).a(this.mScreenStateListener);
+		this.mScreenManager = ScreenManager.a((Context) this);
 		
 		//微信当前版本
 		String appVersionName = AppUtils.getAppVersionName("com.tencent.mm");
@@ -185,7 +218,7 @@ public class MainActivity extends BaseActivity {
 	}
 	
 	public void checkState() {
-		boolean checkZzk = ActivityService.checkZzk();
+		boolean checkZzk = ActivityService.checkZzk(MainActivity.this.getContext());
 		WxBroadcast.sendAct("is_wechat_open");
 		boolean isModuleActive = isModuleActive();
 		XLog.d("wxOpen isOpen is " + MyHelper.readLine("isWechatOpen") + "  isModuleActive is " + isModuleActive);

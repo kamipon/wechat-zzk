@@ -9,9 +9,7 @@ import android.os.PowerManager;
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.AppUtils.AppInfo;
 import com.gentcent.wechat.zzk.MyApplication;
-import com.gentcent.wechat.zzk.activity.MainActivity;
 import com.gentcent.wechat.zzk.util.HookParams;
-import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.zhy.http.okhttp.OkHttpUtils;
 
@@ -20,7 +18,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -30,14 +27,14 @@ import cn.jpush.android.api.JPushInterface;
  */
 public class ActivityService {
 	
-	public static boolean checkWechat() {
-		return true;
-	}
-	
-	public static boolean checkZzk() {
+	public static boolean checkZzk(Context context) {
 		//连接极光
 		boolean connectionState = JPushInterface.getConnectionState(MyApplication.getAppContext());
 		XLog.d("JPushInfoReceiver jPushState " + connectionState);
+		if (!connectionState) {
+			JPushInterface.init(context);
+			JPushInterface.onResume(context);
+		}
 		return connectionState;
 	}
 	

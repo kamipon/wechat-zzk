@@ -2,6 +2,7 @@ package com.gentcent.wechat.zzk;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -37,7 +38,6 @@ public class MainManager {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
 				if (lpparam.isFirstApplication) {
-					
 					Application application = (Application) methodHookParam.thisObject;
 					
 					if (MainManager.wxLpparam == null) {
@@ -47,6 +47,7 @@ public class MainManager {
 					}
 					if (MainManager.wxReceiver == null && lpparam.processName.equals(HookParams.WECHAT_PACKAGE_NAME)) {
 						IntentFilter intentFilter = new IntentFilter("WxAction");
+						intentFilter.addAction(Intent.ACTION_TIME_TICK);
 						MainManager.wxReceiver = new WxReceiver();
 						application.registerReceiver(MainManager.wxReceiver, intentFilter);
 						XLog.d("wxReceiver is reset success!  " + lpparam.processName);

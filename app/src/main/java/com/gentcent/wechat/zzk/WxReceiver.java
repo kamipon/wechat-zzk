@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.birbit.android.jobqueue.JobManager;
+import com.blankj.utilcode.util.AppUtils;
 import com.gentcent.wechat.zzk.model.friend.AddFriendJob;
 import com.gentcent.wechat.zzk.model.message.SendMessageManager;
 import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
@@ -21,9 +22,12 @@ import com.gentcent.wechat.zzk.model.wallet.bean.ReceiveRedPocketBean;
 import com.gentcent.wechat.zzk.model.wallet.bean.SendRedPocketBean;
 import com.gentcent.wechat.zzk.service.TaskManager;
 import com.gentcent.wechat.zzk.util.GsonUtils;
+import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 微信广播接收器
@@ -32,6 +36,24 @@ public class WxReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, final Intent intent) {
 		try {
+			if (intent.ACTION_TIME_TICK.equals(intent.getAction())) {
+				MyHelper.writeLine("isZzkOpen", "false");
+				if (MainManager.activity != null) {
+					Context context2 = MainManager.activity;
+					Intent intent2 = new Intent("ZzkAction");
+					intent2.putExtra("act", "is_zzk_open");
+					context2.sendBroadcast(intent2);
+					ThreadPoolUtils.getInstance().a(new Runnable() {
+						@Override
+						public void run() {
+							String s = MyHelper.readLine("isZzkOpen", "false");
+							if (!Boolean.valueOf(s)) {
+								AppUtils.launchApp(HookParams.MY_PACKAGE_NAME);
+							}
+						}
+					}, 10000, TimeUnit.MILLISECONDS);
+				}
+			}
 			String act = intent.getStringExtra("act");
 			if (act != null) {
 				//添加好友
