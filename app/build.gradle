@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "com.gentcent.wechat.zzk"
         minSdkVersion 21
-        targetSdkVersion 22
+        targetSdkVersion 26
         versionCode 46
         versionName "1.9.1"
         multiDexEnabled true
@@ -18,9 +18,9 @@ android {
         }
 
         manifestPlaceholders = [
-                JPUSH_PKGNAME : applicationId,
+                JPUSH_PKGNAME: applicationId,
                 JPUSH_APPKEY : "31bf7744adc0b67708ea6ed5", //JPush 上注册的包名对应的 Appkey.
-                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
     }
 
@@ -39,9 +39,12 @@ android {
 dependencies {
     implementation project(':zxing-lib')
     compileOnly files('libs/XposedBridge.jar')
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.17' //gif图加载
     implementation 'com.github.gittjy:LoadingDialog:1.0.2' //等待弹窗
     implementation 'com.mylhyl:circleDialog:4.0.0' //确认弹窗
     implementation 'com.android.support:cardview-v7:28.0.0' //确认弹窗
+    implementation 'com.android.support:support-v4:28.0.0' //兼容库
+    implementation 'com.android.support:appcompat-v7:28.0.0' //兼容库
     implementation 'com.githang:status-bar-compat:0.7' //状态栏
     implementation 'com.bigkoo:convenientbanner:2.0.5' //轮播图
     implementation 'com.alibaba:fastjson:1.1.70.android' //fastJson
@@ -50,8 +53,6 @@ dependencies {
     implementation 'com.birbit:android-priority-jobqueue:2.0.1' //队列任务
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'net.dongliu:apk-parser:2.4.2'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'dom4j:dom4j:1.6.1'
     implementation 'com.github.threekilogram:ObjectBus:2.1.3'

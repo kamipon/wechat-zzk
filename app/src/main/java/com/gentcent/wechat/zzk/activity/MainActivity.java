@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,13 +25,14 @@ import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.gentcent.wechat.zzk.R;
+import com.gentcent.wechat.zzk.WxBroadcast;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.service.ActivityService;
-import com.gentcent.wechat.zzk.service.MyService;
-import com.gentcent.wechat.zzk.util.GsonUtils;
+import com.gentcent.wechat.zzk.service.WechatSupport;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.SearchClasses;
+import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.google.gson.Gson;
 import com.google.zxing.activity.CaptureActivity;
@@ -41,9 +44,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
+import butterknife.BindColor;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dalvik.system.PathClassLoader;
 
@@ -88,6 +92,14 @@ public class MainActivity extends BaseActivity {
 	TextView tvResult;
 	@BindView(R.id.convenientBanner)
 	ConvenientBanner convenientBanner;
+	@BindColor(R.color.state_sure)
+	int mSure;
+	@BindColor(R.color.state_error)
+	int mError;
+	
+	boolean mIsResume = false;
+	boolean mHadOpen = false;
+	Context context;
 	
 	@Override
 	public int bindLayout() {
@@ -106,11 +118,121 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		//创建等待弹窗
 		LoadingDailog.Builder loadBuilder = new LoadingDailog.Builder(this)
-				.setMessage("同步中...");
+				.setMessage("认证中...");
 		dialog = loadBuilder.create();
+		//设置样式
+		getWindow().getDecorView().setSystemUiVisibility(1280);
+		getWindow().setStatusBarColor(0);
+		
+		//微信当前版本
+		String appVersionName = AppUtils.getAppVersionName("com.tencent.mm");
+		if (WechatSupport.isSupport(appVersionName)) {
+			this.tvWechatCurrentVersion.setTextColor(getResources().getColor(R.color.text_color));
+		} else {
+			this.tvWechatCurrentVersion.setTextColor(getResources().getColor(R.color.state_error));
+		}
+		WechatSupport.checkVersion(this);
+		this.mHadOpen = false;
+		
+		context = MainActivity.this;
 		
 		initBanner();
 		initDetection();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		this.mIsResume = true;
+		try {
+			checkState();
+		} catch (Exception e) {
+			XLog.e("HomeAct onResume crash is " + Log.getStackTraceString(e));
+		}
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		mIsResume = false;
+		// 这是前提——你的app至少运行了一个service。这里表示当进程不在前台时，马上开启一个service
+//		Intent intent = new Intent(this, MyService.class);
+//		startService(intent);
+	}
+	
+	LoadingDailog loadingDailog2;
+	
+	/**
+	 * 环境检测
+	 */
+	@OnClick(R.id.giv_find)
+	public void findState() {
+		loadingDailog2 = new LoadingDailog.Builder(this).setMessage("检测中...").setCancelable(false).setCancelOutside(false).create();
+		loadingDailog2.show();
+		MainActivity.this.onResume();
+		ThreadPoolUtils.getInstance().a(new Runnable() {
+			@Override
+			public void run() {
+				loadingDailog2.cancel();
+			}
+		}, 1000, TimeUnit.MILLISECONDS);
+	}
+	
+	public void checkState() {
+		boolean checkZzk = ActivityService.checkZzk();
+		WxBroadcast.sendAct("is_wechat_open");
+		boolean isModuleActive = isModuleActive();
+		XLog.d("wxOpen isOpen is " + MyHelper.readLine("isWechatOpen") + "  isModuleActive is " + isModuleActive);
+		setViewState(this.tvXposed, isModuleActive && checkZzk);
+		this.tvWechat.postDelayed(new Runnable() {
+			public void run() {
+				boolean isWechatOpen = TextUtils.equals(MyHelper.readLine("isWechatOpen"), "true");
+				XLog.d("wxOpen isWechatOpen " + MyHelper.readLine("isWechatOpen") + "  isOpen is " + isWechatOpen + " mHadOpen is " + MainActivity.this.mHadOpen);
+				MainActivity homeAct = MainActivity.this;
+				homeAct.setViewState(homeAct.tvWechat, isWechatOpen);
+				if (MainActivity.isModuleActive() && !isWechatOpen && !MainActivity.this.mHadOpen) {
+					XLog.d("wxOpen checkState openWechat success is " + MainActivity.this.getContext());
+					AppUtils.launchApp(HookParams.WECHAT_PACKAGE_NAME);
+					MainActivity.this.mHadOpen = true;
+				}
+			}
+		}, 1000);
+	}
+	
+	/**
+	 * 设置状态
+	 */
+	public void setViewState(TextView textView, boolean z) {
+		try {
+			if (this.mIsResume) {
+				if (z) {
+					textView.setText("正常");
+					textView.setBackgroundResource(R.drawable.btn_selected_blue);
+					textView.setTextColor(this.mSure);
+				} else {
+					textView.setText("异常");
+					textView.setBackgroundResource(R.drawable.btn_selected_red);
+					textView.setTextColor(this.mError);
+					ThreadPoolUtils.getInstance().a(new Runnable() {
+						@Override
+						public void run() {
+							((MainActivity) context).runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									checkState();
+								}
+							});
+						}
+					}, 2000, TimeUnit.MILLISECONDS);
+				}
+			}
+		} catch (Exception e) {
+			XLog.d("setViewState error is " + Log.getStackTraceString(e));
+		}
+	}
+	
+	public static boolean isModuleActive() {
+		return false;
 	}
 	
 	/**
@@ -140,58 +262,9 @@ public class MainActivity extends BaseActivity {
 		}, localImages);
 	}
 	
-	@Override
-	protected void onPause() {
-		super.onPause();
-		// 这是前提——你的app至少运行了一个service。这里表示当进程不在前台时，马上开启一个service
-		Intent intent = new Intent(this, MyService.class);
-		startService(intent);
-	}
-	
 	/**
 	 * 扫码回调轮询
 	 */
-	public int mTimes;
-	private Timer timer;
-	@SuppressLint("HandlerLeak")
-	public Handler mHandler = new Handler() {
-		public void handleMessage(Message message) {
-			if (message.what == 1) {
-				mTimes = mTimes + 1;
-				String bindCompany = MyHelper.readLine("bindCompany", "false");
-				String sysInfo = MyHelper.readLine("sys-info", "");
-				String phoneId = MyHelper.readLine("phone-id", "");
-				String company = MyHelper.readLine("company", "");
-				
-				if (ObjectUtils.equals(bindCompany, "true")) {
-					if (!ObjectUtils.equals(sysInfo, "")) {
-						if (!ObjectUtils.equals(phoneId, "")) {
-							if (!ObjectUtils.equals(company, "")) {
-								timer.cancel();
-								dialog.hide();
-								confirmLayer("绑定成功！");
-							}
-						}
-					}
-				} else if (mTimes >= 30) {
-					timer.cancel();
-					dialog.hide();
-					confirmLayer("绑定设备超时");
-				}
-			}
-			super.handleMessage(message);
-		}
-	};
-	
-	/**
-	 * 扫码绑定设备
-	 */
-	@OnClick(R.id.lly_scan)
-	public void bindDivce(View view) {
-		Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-		startActivityForResult(intent, Constant.REQ_QR_CODE);
-	}
-	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -214,6 +287,47 @@ public class MainActivity extends BaseActivity {
 			MyHelper.writeLine("company", "");
 			UploadService.bindDevice(scanResult);
 		}
+	}
+	
+	public int mTimes;
+	private Timer timer;
+	@SuppressLint("HandlerLeak")
+	public Handler mHandler = new Handler() {
+		public void handleMessage(Message message) {
+			if (message.what == 1) {
+				mTimes = mTimes + 1;
+				String bindCompany = MyHelper.readLine("bindCompany", "false");
+				String sysInfo = MyHelper.readLine("sys-info", "");
+				String phoneId = MyHelper.readLine("phone-id", "");
+				String company = MyHelper.readLine("company", "");
+				
+				if (ObjectUtils.equals(bindCompany, "true")) {
+					if (!ObjectUtils.equals(sysInfo, "")) {
+						if (!ObjectUtils.equals(phoneId, "")) {
+							if (!ObjectUtils.equals(company, "")) {
+								timer.cancel();
+								dialog.cancel();
+								confirmLayer("绑定成功！");
+							}
+						}
+					}
+				} else if (mTimes >= 30) {
+					timer.cancel();
+					dialog.cancel();
+					confirmLayer("绑定设备超时");
+				}
+			}
+			super.handleMessage(message);
+		}
+	};
+	
+	/**
+	 * 扫码绑定设备
+	 */
+	@OnClick(R.id.lly_scan)
+	public void bindDivce(View view) {
+		Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+		startActivityForResult(intent, Constant.REQ_QR_CODE);
 	}
 	
 	/**

@@ -10,4 +10,5 @@
     <color name="header_color">#4878fe</color>
     <color name="background">#e5e4e5</color>
     <color name="title_color">#ffffff</color>
+    <color name="state_error">#ec532d</color>
 </resources>

@@ -69,21 +69,16 @@ public class DeviceInfoAct extends BaseActivity {
 		return null;
 	}
 	
-	@OnClick({R.id.iv_auth})
-	public void toAuth() {
-		if (!this.mBindCompany) {
-			mOpenScan = true;
-			finish();
-		}
-	}
-	
-	/* access modifiers changed from: 0000 */
 	@OnClick({R.id.tv_imei})
 	public void getImei() {
 		copy(PhoneUtils.getIMEI(), getContext());
 	}
 	
-	/* access modifiers changed from: protected */
+	@OnClick({R.id.tv_memo})
+	public void getPhoneId() {
+		copy(MyHelper.readLine("phone-id"), getContext());
+	}
+	
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 		XLog.d("DeviceUtils.getModel() is " + DeviceUtils.getModel());

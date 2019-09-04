@@ -149,12 +149,12 @@
                 android:layout_height="180dp"
                 android:background="@mipmap/ic_back_state">
 
-                <!--                <pl.droidsonroids.gif.GifImageView-->
-                <!--                    android:id="@+id/giv_find"-->
-                <!--                    android:layout_width="150dp"-->
-                <!--                    android:layout_height="120dp"-->
-                <!--                    android:layout_centerInParent="true"-->
-                <!--                    android:src="@mipmap/ic_check_state" />-->
+                <ImageView
+                    android:id="@+id/giv_find"
+                    android:layout_width="150dp"
+                    android:layout_height="120dp"
+                    android:layout_centerInParent="true"
+                    android:src="@mipmap/ic_check_state" />
             </RelativeLayout>
 
             <LinearLayout

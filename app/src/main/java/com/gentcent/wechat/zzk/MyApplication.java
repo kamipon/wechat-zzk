@@ -30,18 +30,17 @@ public class MyApplication extends Application {
 		super.onCreate();
 		MyApplication.context = getApplicationContext();
 		
-		ThreadPoolUtils.getInstance().run(new Runnable() {
-			public void run() {
-				XLog.d(TAG + "app_releaseSo 1");
-				VoiceManager.a(MyApplication.this);
-				XLog.d(TAG + "app_releaseSo 2");
-			}
-		});
+//		ThreadPoolUtils.getInstance().run(new Runnable() {
+//			public void run() {
+//				XLog.d(TAG + "app_releaseSo 1");
+//				VoiceManager.a(MyApplication.this);
+//				XLog.d(TAG + "app_releaseSo 2");
+//			}
+//		});
 		
 		//初始化极光推送
 		JPushInterface.setDebugMode(true);
 		JPushInterface.init(this);
-		JPushInterface.onResume(context);
 		XLog.e("Jpush id:" + JPushInterface.getRegistrationID(context));
 		XLog.e("Phone id:" + MyHelper.readLine("phone-id", ""));
 	}

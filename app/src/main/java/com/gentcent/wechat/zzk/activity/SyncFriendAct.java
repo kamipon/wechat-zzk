@@ -87,7 +87,7 @@ public class SyncFriendAct extends BaseActivity {
 	}
 	
 	/**
-	 * 上传前检测
+	 * 同步前检测
 	 */
 	public void completeTask() {
 		try {
@@ -103,7 +103,7 @@ public class SyncFriendAct extends BaseActivity {
 						syncError("同步朋友圈数据没有获取到，请打开微信相册，然后重试！");
 						return;
 					} else {
-						XLog.e("-----------------postSelf---------------");
+						XLog.e("-----------------postSelf----------------");
 						syncInfo(userInfo, userFriendsInfo, self_sns_info);
 						return;
 					}

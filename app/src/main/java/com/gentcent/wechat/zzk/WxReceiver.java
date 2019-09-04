@@ -21,6 +21,8 @@ import com.gentcent.wechat.zzk.model.wallet.bean.ReceiveRedPocketBean;
 import com.gentcent.wechat.zzk.model.wallet.bean.SendRedPocketBean;
 import com.gentcent.wechat.zzk.service.TaskManager;
 import com.gentcent.wechat.zzk.util.GsonUtils;
+import com.gentcent.wechat.zzk.util.MyHelper;
+import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 
 /**
@@ -83,6 +85,9 @@ public class WxReceiver extends BroadcastReceiver {
 					case "personal_recevice":
 						ReceiverLuckyMoney.personalRecevice(intent.getStringExtra("sessionName"), intent.getStringExtra("linkUrl"));
 						break;
+					case "is_wechat_open":
+						isWechatOpen();
+						break;
 					default: {
 						XLog.e("广播参数传递错误。");
 					}
@@ -91,5 +96,17 @@ public class WxReceiver extends BroadcastReceiver {
 		} catch (Exception e) {
 			XLog.e("错误:" + Log.getStackTraceString(e));
 		}
+	}
+	
+	/**
+	 * 检测微信环境
+	 */
+	private void isWechatOpen() {
+		ThreadPoolUtils.getInstance().run(new Runnable() {
+			@Override
+			public void run() {
+				MyHelper.writeLine("isWechatOpen", "true");
+			}
+		});
 	}
 }

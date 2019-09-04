@@ -7,6 +7,8 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.gentcent.wechat.zzk.bean.LuckyMoneyBean;
 import com.gentcent.wechat.zzk.util.GsonUtils;
+import com.gentcent.wechat.zzk.util.MyHelper;
+import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 
 import java.util.Map;
@@ -59,9 +61,27 @@ public class WxBroadcast {
 			case "personal_recevice":
 				redpacketReference(act, jsonStr);
 				break;
+			case "is_wechat_open":
+				isWechatOpen(act);
+				break;
 			default:
 				XLog.e("not found act: null | Message: " + customMessage.message);
 				break;
+		}
+	}
+	
+	/**
+	 * 检测微信环境
+	 */
+	private static void isWechatOpen(String act) {
+		try {
+			MyHelper.writeLine("isWechatOpen", "false");
+			Context context = MyApplication.getAppContext();
+			Intent intent = new Intent("WxAction");
+			intent.putExtra("act", act);
+			context.sendBroadcast(intent);
+		} catch (Exception e) {
+			XLog.e("错误：" + Log.getStackTraceString(e));
 		}
 	}
 	

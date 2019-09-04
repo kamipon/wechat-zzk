@@ -453,7 +453,7 @@ public class SnsHandler {
 	private static SnsCommentBean getSnsCommentBean(Object obj) {
 		SnsCommentBean snsCommentBean = new SnsCommentBean();
 		try {
-			snsCommentBean.setTimestamp((long) XposedHelpers.getIntField(obj, "CreateTime"));
+			snsCommentBean.setTimestamp((long) XposedHelpers.getIntField(obj, "CreateTime") * 1000);
 			snsCommentBean.setWxid((String) XposedHelpers.getObjectField(obj, "Username"));
 			snsCommentBean.setNickName(UserDao.getNickByWxid(snsCommentBean.getWxid()));
 			snsCommentBean.setCommentId(snsCommentBean.getWxid());

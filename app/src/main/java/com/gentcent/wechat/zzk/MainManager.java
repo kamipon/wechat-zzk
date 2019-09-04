@@ -3,7 +3,9 @@ package com.gentcent.wechat.zzk;
 import android.app.Activity;
 import android.app.Application;
 import android.content.IntentFilter;
+import android.text.TextUtils;
 
+import com.gentcent.wechat.zzk.service.WechatSupport;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyWxNames;
 import com.gentcent.wechat.zzk.util.XLog;
@@ -51,6 +53,10 @@ public class MainManager {
 		XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);
+				//版本检测
+				if (methodHookParam.thisObject != null && TextUtils.equals(methodHookParam.thisObject.getClass().getName(), "com.tencent.mm.ui.LauncherUI")) {
+					WechatSupport.checkVersionInWechat((Activity) methodHookParam.thisObject);
+				}
 				if (MainManager.activity == null && methodHookParam.thisObject != null) {
 					MainManager.activity = (Activity) methodHookParam.thisObject;
 					XLog.d("mActivity is reset success!  " + lpparam.processName);

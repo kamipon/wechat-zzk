@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.blankj.utilcode.util.ObjectUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.model.syncinfo.SyncInfoManager;
@@ -94,6 +95,9 @@ public class UserDao {
 		}
 		if (!TextUtils.isEmpty(conRemark)) {
 			nickName = conRemark;
+		}
+		if (StringUtils.equals(nickName, "null")) {
+			nickName = null;
 		}
 		return nickName;
 	}
