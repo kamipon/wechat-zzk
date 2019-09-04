@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
+import com.blankj.utilcode.util.Utils;
 import com.gentcent.wechat.zzk.bean.LuckyMoneyBean;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.MyHelper;
@@ -215,6 +216,17 @@ public class WxBroadcast {
 		} catch (Exception e) {
 			XLog.e("错误：" + Log.getStackTraceString(e));
 		}
+	}
+	
+	/**
+	 * openApp
+	 *
+	 * @param context
+	 */
+	public static void openApp(Context context) {
+		Intent launchIntentForPackage = Utils.getApp().getPackageManager().getLaunchIntentForPackage("com.gentcent.wechat.zzk");
+		launchIntentForPackage.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		Utils.getApp().startActivity(launchIntentForPackage);
 	}
 	
 }

@@ -2,14 +2,12 @@ package com.gentcent.wechat.zzk.activity;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gentcent.wechat.zzk.R;
@@ -41,7 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 		ButterKnife.bind(this);
 		setDefaultHeaderEvent(this.mContextView);
 		
-		StatusBarCompat.setStatusBarColor(this, 1000);
+		StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.header_color));
 //		if (this.isSetStatusBar) {
 //			BarUtils.setStatusBarLightMode(this, true);
 //		}

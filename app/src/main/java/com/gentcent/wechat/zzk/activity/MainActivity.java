@@ -26,6 +26,8 @@ import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.gentcent.wechat.zzk.R;
 import com.gentcent.wechat.zzk.WxBroadcast;
+import com.gentcent.wechat.zzk.activity.keepalive.KeepAlive;
+import com.gentcent.wechat.zzk.activity.keepalive.daemon.DaemonService;
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.service.ActivityService;
 import com.gentcent.wechat.zzk.service.WechatSupport;
@@ -123,6 +125,10 @@ public class MainActivity extends BaseActivity {
 		//设置样式
 		getWindow().getDecorView().setSystemUiVisibility(1280);
 		getWindow().setStatusBarColor(0);
+		
+		//keepAlive
+		KeepAlive.a(getContext(), "com.tencent.mm", 20000);
+		startService(new Intent(getApplicationContext(), DaemonService.class));
 		
 		//微信当前版本
 		String appVersionName = AppUtils.getAppVersionName("com.tencent.mm");
