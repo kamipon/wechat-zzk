@@ -66,7 +66,7 @@ public class WxBroadcast {
 				redpacketReference(act, jsonStr);
 				break;
 			case "is_wechat_open":
-				isWechatOpen(act);
+				isWechatOpen();
 				break;
 			default:
 				XLog.e("not found act: null | Message: " + customMessage.message);
@@ -77,12 +77,12 @@ public class WxBroadcast {
 	/**
 	 * 检测微信环境
 	 */
-	public static void isWechatOpen(String act) {
+	public static void isWechatOpen() {
 		try {
 			MyHelper.writeLine("isWechatOpen", "false");
 			Context context = MyApplication.getAppContext();
 			Intent intent = new Intent("WxAction");
-			intent.putExtra("act", act);
+			intent.putExtra("act", "is_wechat_open");
 			context.sendBroadcast(intent);
 		} catch (Exception e) {
 			XLog.e("错误：" + Log.getStackTraceString(e));
@@ -161,15 +161,15 @@ public class WxBroadcast {
 		try {
 			XLog.d("添加好友");
 			JSONObject jsonObject = JSONObject.parseObject(jsonStr);
-			String doTaskType = jsonObject.getString("doTaskType");
-			String Taskjson = jsonObject.getString("Taskjson");
+			String taskid = jsonObject.getString("taskid");
+			String TaskContent = jsonObject.getString("TaskContent");
 			
 			Context context = MyApplication.getAppContext();
 			Intent intent = new Intent("WxAction");
-			intent.putExtra("doTaskType", "AddFriendsPowder");
 			intent.putExtra("act", act);
-			intent.putExtra("Taskjson", Taskjson);
-			intent.putExtra("doTaskType", doTaskType);
+			intent.putExtra("doTaskType", "AddFriendsPowder");
+			intent.putExtra("TaskContent", TaskContent);
+			intent.putExtra("taskid", taskid);
 			context.sendBroadcast(intent);
 		} catch (Exception e) {
 			XLog.e("错误：" + Log.getStackTraceString(e));

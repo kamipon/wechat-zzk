@@ -72,14 +72,12 @@ public class WxReceiver extends BroadcastReceiver {
 						ThreadPoolUtils.getInstance().run(new Runnable() {
 							public void run() {
 								String doTaskType = intent.getStringExtra("doTaskType");
-								String Taskjson = intent.getStringExtra("Taskjson");
-								int Task_id = intent.getIntExtra("Task_id", -1);
+								String Taskjson = intent.getStringExtra("TaskContent");
+								int Task_id = intent.getIntExtra("taskid", -1);
 								XLog.d("broadcast addNewFriends");
 								new AddFriendDispatchJob(Taskjson, doTaskType, Task_id).run();
 							}
 						});
-						FriendManager.addPowder(MainManager.wxLpparam, intent.getStringArrayListExtra("FriendPhones"), intent.getStringExtra("say_hello"), intent.getIntExtra("powder_sleep_time", ByteBufferUtils.ERROR_CODE), intent.getIntExtra("taskKey", -1));
-						
 						break;
 					}
 					case "del_friends": {
