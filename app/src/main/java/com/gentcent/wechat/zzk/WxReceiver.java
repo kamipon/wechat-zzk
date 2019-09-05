@@ -7,7 +7,9 @@ import android.util.Log;
 
 import com.birbit.android.jobqueue.JobManager;
 import com.blankj.utilcode.util.AppUtils;
-import com.gentcent.wechat.zzk.model.friend.AddFriendJob;
+import com.blankj.utilcode.util.StringUtils;
+import com.gentcent.wechat.zzk.model.friend.AddFriendDispatchJob;
+import com.gentcent.wechat.zzk.model.friend.FriendManager;
 import com.gentcent.wechat.zzk.model.message.SendMessageManager;
 import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
 import com.gentcent.wechat.zzk.model.sns.SendSnsJob;
@@ -18,7 +20,6 @@ import com.gentcent.wechat.zzk.model.wallet.MoneySendJob;
 import com.gentcent.wechat.zzk.model.wallet.ReceivableManger;
 import com.gentcent.wechat.zzk.model.wallet.ReceiverLuckyMoney;
 import com.gentcent.wechat.zzk.model.wallet.bean.PayInfo;
-import com.gentcent.wechat.zzk.model.wallet.bean.ReceiveRedPocketBean;
 import com.gentcent.wechat.zzk.model.wallet.bean.SendRedPocketBean;
 import com.gentcent.wechat.zzk.service.TaskManager;
 import com.gentcent.wechat.zzk.util.GsonUtils;
@@ -26,8 +27,11 @@ import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
+import com.gentcent.wechat.zzk.wcdb.UserDao;
 
 import java.util.concurrent.TimeUnit;
+
+import cn.jiguang.api.utils.ByteBufferUtils;
 
 /**
  * 微信广播接收器
@@ -65,10 +69,21 @@ public class WxReceiver extends BroadcastReceiver {
 						break;
 					}
 					case "add_friend": {
-						String addFriendName = intent.getStringExtra("addFriendName");
-						String helloText = intent.getStringExtra("helloText");
-						JobManager jobManager = TaskManager.getInstance().getJobManager();
-						jobManager.addJobInBackground(new AddFriendJob(10, addFriendName, helloText, null));
+						ThreadPoolUtils.getInstance().run(new Runnable() {
+							public void run() {
+								String doTaskType = intent.getStringExtra("doTaskType");
+								String Taskjson = intent.getStringExtra("Taskjson");
+								int Task_id = intent.getIntExtra("Task_id", -1);
+								XLog.d("broadcast addNewFriends");
+								new AddFriendDispatchJob(Taskjson, doTaskType, Task_id).run();
+							}
+						});
+						FriendManager.addPowder(MainManager.wxLpparam, intent.getStringArrayListExtra("FriendPhones"), intent.getStringExtra("say_hello"), intent.getIntExtra("powder_sleep_time", ByteBufferUtils.ERROR_CODE), intent.getIntExtra("taskKey", -1));
+						
+						break;
+					}
+					case "del_friends": {
+						FriendManager.del(MainManager.wxLpparam, intent.getStringExtra("username"), intent.getIntExtra("sleep_time", 5000));
 						break;
 					}
 					case "send_sns": {
@@ -127,7 +142,17 @@ public class WxReceiver extends BroadcastReceiver {
 		ThreadPoolUtils.getInstance().run(new Runnable() {
 			@Override
 			public void run() {
-				MyHelper.writeLine("isWechatOpen", "true");
+				String myWxid = null;
+				try {
+					myWxid = UserDao.getMyWxid();
+				} catch (Exception e) {
+					e.printStackTrace();
+					myWxid = null;
+				}
+				if (!StringUtils.isEmpty(myWxid) && !StringUtils.equals(myWxid, "null")) {
+					MyHelper.writeLine("isWechatOpen", "true");
+				}
+				XLog.d("isWechatOpen myWxid:" + myWxid);
 			}
 		});
 	}

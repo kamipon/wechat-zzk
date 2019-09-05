@@ -1,6 +1,7 @@
 package com.gentcent.wechat.zzk.util;
 
 import android.os.Build;
+import android.util.Log;
 
 public class VoiceJNI {
 	private static final String TAG = "VoiceJNI";
@@ -23,10 +24,7 @@ public class VoiceJNI {
 					System.load(WxSoPath);
 					init_finish = true;
 				} catch (Throwable th) {
-					StringBuilder sb2 = new StringBuilder();
-					sb2.append("VoiceJNI init error is ");
-					sb2.append(th.getMessage());
-					XLog.d(sb2.toString());
+					XLog.d("VoiceJNI init error is " + Log.getStackTraceString(th));
 				}
 			}
 		}

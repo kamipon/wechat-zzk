@@ -42,6 +42,9 @@ public class WxBroadcast {
 			case "add_friend":
 				addFriend(act, jsonStr);
 				break;
+			case "del_friends":
+				delFriend(act, jsonStr);
+				break;
 			case "send_sns":
 				sendSns(act, jsonStr);
 				break;
@@ -74,7 +77,7 @@ public class WxBroadcast {
 	/**
 	 * 检测微信环境
 	 */
-	private static void isWechatOpen(String act) {
+	public static void isWechatOpen(String act) {
 		try {
 			MyHelper.writeLine("isWechatOpen", "false");
 			Context context = MyApplication.getAppContext();
@@ -158,14 +161,34 @@ public class WxBroadcast {
 		try {
 			XLog.d("添加好友");
 			JSONObject jsonObject = JSONObject.parseObject(jsonStr);
-			String helloText = jsonObject.getString("helloText");
-			String addFriendName = jsonObject.getString("addFriendName");
+			String doTaskType = jsonObject.getString("doTaskType");
+			String Taskjson = jsonObject.getString("Taskjson");
+			
+			Context context = MyApplication.getAppContext();
+			Intent intent = new Intent("WxAction");
+			intent.putExtra("doTaskType", "AddFriendsPowder");
+			intent.putExtra("act", act);
+			intent.putExtra("Taskjson", Taskjson);
+			intent.putExtra("doTaskType", doTaskType);
+			context.sendBroadcast(intent);
+		} catch (Exception e) {
+			XLog.e("错误：" + Log.getStackTraceString(e));
+		}
+	}
+	
+	/**
+	 * 删除好友
+	 */
+	private static void delFriend(String act, String jsonStr) {
+		try {
+			JSONObject jsonObject = JSONObject.parseObject(jsonStr);
+			String username = jsonObject.getString("username");
 			
 			Context context = MyApplication.getAppContext();
 			Intent intent = new Intent("WxAction");
 			intent.putExtra("act", act);
-			intent.putExtra("addFriendName", addFriendName);
-			intent.putExtra("helloText", helloText);
+			intent.putExtra("username", username);
+			intent.putExtra("sleep_time", 10000);
 			context.sendBroadcast(intent);
 		} catch (Exception e) {
 			XLog.e("错误：" + Log.getStackTraceString(e));

@@ -126,6 +126,14 @@ public class SyncFriendAct extends BaseActivity {
 				}
 			}).show(getSupportFragmentManager());
 		}
+		boolean isWechatOpen = TextUtils.equals(MyHelper.readLine("isWechatOpen"), "true");
+		if (!isWechatOpen) {
+			new CircleDialog.Builder().setTitle("提示").setText("微信环境异常，请打开微信后重试").setCancelable(false).setCanceledOnTouchOutside(false).setNeutral("确定", new OnClickListener() {
+				public void onClick(View view) {
+					SyncFriendAct.this.finish();
+				}
+			}).show(getSupportFragmentManager());
+		}
 		//创建等待弹窗
 		LoadingDailog.Builder loadBuilder = new LoadingDailog.Builder(this)
 				.setMessage("同步中...");

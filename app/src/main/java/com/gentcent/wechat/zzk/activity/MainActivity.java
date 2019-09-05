@@ -219,7 +219,7 @@ public class MainActivity extends BaseActivity {
 	
 	public void checkState() {
 		boolean checkZzk = ActivityService.checkZzk(MainActivity.this.getContext());
-		WxBroadcast.sendAct("is_wechat_open");
+		WxBroadcast.isWechatOpen("is_wechat_open");
 		boolean isModuleActive = isModuleActive();
 		XLog.d("wxOpen isOpen is " + MyHelper.readLine("isWechatOpen") + "  isModuleActive is " + isModuleActive);
 		setViewState(this.tvXposed, isModuleActive && checkZzk);

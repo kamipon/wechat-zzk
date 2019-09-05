@@ -5,22 +5,15 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.blankj.utilcode.util.ObjectUtils;
-import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.bean.UploadBean;
-import com.gentcent.wechat.zzk.util.GsonUtils;
-import com.gentcent.wechat.zzk.util.MyHelper;
+import com.gentcent.wechat.zzk.bean.UserBean;
 import com.gentcent.wechat.zzk.util.XLog;
-import com.gentcent.wechat.zzk.wcdb.HookSQL;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
 import com.gentcent.wechat.zzk.wcdb.WcdbHolder;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static cn.jiguang.ae.a.c;
-import static com.gentcent.wechat.zzk.model.wallet.LuckyMoney.b;
-
-/* renamed from: android.support.v7.utils.c */
 public class MessageConvert {
 	private static Map<String, UserBean> userList = new HashMap();
 	

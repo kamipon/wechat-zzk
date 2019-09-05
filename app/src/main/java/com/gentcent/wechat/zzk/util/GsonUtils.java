@@ -67,6 +67,17 @@ public class GsonUtils {
 	}
 	
 	/**
+	 * GsonToType
+	 * @param str
+	 * @param type
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> T GsonToType(String str, Type type) {
+		return gson.fromJson(str, type);
+	}
+	
+	/**
 	 * json字符串转成list
 	 *
 	 * @param gsonString

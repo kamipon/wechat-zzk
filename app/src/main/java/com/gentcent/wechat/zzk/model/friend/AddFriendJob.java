@@ -1,86 +1,87 @@
 package com.gentcent.wechat.zzk.model.friend;
 
-import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.birbit.android.jobqueue.Job;
 import com.birbit.android.jobqueue.Params;
 import com.birbit.android.jobqueue.RetryConstraint;
+import com.blankj.utilcode.util.ObjectUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.gentcent.wechat.zzk.MainManager;
-import com.gentcent.wechat.zzk.util.HookParams;
+import com.gentcent.wechat.zzk.service.TaskStateManager;
 import com.gentcent.wechat.zzk.util.MyHelper;
+import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
-import com.gentcent.zzk.xped.XposedHelpers;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
-/**
- * 添加好友
- *
- * @author zuozhi
- * @since 2019-07-19
- */
 public class AddFriendJob extends Job {
-	private static String TAG = "AddFriendJob:  ";
-	private static final int PRIORITY = 5000;
-	private int mDelay;    //单位秒
-	private String mFriendId;    //好友id
-	private String helloText;    //打招呼信息
-	private ArrayList<String> mFriends;
+	public static final int PRIORITY = 5000;
+	int mDelay;
+	String mFriendId;
+	ArrayList<String> mFriends;
+	int mIndex;
+	int mTaskId;
 	
+	public void onCancel(int i, Throwable th) {
+	}
 	
-	public AddFriendJob(int mDelay, String mFriendId, String helloText, ArrayList<String> mFriends) {
-		super(new Params(PRIORITY).persist());
+	public RetryConstraint shouldReRunOnThrowable(Throwable th, int i, int i2) {
+		return null;
+	}
+	
+	public AddFriendJob(ArrayList mFriends, int mIndex, String mFriendId, int mTaskId, int mDelay) {
+		super(new Params(PRIORITY).addTags("AddFriendJob").delayInMs(2000).persist());
+		this.mFriends = mFriends;
+		this.mIndex = mIndex;
+		this.mTaskId = mTaskId;
 		this.mDelay = mDelay;
 		this.mFriendId = mFriendId;
-		this.mFriends = mFriends;
-		this.helloText = helloText;
 	}
 	
-	@Override
 	public void onAdded() {
-		XLog.d(TAG + "add on " + new Date().toLocaleString());
+		XLog.d("AddFriendJob onAdded mFriendId is " + this.mFriendId + "  mDelay" + this.mDelay + "mIndex" + this.mIndex);
 	}
 	
-	@Override
-	public void onRun() {
-		try {
-			//添加好友打招呼语句
-			MyHelper.writeLine("addFriendHelloText", helloText == null ? "" : helloText);
-			
-			Intent intent2 = new Intent();
-			intent2.setClassName(HookParams.WECHAT_PACKAGE_NAME, HookParams.FTSMainUI);
-			intent2.setFlags(FLAG_ACTIVITY_NEW_TASK);
-			MainManager.activity.startActivity(intent2);
-			XLog.d(TAG + "跳转到FTSMainUI SUCCESS");
-			XLog.d(TAG + "FriendManager.activity:  " + FriendManager.activity);
-			if (FriendManager.activity != null) {
-				XposedHelpers.callStaticMethod(MainManager.wxLpparam.classLoader.loadClass(HookParams.FTSMainUI), HookParams.method_c, FriendManager.activity, mFriendId);
-				XLog.d(TAG + "callStaticMethod | FTSMainUI");
-			} else {
-				Thread.sleep(mDelay * 1000);
-				onRun();
-				return;
+	public void onRun() throws Throwable {
+		XLog.d("AddFriendJob onRun  mIndex" + this.mIndex);
+		if (!FriendManager.mIsAddFriend) {
+			if (StringUtils.equals("true", MyHelper.readLine("FriendManager.mIsAddFriend"))) {
+				FriendManager.mIsAddFriend = true;
+				XLog.d("AddFriendJob FriendManager.mIsAddFriend = true ");
 			}
-			Thread.sleep(mDelay * 1000);
-		} catch (Exception e) {
-			e.printStackTrace();
-			XLog.e(TAG + "错误:" + Log.getStackTraceString(e));
+			if (!FriendManager.mIsAddFriend) {
+				XLog.d("AddFriendJob  没有待执行 addfriend job ");
+				return;
+			} else if (FriendManager.mFTSMainUI == null) {
+				FTSMainUI.openUI();
+				XLog.d("AddFriendJob FriendManager.mFTSMainUI get ");
+				Thread.sleep(4000);
+			}
 		}
-	}
-	
-	@Override
-	protected void onCancel(int cancelReason, @Nullable Throwable throwable) {
-	
-	}
-	
-	@Override
-	protected RetryConstraint shouldReRunOnThrowable(@NonNull Throwable throwable, int runCount, int maxRunCount) {
-		return null;
+		if (ObjectUtils.isNotEmpty(MainManager.wxLpparam) && ObjectUtils.isNotEmpty(FriendManager.mFTSMainUI) && ObjectUtils.isNotEmpty(this.mFriendId) && this.mDelay >= 0) {
+			XLog.d("AddFriendJob onRun enter mFriendId is " + this.mFriendId + " mDelay" + this.mDelay);
+			FriendManager.taskId = this.mTaskId;
+			ThreadPoolUtils.getInstance().run(
+					new Runnable() {
+						public void run() {
+							FriendManager.a(MainManager.wxLpparam, FriendManager.mFTSMainUI, AddFriendJob.this.mFriendId);
+						}
+					});
+			if (this.mIndex >= this.mFriends.size() - 1) {
+				XLog.d("AddFriendJob mIndex " + this.mIndex + "mFriends .size ::" + (this.mFriends.size() - 1));
+				ThreadPoolUtils.getInstance().a(new Runnable() {
+					public void run() {
+						FriendManager.mIsAddFriend = false;
+						MyHelper.writeLine("FriendManager.mIsAddFriend", FriendManager.mIsAddFriend + "");
+						FriendManager.mFTSMainUI = null;
+						TaskStateManager.b(AddFriendJob.this.mTaskId);
+					}
+				}, 20000, TimeUnit.MILLISECONDS);
+			}
+			XLog.d("AddFriendJob onRun searchFriend start mFriendId is " + this.mFriendId);
+			Thread.sleep((long) (this.mDelay + 15000));
+			XLog.d("AddFriendJob  mDelay over");
+		}
 	}
 }

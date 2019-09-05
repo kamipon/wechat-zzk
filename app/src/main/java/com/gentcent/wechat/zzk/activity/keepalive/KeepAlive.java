@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Build.VERSION;
 import android.text.TextUtils;
 
-import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.DeviceUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ScreenUtils;
@@ -28,19 +27,19 @@ public class KeepAlive {
 //		}
 	}
 	
-	public static void a(final Context context, final String str, int i) {
+	public static void a(final Context context, final String packageName, int i) {
 		if (ActivityService.MIUIUtils()) {
 			XLog.d(" MIUIUtils do not keepAlive");
 		} else if (TextUtils.equals(DeviceUtils.getModel(), "GRA-A0")) {
 			XLog.d(" GRA do not keepAlive");
-		} else if (!ObjectUtils.isNotEmpty(a) || !a.contains(str)) {
+		} else if (!ObjectUtils.isNotEmpty(a) || !a.contains(packageName)) {
 			if (a == null) {
 				a = new HashSet();
 			}
-			a.add(str);
+			a.add(packageName);
 			ThreadPoolUtils.getInstance().a(new Runnable() {
 				public void run() {
-					if (ScreenUtils.isScreenLock() && context != null && TextUtils.equals(str, "com.tencent.mm")) {
+					if (ScreenUtils.isScreenLock() && context != null && TextUtils.equals(packageName, "com.tencent.mm")) {
 						if (MyHelper.readLine("bright_screen").equals("true")) {
 							ActivityService.a(context, false);
 						} else {
@@ -49,25 +48,22 @@ public class KeepAlive {
 					}
 					if (VERSION.SDK_INT >= 24) {
 						if (context != null) {
-							if (TextUtils.equals(str, "com.gentcent.wechat.zzk")) {
+							if (TextUtils.equals(packageName, "com.gentcent.wechat.zzk")) {
 								KeepAlive7.a(context, "com.tencent.mm");
-							} else if (TextUtils.equals(str, "com.tencent.mm")) {
+							} else if (TextUtils.equals(packageName, "com.tencent.mm")) {
 								KeepAlive7.a(context, "com.gentcent.wechat.zzk");
 							}
 						}
 						return;
 					}
-					if (!KeepAlive.a(str)) {
-						XLog.d("app is not alive " + str);
-						KeepAlive.b(context, str);
+					if (!KeepAlive.a(packageName)) {
+						XLog.d("app is not alive " + packageName);
+						KeepAlive.b(context, packageName);
 					}
 				}
 			}, 30000, (long) i, TimeUnit.MILLISECONDS);
 		} else {
-			StringBuilder sb = new StringBuilder();
-			sb.append(" setPackageName not keepAlive ");
-			sb.append(str);
-			XLog.d(sb.toString());
+			XLog.d(" setPackageName not keepAlive " + packageName);
 		}
 	}
 	

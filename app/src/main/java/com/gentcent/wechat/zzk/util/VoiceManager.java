@@ -32,12 +32,9 @@ public class VoiceManager {
 			return true;
 		}
 		try {
-			String a = MyHelper.a(new FileInputStream(file));
-			StringBuilder sb = new StringBuilder();
-			sb.append("isNeedCopy: filemd5:");
-			sb.append(a);
-			XLog.d("VoiceManager" + sb.toString());
-			if (a.equals("2165fce1c4d60bc5f97ffaa7be0d283b")) {
+			String filemd5 = MyHelper.a(new FileInputStream(file));
+			XLog.d("VoiceManager isNeedCopy: filemd5:" + filemd5);
+			if (filemd5.equals("2165fce1c4d60bc5f97ffaa7be0d283b")) {
 				XLog.d("VoiceManager" + "isNeedCopy :false");
 				return false;
 			}
