@@ -10,7 +10,7 @@ import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.XLog;
 
 /**
- * 微信广播接收器
+ * zzk广播接收器
  */
 public class ZzkReceiver extends BroadcastReceiver {
 	@Override
