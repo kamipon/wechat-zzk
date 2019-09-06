@@ -148,7 +148,7 @@ public class AddFriendDispatchJob {
 					ArrayList<String> arrayList2 = GsonUtils.GsonToType(this.Taskjson, new TypeToken<List<String>>() {
 					}.getType());
 					for (String s : arrayList2) {
-						AddFriendHelper.a().a(s, "SetStar");
+						AddFriendHelper.getInstance().writeRemarkMap(s, "SetStar");
 					}
 					PowderAddBean powderAddBean = new PowderAddBean();
 					powderAddBean.DeviceIMEI = PhoneUtils.getIMEI();

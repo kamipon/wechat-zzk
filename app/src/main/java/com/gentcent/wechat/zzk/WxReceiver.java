@@ -74,6 +74,7 @@ public class WxReceiver extends BroadcastReceiver {
 								String doTaskType = intent.getStringExtra("doTaskType");
 								String Taskjson = intent.getStringExtra("TaskContent");
 								int Task_id = intent.getIntExtra("taskid", -1);
+								XLog.e("Task_id:" + Task_id);
 								XLog.d("broadcast addNewFriends");
 								new AddFriendDispatchJob(Taskjson, doTaskType, Task_id).run();
 							}

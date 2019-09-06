@@ -13,76 +13,76 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AddFriendHelper {
-	private static AddFriendHelper b;
-	private Map<String, String> a;
+	private static AddFriendHelper instance;
+	private Map<String, String> mRemarkMap;
 	
-	public static AddFriendHelper a() {
-		if (b == null) {
+	public static AddFriendHelper getInstance() {
+		if (instance == null) {
 			synchronized (AddFriendHelper.class) {
-				if (b == null) {
-					b = new AddFriendHelper();
+				if (instance == null) {
+					instance = new AddFriendHelper();
 				}
 			}
 		}
-		return b;
+		return instance;
 	}
 	
-	public void a(String str, String str2) {
+	public void writeRemarkMap(String key, String value) {
 		try {
-			if (this.a == null) {
-				this.a = new HashMap();
+			if (this.mRemarkMap == null) {
+				this.mRemarkMap = new HashMap();
 			}
-			if (!this.a.containsKey(str)) {
-				this.a.put(str, str2);
-				MyHelper.writeLine("idTel_json", GsonUtils.GsonString(this.a));
-				XLog.d("jjdd add mRemarkMap size is " + this.a.size());
+			if (!this.mRemarkMap.containsKey(key)) {
+				this.mRemarkMap.put(key, value);
+				MyHelper.writeLine("idTel_json", GsonUtils.GsonString(this.mRemarkMap));
+				XLog.d("jjdd add mRemarkMap size is " + this.mRemarkMap.size());
 			}
 		} catch (Exception e) {
 			XLog.e("addRemark error is " + Log.getStackTraceString(e));
 		}
 	}
 	
-	public boolean a(String str) {
-		Map<String, String> map = this.a;
-		if (map == null || !map.containsKey(str)) {
+	public boolean isContainKey(String key) {
+		Map<String, String> map = this.mRemarkMap;
+		if (map == null || !map.containsKey(key)) {
 			return false;
 		}
-		this.a.remove(str);
+		this.mRemarkMap.remove(key);
 		return true;
 	}
 	
-	public String b(String str) {
-		String str2 = "";
-		String key = str.replace("_", "");
+	public String get(String rowKey) {
+		String val = "";
+		String key = rowKey.replace("_", "");
 		try {
 			XLog.e("getRemark key is " + key);
-			if (ObjectUtils.isNotEmpty(this.a) && this.a.containsKey(key)) {
-				str2 = this.a.get(key);
+			if (ObjectUtils.isNotEmpty(this.mRemarkMap) && this.mRemarkMap.containsKey(key)) {
+				val = this.mRemarkMap.get(key);
 			}
-			if (TextUtils.isEmpty(str2)) {
+			if (TextUtils.isEmpty(val)) {
 				if (TextUtils.isEmpty(MyHelper.readLine("idTel_json"))) {
-					return str2;
+					return val;
 				}
-				this.a = GsonUtils.GsonToType(MyHelper.readLine("idTel_json"), new TypeToken<Map<String, String>>() {
+				this.mRemarkMap = GsonUtils.GsonToType(MyHelper.readLine("idTel_json"), new TypeToken<Map<String, String>>() {
 				}.getType());
-				XLog.d("jjdd getRemark mRemarkMap size is " + this.a.size());
-				if (ObjectUtils.isNotEmpty(this.a) && this.a.containsKey(key)) {
-					str2 = this.a.get(key);
+				XLog.d("jjdd getRemark mRemarkMap size is " + this.mRemarkMap.size());
+				if (ObjectUtils.isNotEmpty(this.mRemarkMap) && this.mRemarkMap.containsKey(key)) {
+					val = this.mRemarkMap.get(key);
 				}
 			}
-			if (ObjectUtils.isNotEmpty(str2)) {
-				this.a.remove(key);
+			if (ObjectUtils.isNotEmpty(val)) {
+				this.mRemarkMap.remove(key);
 			}
 		} catch (Exception e) {
 			XLog.e("getRemark error is " + Log.getStackTraceString(e));
 		}
-		return str2;
+		return val;
 	}
 	
-	public void c(String str) {
-		if (ObjectUtils.isNotEmpty(this.a) && this.a.containsKey(str)) {
-			this.a.remove(str);
-			MyHelper.writeLine("idTel_json", GsonUtils.GsonString(this.a));
+	public void remove(String key) {
+		if (ObjectUtils.isNotEmpty(this.mRemarkMap) && this.mRemarkMap.containsKey(key)) {
+			this.mRemarkMap.remove(key);
+			MyHelper.writeLine("idTel_json", GsonUtils.GsonString(this.mRemarkMap));
 		}
 	}
 }

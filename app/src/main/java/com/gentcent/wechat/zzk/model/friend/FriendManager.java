@@ -217,7 +217,7 @@ public class FriendManager {
 			XLog.d("2 postPowder json is " + json2);
 			OkHttpUtils.postString().url(Api.blank).content(json2).mediaType(MediaType.parse("application/json; charset=utf-8")).build().execute(new StringCallback() {
 				public void onError(Call call, Exception exc, int i) {
-					XLog.d("error postPowder is " + Log.getStackTraceString(exc));
+					XLog.e("error postPowder is " + Log.getStackTraceString(exc));
 				}
 				
 				public void onResponse(String str, int i) {

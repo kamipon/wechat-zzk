@@ -95,19 +95,19 @@ public class AddFriendHook {
 									MapBean mapBean = (MapBean) it.next();
 									if (TextUtils.equals(mapBean.Key, phone) && ObjectUtils.isNotEmpty(mapBean.Value)) {
 										XLog.d("phone and tags is " + phone + "  " + mapBean.Value + "#_" + phone);
-										AddFriendHelper.a().a(wxidQp, mapBean.Value + "#_" + phone);
+										AddFriendHelper.getInstance().writeRemarkMap(wxidQp, mapBean.Value + "#_" + phone);
 									}
 								}
 							}
 						}
-						if (AddFriendHelper.a().a(phone)) {
-							AddFriendHelper.a().a(wxidQp, "SetStar");
+						if (AddFriendHelper.getInstance().isContainKey(phone)) {
+							AddFriendHelper.getInstance().writeRemarkMap(wxidQp, "SetStar");
 						}
-						AddFriendHelper a = AddFriendHelper.a();
-						a.a(wxidQp, stringExtra4 + "-" + phone);
+						AddFriendHelper a = AddFriendHelper.getInstance();
+						a.writeRemarkMap(wxidQp, stringExtra4 + "-" + phone);
 					}
-					if (AddFriendHelper.a().a(userAlias)) {
-						AddFriendHelper.a().a(wxidQp, "SetStar");
+					if (AddFriendHelper.getInstance().isContainKey(userAlias)) {
+						AddFriendHelper.getInstance().writeRemarkMap(wxidQp, "SetStar");
 					}
 				}
 				if ((AddFriendHook.c == 2 && booleanExtra) || FriendManager.mIsAddFriend) {
