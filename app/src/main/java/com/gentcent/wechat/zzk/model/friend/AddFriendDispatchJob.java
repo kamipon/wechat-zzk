@@ -27,8 +27,8 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 
 public class AddFriendDispatchJob {
-	static Observable<String> a;
-	static Observable<String> b;
+	static Observable<String> waitAddFriendOverObservable;
+	static Observable<String> addFriendDispatchObservable;
 	String Taskjson;
 	String type;
 	int Task_id;
@@ -40,17 +40,17 @@ public class AddFriendDispatchJob {
 	}
 	
 	public static synchronized Observable<String> getWaitAddFriendOverObservable() {
-		Observable<String> gVar;
+		Observable<String> Obse;
 		synchronized (AddFriendDispatchJob.class) {
-			if (a == null) {
-				a = a("waitAddFriendOverObservable");
+			if (waitAddFriendOverObservable == null) {
+				waitAddFriendOverObservable = createObservable("waitAddFriendOverObservable");
 			}
-			gVar = a;
+			Obse = waitAddFriendOverObservable;
 		}
-		return gVar;
+		return Obse;
 	}
 	
-	private static Observable<String> a(final String str) {
+	private static Observable<String> createObservable(final String str) {
 		return Observable.create(new ObservableOnSubscribe<String>() {
 			@Override
 			public void subscribe(ObservableEmitter<String> emitter) throws Exception {
@@ -61,14 +61,14 @@ public class AddFriendDispatchJob {
 	}
 	
 	public static synchronized Observable<String> getObservable() {
-		Observable<String> gVar;
+		Observable<String> Obse;
 		synchronized (AddFriendDispatchJob.class) {
-			if (b == null) {
-				b = a("addFriendDispatchObservable");
+			if (addFriendDispatchObservable == null) {
+				addFriendDispatchObservable = createObservable("addFriendDispatchObservable");
 			}
-			gVar = b;
+			Obse = addFriendDispatchObservable;
 		}
-		return gVar;
+		return Obse;
 	}
 	
 	private Observer<String> createObserver() {
@@ -153,7 +153,7 @@ public class AddFriendDispatchJob {
 					PowderAddBean powderAddBean = new PowderAddBean();
 					powderAddBean.DeviceIMEI = PhoneUtils.getIMEI();
 					powderAddBean.ImportNumber = arrayList2;
-					powderAddBean.MinimumTime = 30000;
+					powderAddBean.MinimumTime = 60;
 					ArrayList arrayList3 = new ArrayList();
 					arrayList3.add(powderAddBean);
 					addPowder(arrayList3, this.Task_id, "AddFriendsPowder");
@@ -174,7 +174,8 @@ public class AddFriendDispatchJob {
 		try {
 			for (PowderAddBean powderAddBean : list) {
 				XLog.d("AddFriendDispatchJob addPowder start size is " + powderAddBean.ImportNumber.size());
-				int minTime = powderAddBean.MinimumTime > 0 ? powderAddBean.MinimumTime : 1000;
+				int minTime = powderAddBean.MinimumTime > 0 ? powderAddBean.MinimumTime : 60;
+				XLog.e("powderAddBean.MinimumTime:" + powderAddBean.MinimumTime);
 				if (AddFriendHook.observableSession == null) {
 					XLog.d("AddFriendDispatchJob addPowder sleep 1000 waitsendAddFriendFinishObservable == null");
 					FriendManager.addPowder(MainManager.wxLpparam, powderAddBean.ImportNumber, powderAddBean.SayHello, minTime, taskId);

@@ -168,7 +168,7 @@ public class WxBroadcast {
 //			intent.putExtra("doTaskType", "AddNewFriends");
 			intent.putExtra("doTaskType", jsonObject.getString("doTaskType"));
 			intent.putExtra("TaskContent", jsonObject.getString("TaskContent"));
-			intent.putExtra("taskid", jsonObject.getString("taskid"));
+			intent.putExtra("taskid", jsonObject.getIntValue("taskid"));
 			context.sendBroadcast(intent);
 		} catch (Exception e) {
 			XLog.e("错误：" + Log.getStackTraceString(e));
