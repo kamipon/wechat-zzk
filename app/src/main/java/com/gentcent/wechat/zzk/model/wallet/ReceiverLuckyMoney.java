@@ -521,4 +521,8 @@ public class ReceiverLuckyMoney {
 				str +
 				"'";
 	}
+	
+	public static String findLuckyMoneyContent(String str) {
+		return "select * from message where content like'%" + str + "%' and type = 436207665";
+	}
 }

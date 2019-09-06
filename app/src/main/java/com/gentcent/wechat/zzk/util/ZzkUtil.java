@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -78,6 +79,22 @@ public class ZzkUtil {
 		} catch (Exception unused) {
 			return "";
 		}
+	}
+	
+	public static String reduceHtml(String str) {
+		if (str == null) {
+			return null;
+		}
+		String str2 = "";
+		String str3 = "<[\\s]*?style[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?style[\\s]*?>";
+		String str4 = "<[^>]+>";
+		String str5 = "\\&[a-zA-Z]{1,10};";
+		try {
+			str2 = Pattern.compile(str5, 2).matcher(Pattern.compile(str4, 2).matcher(Pattern.compile(str3, 2).matcher(Pattern.compile("<[\\s]*?script[^>]*?>[\\s\\S]*?<[\\s]*?\\/[\\s]*?script[\\s]*?>", 2).matcher(str).replaceAll("")).replaceAll("")).replaceAll("")).replaceAll("");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return str2;
 	}
 	
 	/**

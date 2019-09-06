@@ -19,7 +19,7 @@ public class MessageBean implements Serializable {
 	private String FriendWxId;
 	//发送的消息内容
 	private String Content;
-	//1：发送	2:接收
+	//1：发送	2:接收	-1：系统消息
 	private int isSend;
 	/**
 	 * 消息类型
@@ -32,6 +32,7 @@ public class MessageBean implements Serializable {
 	 * 7：链接
 	 * 8：文件
 	 * 9：群聊
+	 * 99: 提示信息
 	 */
 	private int Type;
 	//链接图片
@@ -109,6 +110,27 @@ public class MessageBean implements Serializable {
 		messageBean.Type = 5;
 		messageBean.MemberInfo = MemberInfo;
 		return messageBean;
+	}
+	
+	public static MessageBean builderReMoenyMessageBean(String MessageId, int isSend, String FriendWxId, String ChatroomMemberWxId, int MoneyStatus, int Type, int FileSize) {
+		MessageBean messageBean = new MessageBean();
+		messageBean.msgId = MessageId;
+		messageBean.FriendWxId = FriendWxId;
+		messageBean.isSend = isSend;
+		messageBean.addTime = (int) (System.currentTimeMillis() / 1000);
+		messageBean.status = MoneyStatus;
+		messageBean.Type = Type;
+		messageBean.ChatroomMemberWxId = ChatroomMemberWxId;
+		messageBean.fileSize = FileSize;
+		return messageBean;
+	}
+	
+	public MessageBean(String MyWxId, String FriendWxId, String Content, int isSend, int Type) {
+		this.MyWxId = MyWxId;
+		this.FriendWxId = FriendWxId;
+		this.Content = Content;
+		this.isSend = isSend;
+		this.Type = Type;
 	}
 	
 	public List<ChatRoomRedPocketMemberBean> getMemberInfo() {

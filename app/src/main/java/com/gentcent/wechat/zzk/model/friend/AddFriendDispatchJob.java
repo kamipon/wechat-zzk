@@ -98,7 +98,7 @@ public class AddFriendDispatchJob {
 								i++;
 								Thread.sleep(1000);
 								XLog.d("AddFriendDispatchJob addNewFriends sleep 1000 wait sendAddFriendFinishObservable  ");
-								if (i > 3) {
+								if (i > 5) {
 									break;
 								}
 							} while (AddFriendHook.observableSession == null);

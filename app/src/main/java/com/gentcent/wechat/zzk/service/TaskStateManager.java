@@ -1,6 +1,7 @@
 package com.gentcent.wechat.zzk.service;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.blankj.utilcode.util.PhoneUtils;
 import com.gentcent.wechat.zzk.background.Api;
@@ -59,14 +60,13 @@ public class TaskStateManager {
 				try {
 					OkHttpUtils.postString().url(str).content(json).mediaType(MediaType.parse("application/json; charset=utf-8")).build().execute(new StringCallback() {
 						public void onError(Call call, Exception exc, int i) {
-							XLog.d("postGson error " + error + " is " + exc.getMessage() + "  json " + json);
+							XLog.e("postGson error " + error + " is " + Log.getStackTraceString(exc) + "  json " + json);
 							emitter.onError(exc);
 						}
 						
-						public void onResponse(String str, int i) {
-							String sb = "postGson success " + error + " is " + str + "  json " + json;
-							XLog.d(sb);
-							emitter.onNext(str);
+						public void onResponse(String result, int i) {
+							XLog.d("postGson success " + error + " is " + result + "  json me" + json);
+							emitter.onNext(result);
 							emitter.onComplete();
 						}
 					});

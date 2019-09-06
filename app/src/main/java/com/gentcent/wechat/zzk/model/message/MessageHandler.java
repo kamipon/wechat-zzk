@@ -2,6 +2,7 @@ package com.gentcent.wechat.zzk.model.message;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.util.Log;
 
 import com.blankj.utilcode.util.ObjectUtils;
@@ -17,19 +18,24 @@ import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
 import com.gentcent.wechat.zzk.model.wallet.bean.ReceiveRedPocketBean;
 import com.gentcent.wechat.zzk.model.wallet.ReceivableManger;
 import com.gentcent.wechat.zzk.model.wallet.ReceiverLuckyMoney;
+import com.gentcent.wechat.zzk.model.wallet.bean.RedPageBean;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
 import com.gentcent.wechat.zzk.util.VoiceManager;
 import com.gentcent.wechat.zzk.util.XLog;
 import com.gentcent.wechat.zzk.util.ZzkUtil;
+import com.gentcent.wechat.zzk.wcdb.HookSQL;
 import com.gentcent.wechat.zzk.wcdb.UserDao;
+import com.gentcent.wechat.zzk.wcdb.WcdbHolder;
 import com.gentcent.zzk.xped.XposedHelpers;
 import com.gentcent.zzk.xped.callbacks.XC_LoadPackage.LoadPackageParam;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+
+import cn.jiguang.net.HttpUtils;
 
 /**
  * @author zuozhi
@@ -53,6 +59,8 @@ public class MessageHandler {
 		 * -1879048186：共享实时位置
 		 * 10000：提示字体
 		 */
+		String nativeurl;
+		
 		final int type = contentValues.getAsInteger("type");
 		//0：接受 , 1：发送
 		final int isSend = contentValues.getAsInteger("isSend");
@@ -112,6 +120,50 @@ public class MessageHandler {
 				} else if (type == 43) { //视频
 					String imgPath = contentValues.getAsString("imgPath");
 					XLog.d("messageHandle MysnedVideo msgId =" + msgId + " content :" + content + ",imgPath:" + imgPath);
+				} else if (type == 10000) {
+					if (content.contains("weixin://weixinhongbao/") && !talker.endsWith("@chatroom")) {
+						XLog.d(" system redmoney request" + isSend);
+						int indexOf = content.indexOf("sendid=");
+						String substring = content.substring(indexOf + 7, content.indexOf("\"", indexOf));
+						String substring2 = substring.contains("&") ? substring.substring(0, substring.indexOf("&")) : substring;
+						String sendusername = "";
+						Cursor a2 = WcdbHolder.excute(ReceiverLuckyMoney.findLuckyMoneyContent(substring2));
+						while (a2.moveToNext()) {
+							String string = a2.getString(a2.getColumnIndex("content"));
+							String b = ZzkUtil.xmlToJson(string);
+							XLog.d("10000 lucky money cont " + string);
+							XLog.d("10000 lucky money cont " + b);
+							try {
+								nativeurl = GsonUtils.GsonToBean(b, ReceiveRedPocketBean.class).msg.appmsg.wcpayinfo.nativeurl;
+							} catch (Exception unused) {
+								nativeurl = GsonUtils.GsonToBean(b, RedPageBean.class).msg.appmsg.wcpayinfo.nativeurl;
+							}
+							int indexOf2 = nativeurl.indexOf("sendusername=");
+							int indexOf3 = nativeurl.indexOf("&", indexOf2);
+							XLog.d("system redmoney request i2" + indexOf3);
+							if (indexOf3 > 0) {
+								sendusername = nativeurl.substring(indexOf2 + 13, indexOf3);
+							} else {
+								sendusername = nativeurl.substring(indexOf2 + 13);
+							}
+						}
+						a2.close();
+						XLog.d("1000 sendusername == " + sendusername);
+						if (sendusername.equals(UserDao.getMyWxid())) {
+							MessageBean messageBean = MessageBean.builderReMoenyMessageBean(substring2, 1, talker, "", 1, 5, 0);
+							XLog.d("receive weixinhongbao" + GsonUtils.GsonString(messageBean));
+							UploadBean uploadBean = new UploadBean(messageBean, MyHelper.readLine("phone-id"));
+							uploadBean = MessageConvert.a(uploadBean, messageBean.getFriendWxId());
+							XLog.d("receive taskBean  weixinhongbao" + GsonUtils.GsonString(uploadBean));
+							UploadUtil.sendToBack(uploadBean);
+						}
+					}else{
+						SysMessage.b(MainManager.wxLpparam, contentValues);
+					}
+//					bj.a(talker, type, String.valueOf(isSend), content);		TODO:邀请你加入了群聊
+//					MessageBean messageBean = new MessageBean(UserDao.getMyWxid(), talker, content, isSend, 99);
+//					UploadBean uploadBean = new UploadBean(messageBean, MyHelper.readLine("phone-id"));
+//					UploadUtil.sendToBack(MessageConvert.a(uploadBean, messageBean.getFriendWxId()));
 				}
 			}
 			if (type == 419430449) { //转账
@@ -120,7 +172,7 @@ public class MessageHandler {
 				} catch (Exception e) {
 					XLog.d("419430449 转账 error: " + Log.getStackTraceString(e));
 				}
-			} else if (type == 436207665) {
+			} else if (type == 436207665) { //红包
 				ThreadPoolUtils.getInstance().a(new Runnable() {
 					public void run() {
 						String xml;
