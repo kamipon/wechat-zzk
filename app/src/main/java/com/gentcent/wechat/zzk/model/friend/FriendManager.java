@@ -90,7 +90,7 @@ public class FriendManager {
 						if (FriendManager.mFTSMainUI != null) {
 							FriendManager.b(ImportNumber, minTime, taskId);
 						} else {
-							XLog.d("error addFriends mFTSMainUI is null task be cancel");
+							XLog.e("error addFriends mFTSMainUI is null task be cancel");
 						}
 					}
 				}, 3000, TimeUnit.MILLISECONDS);
@@ -139,7 +139,7 @@ public class FriendManager {
 		}
 	}
 	
-	public static void a(LoadPackageParam loadPackageParam) {
+	public static void hook3(LoadPackageParam loadPackageParam) {
 		try {
 			XposedHelpers.findAndHookMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.report.service.e"), "a", Long.TYPE, String.class, Boolean.TYPE, Boolean.TYPE, Boolean.TYPE, new XC_MethodHook() {
 				public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
@@ -249,9 +249,9 @@ public class FriendManager {
 		}
 	}
 	
-	public static void b(final LoadPackageParam loadPackageParam) {
+	public static void hook(final LoadPackageParam loadPackageParam) {
 		try {
-			c(loadPackageParam);
+			hook2(loadPackageParam);
 			XposedHelpers.findAndHookMethod("com.tencent.mm.plugin.fts.ui.FTSMainUI$5", loadPackageParam.classLoader, "onSceneEnd", Integer.TYPE, Integer.TYPE, String.class, loadPackageParam.classLoader.loadClass("com.tencent.mm.ak.m"), new XC_MethodHook() {
 				public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 					super.afterHookedMethod(methodHookParam);
@@ -283,7 +283,7 @@ public class FriendManager {
 		}
 	}
 	
-	private static void c(LoadPackageParam loadPackageParam) throws Throwable {
+	private static void hook2(LoadPackageParam loadPackageParam) throws Throwable {
 		XposedHelpers.findAndHookMethod(loadPackageParam.classLoader.loadClass("com.tencent.mm.plugin.fts.ui.FTSMainUI"), "onCreate", Bundle.class, new XC_MethodHook() {
 			public void afterHookedMethod(MethodHookParam methodHookParam) throws Throwable {
 				super.afterHookedMethod(methodHookParam);

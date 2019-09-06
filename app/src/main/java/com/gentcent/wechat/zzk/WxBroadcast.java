@@ -161,15 +161,14 @@ public class WxBroadcast {
 		try {
 			XLog.d("添加好友");
 			JSONObject jsonObject = JSONObject.parseObject(jsonStr);
-			String taskid = jsonObject.getString("taskid");
-			String TaskContent = jsonObject.getString("TaskContent");
-			
 			Context context = MyApplication.getAppContext();
 			Intent intent = new Intent("WxAction");
 			intent.putExtra("act", act);
-			intent.putExtra("doTaskType", "AddFriendsPowder");
-			intent.putExtra("TaskContent", TaskContent);
-			intent.putExtra("taskid", taskid);
+//			intent.putExtra("doTaskType", "AddFriendsPowder");
+//			intent.putExtra("doTaskType", "AddNewFriends");
+			intent.putExtra("doTaskType", jsonObject.getString("doTaskType"));
+			intent.putExtra("TaskContent", jsonObject.getString("TaskContent"));
+			intent.putExtra("taskid", jsonObject.getString("taskid"));
 			context.sendBroadcast(intent);
 		} catch (Exception e) {
 			XLog.e("错误：" + Log.getStackTraceString(e));

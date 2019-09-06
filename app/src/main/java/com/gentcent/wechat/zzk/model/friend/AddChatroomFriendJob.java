@@ -30,9 +30,10 @@ public class AddChatroomFriendJob extends Job {
 		return null;
 	}
 	
-	protected AddChatroomFriendJob(String str) {
+	protected AddChatroomFriendJob(String json) {
 		super(new Params(PRIORITY).addTags(TAG).delayInMs(5000));
-		this.addNewFriend = GsonUtils.GsonToBean(str, AddNewFriend.class);
+		XLog.e("json:" + json);
+		this.addNewFriend = GsonUtils.GsonToBean(json, AddNewFriend.class);
 	}
 	
 	@Override

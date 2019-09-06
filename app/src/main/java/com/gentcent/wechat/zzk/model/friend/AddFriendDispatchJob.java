@@ -137,7 +137,7 @@ public class AddFriendDispatchJob {
 			case "AddNewFriends":
 				if (AddFriendHook.observableSession != null) {
 					XLog.d("waitAddFinish  ");
-					a(this.Taskjson, 0, -1, this.type);
+					addNewFriends(this.Taskjson, 0, -1, this.type);
 					break;
 				} else {
 					TaskManager.getInstance().getJobManager().addJob(new AddChatroomFriendJob(this.Taskjson));
@@ -170,31 +170,29 @@ public class AddFriendDispatchJob {
 	private void addPowder(ArrayList<PowderAddBean> list, int taskId, String type) {
 		XLog.d("AddFriendDispatchJob addPowder ");
 		int times = 0;
+		XLog.d("powderAddBean.ImportNumber:" + list.get(0).ImportNumber);
 		try {
-			String imei = PhoneUtils.getIMEI();
 			for (PowderAddBean powderAddBean : list) {
-				if (TextUtils.equals(imei, powderAddBean.DeviceIMEI)) {
-					XLog.d("AddFriendDispatchJob addPowder start size is " + powderAddBean.ImportNumber.size());
-					int minTime = powderAddBean.MinimumTime > 0 ? powderAddBean.MinimumTime : 1000;
-					if (AddFriendHook.observableSession == null) {
-						XLog.d("AddFriendDispatchJob addPowder sleep 1000 waitsendAddFriendFinishObservable == null");
-						FriendManager.addPowder(MainManager.wxLpparam, powderAddBean.ImportNumber, powderAddBean.SayHello, minTime, taskId);
-						if (ObjectUtils.isNotEmpty(powderAddBean.NumberTags)) {
-							MyHelper.writeLine("AddFriendTag", GsonUtils.GsonString(powderAddBean.NumberTags));
-						}
-						do {
-							times++;
-							Thread.sleep(1000);
-							XLog.d("AddFriendDispatchJob addPowder sleep 1000 waitsendAddFriendFinishObservable  times" + times);
-							if (times > 3) {
-								return;
-							}
-						} while (AddFriendHook.observableSession == null);
-						return;
+				XLog.d("AddFriendDispatchJob addPowder start size is " + powderAddBean.ImportNumber.size());
+				int minTime = powderAddBean.MinimumTime > 0 ? powderAddBean.MinimumTime : 1000;
+				if (AddFriendHook.observableSession == null) {
+					XLog.d("AddFriendDispatchJob addPowder sleep 1000 waitsendAddFriendFinishObservable == null");
+					FriendManager.addPowder(MainManager.wxLpparam, powderAddBean.ImportNumber, powderAddBean.SayHello, minTime, taskId);
+					if (ObjectUtils.isNotEmpty(powderAddBean.NumberTags)) {
+						MyHelper.writeLine("AddFriendTag", GsonUtils.GsonString(powderAddBean.NumberTags));
 					}
-					a(GsonUtils.GsonString(powderAddBean), minTime, taskId, type);
+					do {
+						times++;
+						Thread.sleep(1000);
+						XLog.d("AddFriendDispatchJob addPowder sleep 1000 waitsendAddFriendFinishObservable  times" + times);
+						if (times > 3) {
+							return;
+						}
+					} while (AddFriendHook.observableSession == null);
 					return;
 				}
+				addNewFriends(GsonUtils.GsonString(powderAddBean), minTime, taskId, type);
+				return;
 			}
 		} catch (Exception e) {
 			XLog.d("AddFriendDispatchJob addPowder error" + e.getMessage());
@@ -202,7 +200,7 @@ public class AddFriendDispatchJob {
 	}
 	
 	@SuppressLint("CheckResult")
-	private void a(final String powderAddBeanStr, final int minTime, final int i2, final String type) {
+	private void addNewFriends(final String powderAddBeanStr, final int minTime, final int i2, final String type) {
 		Observable observer = Observable.combineLatest(getWaitAddFriendOverObservable(), AddFriendHook.observableSession, new BiFunction<String, String, String>() {
 			@Override
 			public String apply(String s, String s2) {
@@ -231,7 +229,7 @@ public class AddFriendDispatchJob {
 		}, new Consumer<Throwable>() {
 			@Override
 			public void accept(Throwable throwable) {
-				XLog.d("AddFriendDispatchJob waitAddFinish accept: 失败：" + throwable);
+				XLog.e("AddFriendDispatchJob waitAddFinish accept: 失败：" + Log.getStackTraceString(throwable));
 			}
 		});
 	}
