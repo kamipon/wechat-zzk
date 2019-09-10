@@ -19,6 +19,7 @@ import com.gentcent.wechat.zzk.R;
 import com.gentcent.wechat.zzk.WxBroadcast;
 import com.gentcent.wechat.zzk.background.Api;
 import com.gentcent.wechat.zzk.bean.UserBean;
+import com.gentcent.wechat.zzk.smscall.SmsManager;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.XLog;
@@ -253,7 +254,7 @@ public class SyncFriendAct extends BaseActivity {
 	/**
 	 * 同步朋友圈
 	 */
-	public void postSelfSns(String self_sns_info, String mywxid, final int snum) {
+	public void postSelfSns(String self_sns_info, String mywxid, final int fnum) {
 		XLog.e("self_sns_info:" + self_sns_info);
 		OkHttpUtils.post().url(Api.syncSns)
 				.addParams("snsInfoList", self_sns_info)
@@ -271,20 +272,46 @@ public class SyncFriendAct extends BaseActivity {
 						XLog.d("response: " + response);
 						JSONObject jsonObject = JSONObject.parseObject(response);
 						if (jsonObject.getBoolean("flag")) {
-							String text = "已成功同步好友" + snum + "个、个人朋友圈数据已同步";
-							new CircleDialog.Builder().setCancelable(false).setCanceledOnTouchOutside(false)
-									.setTitle("标题").setText(text)
-									.setNeutral("确定", new OnClickListener() {
-										public void onClick(View view) {
-											SyncFriendAct.this.finish();
-										}
-									}).show(SyncFriendAct.this.getSupportFragmentManager());
+							postSms(fnum, jsonObject.getIntValue("num"));
 						} else {
 							syncError(jsonObject.getString("msg"));
 						}
 					}
 				});
 	}
+	
+	/**
+	 * 同步短信
+	 */
+	public void postSms(final int fnum, final int snum) {
+		SmsManager.syncSms(getContentResolver(), new StringCallback() {
+			@Override
+			public void onError(Call call, Exception e, int id) {
+				XLog.e("error: " + Log.getStackTraceString(e));
+				syncServiceError();
+			}
+			
+			@Override
+			public void onResponse(String response, int id) {
+				XLog.d("response: " + response);
+				JSONObject jsonObject = JSONObject.parseObject(response);
+				if (jsonObject.getBoolean("flag")) {
+					String text = "已成功同步好友" + fnum + "个\n个人朋友圈" + snum + "条\n短信记录" + jsonObject.getIntValue("num") + "条";
+					new CircleDialog.Builder().setCancelable(false).setCanceledOnTouchOutside(false)
+							.setTitle("标题").setText(text)
+							.setNeutral("确定", new OnClickListener() {
+								public void onClick(View view) {
+									SyncFriendAct.this.finish();
+								}
+							}).show(SyncFriendAct.this.getSupportFragmentManager());
+				} else {
+					syncError(jsonObject.getString("msg"));
+				}
+			}
+		});
+		
+	}
+	
 	
 	public void syncError(String str) {
 		new CircleDialog.Builder().setTitle("提示").setCancelable(false).setCanceledOnTouchOutside(false).setText(str).setNeutral("确定", new OnClickListener() {

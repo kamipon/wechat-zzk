@@ -2,6 +2,7 @@ package com.gentcent.wechat.zzk.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -39,6 +40,7 @@ import com.gentcent.wechat.zzk.activity.keepalive.pixe.ScreenReceiverUtil.C0415a
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.service.ActivityService;
 import com.gentcent.wechat.zzk.service.WechatSupport;
+import com.gentcent.wechat.zzk.smscall.SmsManager;
 import com.gentcent.wechat.zzk.smscall.SmsService;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;

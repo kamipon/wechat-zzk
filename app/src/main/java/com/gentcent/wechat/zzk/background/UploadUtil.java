@@ -448,4 +448,17 @@ public class UploadUtil {
 				.build().execute(stringCallback);
 		
 	}
+	
+	/**
+	 * 发送所有短信到后台
+	 *
+	 * @param list
+	 */
+	public static void sendToBack(List<SmsInfo> list, StringCallback stringCallback) {
+		if (!isbinded()) return;
+		OkHttpUtils.post().url(Api.smsAll)
+				.addParams("smsInfoList", GsonUtils.GsonString(list))
+				.addParams("phoneid", MyHelper.readLine("phone-id"))
+				.build().execute(stringCallback);
+	}
 }
