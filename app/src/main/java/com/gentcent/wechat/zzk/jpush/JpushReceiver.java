@@ -33,6 +33,8 @@ public class JpushReceiver extends JPushMessageReceiver {
 	public void onConnected(Context context, boolean b) {
 		XLog.e(TAG + "onConnected " + b);
 		JPushInterface.setAlias(context, 1, MyHelper.readLine("phone-id", ""));
+		XLog.e("Jpush id:" + JPushInterface.getRegistrationID(context));
+		XLog.e("phone id:" + MyHelper.readLine("phone-id", ""));
 		//重连
 		if (!b) {
 			JPushInterface.init(context);
@@ -55,7 +57,7 @@ public class JpushReceiver extends JPushMessageReceiver {
 	 */
 	@Override
 	public void onAliasOperatorResult(Context context, JPushMessage jPushMessage) {
-		XLog.e(TAG + "setAlias" + jPushMessage);
+//		XLog.e(TAG + "setAlias" + jPushMessage);
 		super.onAliasOperatorResult(context, jPushMessage);
 //		String alias = jPushMessage.getAlias();
 //		boolean needAlias = TextUtils.isEmpty(alias);

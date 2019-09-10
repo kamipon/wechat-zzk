@@ -2,6 +2,7 @@ package com.gentcent.wechat.zzk;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
@@ -33,6 +34,10 @@ public class WxBroadcast {
 		Map<String, Object> extra = GsonUtils.GsonToMaps(customMessage.extra);
 		String act = (String) extra.get("act");
 		String jsonStr = customMessage.message;
+		
+		if (TextUtils.equals(MyHelper.readLine("phone-id"), "")) {
+			return;
+		}
 		
 		XLog.d("act: " + act + " | Message: " + jsonStr);
 		switch (act) {

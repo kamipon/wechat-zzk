@@ -81,7 +81,6 @@ public class DeviceInfoAct extends BaseActivity {
 	
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
-		XLog.d("DeviceUtils.getModel() is " + DeviceUtils.getModel());
 		this.tv_device_mode.setText(DeviceUtils.getModel());
 		this.tv_imei.setText(PhoneUtils.getIMEI());
 		this.tv_device_version.setText(Build.DISPLAY);

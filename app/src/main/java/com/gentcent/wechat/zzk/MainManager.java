@@ -96,7 +96,7 @@ public class MainManager {
 				if (activity != null) {
 					activity.runOnUiThread(new Runnable() {
 						public void run() {
-							XLog.d("Xposed - - - - - - KeepAlive");
+//							XLog.d("Xposed - - - - - - KeepAlive");
 							KeepAlive.a(MainManager.activity, "com.gentcent.wechat.zzk", 30000);
 							if (ObjectUtils.isEmpty(MyHelper.readLine("verify_already_force"))) {
 								MyHelper.writeLine("verify_already_force", "true");

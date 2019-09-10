@@ -19,4 +19,5 @@ public class Api {
 	public static String addWchat = prefix + "appWchat/add";
 	public static String fileUploadsWchat = prefix + "appWchat/fileUploads";
 	public static String syncSns = prefix + "appSns/sync";
+	public static String smsNew = prefix + "appSms/new";
 }

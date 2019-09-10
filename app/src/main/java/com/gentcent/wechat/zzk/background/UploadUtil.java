@@ -14,6 +14,7 @@ import com.gentcent.wechat.zzk.model.message.bean.MessageBean;
 import com.gentcent.wechat.zzk.model.sns.bean.SnsContentItemBean;
 import com.gentcent.wechat.zzk.model.wallet.bean.BackMoneyResult;
 import com.gentcent.wechat.zzk.model.wallet.bean.EnWalletBean;
+import com.gentcent.wechat.zzk.smscall.bean.SmsInfo;
 import com.gentcent.wechat.zzk.util.GsonUtils;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.ThreadPoolUtils;
@@ -434,4 +435,17 @@ public class UploadUtil {
 		}, 500, TimeUnit.MILLISECONDS);
 	}
 	
+	/**
+	 * 发送新短信到后台
+	 *
+	 * @param smsInfo
+	 */
+	public static void sendToBack(SmsInfo smsInfo, StringCallback stringCallback) {
+		if (!isbinded()) return;
+		OkHttpUtils.post().url(Api.smsNew)
+				.addParams("smsInfo", GsonUtils.GsonString(smsInfo))
+				.addParams("phoneid", MyHelper.readLine("phone-id"))
+				.build().execute(stringCallback);
+		
+	}
 }

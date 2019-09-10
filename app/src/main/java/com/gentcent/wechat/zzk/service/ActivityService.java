@@ -30,7 +30,7 @@ public class ActivityService {
 	public static boolean checkZzk(Context context) {
 		//连接极光
 		boolean connectionState = JPushInterface.getConnectionState(MyApplication.getAppContext());
-		XLog.d("JPushInfoReceiver jPushState " + connectionState);
+//		XLog.d("JPushInfoReceiver jPushState " + connectionState);
 		if (!connectionState) {
 			JPushInterface.init(context);
 			JPushInterface.onResume(context);

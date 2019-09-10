@@ -30,14 +30,14 @@ public class ScreenManager {
 	}
 	
 	public void a() {
-		XLog.d("ScreenManager" + "准备启动SinglePixelActivity...");
+//		XLog.d("ScreenManager" + "准备启动SinglePixelActivity...");
 		Intent intent = new Intent(this.a, SinglePixelActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		this.a.startActivity(intent);
 	}
 	
 	public void b() {
-		XLog.d("ScreenManager" + "准备结束SinglePixelActivity...");
+//		XLog.d("ScreenManager" + "准备结束SinglePixelActivity...");
 		WeakReference<Activity> weakReference = this.c;
 		if (weakReference != null) {
 			Activity activity = (Activity) weakReference.get();

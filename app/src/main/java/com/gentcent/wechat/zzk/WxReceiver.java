@@ -151,7 +151,7 @@ public class WxReceiver extends BroadcastReceiver {
 				if (!StringUtils.isEmpty(myWxid) && !StringUtils.equals(myWxid, "null")) {
 					MyHelper.writeLine("isWechatOpen", "true");
 				}
-				XLog.d("isWechatOpen myWxid:" + myWxid);
+//				XLog.d("isWechatOpen myWxid:" + myWxid);
 			}
 		});
 	}

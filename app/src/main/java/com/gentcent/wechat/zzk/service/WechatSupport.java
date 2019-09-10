@@ -28,9 +28,9 @@ public class WechatSupport {
 	}
 	
 	public static void checkVersion(final AppCompatActivity appCompatActivity) {
-		XLog.d("checkWechatVersion activity is " + appCompatActivity);
+//		XLog.d("checkWechatVersion activity is " + appCompatActivity);
 		if (appCompatActivity == null) {
-			XLog.d("checkWechatVersion activity is null");
+			XLog.e("checkWechatVersion activity is null");
 			return;
 		}
 		String version = getAppVersionName();

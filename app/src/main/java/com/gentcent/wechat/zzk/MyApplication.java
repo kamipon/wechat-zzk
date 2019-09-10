@@ -41,8 +41,8 @@ public class MyApplication extends Application {
 		//初始化极光推送
 		JPushInterface.setDebugMode(true);
 		JPushInterface.init(this);
-		XLog.e("Jpush id:" + JPushInterface.getRegistrationID(context));
-		XLog.e("Phone id:" + MyHelper.readLine("phone-id", ""));
+//		XLog.e("Jpush id:" + JPushInterface.getRegistrationID(context));
+//		XLog.e("Phone id:" + MyHelper.readLine("phone-id", ""));
 	}
 	
 	public static Context getAppContext() {

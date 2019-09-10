@@ -157,7 +157,7 @@ public class MessageHandler {
 							XLog.d("receive taskBean  weixinhongbao" + GsonUtils.GsonString(uploadBean));
 							UploadUtil.sendToBack(uploadBean);
 						}
-					}else{
+					} else {
 						SysMessage.b(MainManager.wxLpparam, contentValues);
 					}
 //					bj.a(talker, type, String.valueOf(isSend), content);		TODO:邀请你加入了群聊

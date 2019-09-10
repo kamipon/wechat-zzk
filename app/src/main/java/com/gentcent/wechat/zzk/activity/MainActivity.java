@@ -39,6 +39,7 @@ import com.gentcent.wechat.zzk.activity.keepalive.pixe.ScreenReceiverUtil.C0415a
 import com.gentcent.wechat.zzk.background.UploadService;
 import com.gentcent.wechat.zzk.service.ActivityService;
 import com.gentcent.wechat.zzk.service.WechatSupport;
+import com.gentcent.wechat.zzk.smscall.SmsService;
 import com.gentcent.wechat.zzk.util.HookParams;
 import com.gentcent.wechat.zzk.util.MyHelper;
 import com.gentcent.wechat.zzk.util.SearchClasses;
@@ -146,9 +147,9 @@ public class MainActivity extends BaseActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//注册接收器
-		IntentFilter intentFilter = new IntentFilter("ZzkAction");
-		MyApplication.getAppContext().registerReceiver(new ZzkReceiver(), intentFilter);
+		//开启服务
+		Intent intentService = new Intent(this, SmsService.class);
+		startService(intentService);
 		//创建等待弹窗
 		LoadingDailog.Builder loadBuilder = new LoadingDailog.Builder(this).setMessage("认证中...");
 		dialog = loadBuilder.create();
@@ -221,16 +222,16 @@ public class MainActivity extends BaseActivity {
 		boolean checkZzk = ActivityService.checkZzk(MainActivity.this.getContext());
 		WxBroadcast.isWechatOpen();
 		boolean isModuleActive = isModuleActive();
-		XLog.d("wxOpen isOpen is " + MyHelper.readLine("isWechatOpen") + "  isModuleActive is " + isModuleActive);
+//		XLog.d("wxOpen isOpen is " + MyHelper.readLine("isWechatOpen") + "  isModuleActive is " + isModuleActive);
 		setViewState(this.tvXposed, isModuleActive && checkZzk);
 		this.tvWechat.postDelayed(new Runnable() {
 			public void run() {
 				boolean isWechatOpen = TextUtils.equals(MyHelper.readLine("isWechatOpen"), "true");
-				XLog.d("wxOpen isWechatOpen " + MyHelper.readLine("isWechatOpen") + "  isOpen is " + isWechatOpen + " mHadOpen is " + MainActivity.this.mHadOpen);
+//				XLog.d("wxOpen isWechatOpen " + MyHelper.readLine("isWechatOpen") + "  isOpen is " + isWechatOpen + " mHadOpen is " + MainActivity.this.mHadOpen);
 				MainActivity homeAct = MainActivity.this;
 				homeAct.setViewState(homeAct.tvWechat, isWechatOpen);
 				if (MainActivity.isModuleActive() && !isWechatOpen && !MainActivity.this.mHadOpen) {
-					XLog.d("wxOpen checkState openWechat success is " + MainActivity.this.getContext());
+//					XLog.d("wxOpen checkState openWechat success is " + MainActivity.this.getContext());
 					AppUtils.launchApp(HookParams.WECHAT_PACKAGE_NAME);
 					MainActivity.this.mHadOpen = true;
 				}

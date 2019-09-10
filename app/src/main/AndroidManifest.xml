@@ -4,29 +4,6 @@
     package="com.gentcent.wechat.zzk">
 
     <!-- Required -->
-    <uses-permission android:name="com.gentcent.wechat.zzk.permission.JPUSH_MESSAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- Optional. Required for location feature -->
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 用于开启 debug 版本的应用在 6.0 系统上的层叠窗口权限 -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 震动权限 -->
-    <uses-permission android:name="android.permission.CAMERA" /> <!-- 摄像头权限 -->
-    <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 自动聚焦权限 -->
-
-
     <application
         android:name=".MyApplication"
         android:icon="@mipmap/ic_launcher"
@@ -43,9 +20,20 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.google.zxing.activity.CaptureActivity" />
+        <activity android:name=".activity.DeviceInfoAct" />
+        <activity android:name=".activity.SyncFriendAct" />
+
+        <activity
+            android:name=".activity.keepalive.pixe.SinglePixelActivity"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="false"
+            android:launchMode="singleInstance"
+            android:theme="@style/SingleActivityStyle" /> <!-- 注册继承JCommonService的服务 -->
         <meta-data
             android:name="xposedmodule"
-            android:value="true" />
+            android:value="true" /> <!-- 替换原生极光推送接收器 -->
         <meta-data
             android:name="xposeddescription"
             android:value="@string/app_desc" />
@@ -53,27 +41,20 @@
             android:name="xposedminversion"
             android:value="50" />
 
+        <!--扫码-->
         <receiver
             android:name=".util.ConfigReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="wechat.intent.action.SAVE_WECHAT_ENHANCEMENT_CONFIG" />
             </intent-filter>
-        </receiver> <!-- 注册继承JCommonService的服务 -->
-        <service
-            android:name=".jpush.JpushService"
-            android:enabled="true"
-            android:exported="false"
-            android:process=":pushcore">
-            <intent-filter>
-                <action android:name="cn.jiguang.user.service.action" />
-            </intent-filter>
-        </service> <!-- 替换原生极光推送接收器 -->
+        </receiver>
+        <!-- 极光推送接收器-->
         <receiver
             android:name=".jpush.JpushReceiver"
             android:enabled="true"
             android:exported="true">
-            <intent-filter>
+            <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
                 <action android:name="cn.jpush.android.intent.REGISTRATION" /> <!-- Required  用户注册SDK的intent -->
                 <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" /> <!-- Required  用户接收SDK消息的intent -->
@@ -83,14 +64,51 @@
                 <category android:name="com.gentcent.wechat.zzk" />
             </intent-filter>
         </receiver>
+        <!--监听短信服务-->
+        <service
+            android:name=".smscall.SmsService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":smscall"></service>
 
-        <!--扫码-->
-        <activity android:name="com.google.zxing.activity.CaptureActivity" />
-
-        <activity android:name=".activity.DeviceInfoAct" />
-        <activity android:name=".activity.SyncFriendAct" />
-        <activity android:theme="@style/SingleActivityStyle" android:name=".activity.keepalive.pixe.SinglePixelActivity" android:finishOnTaskLaunch="false" android:excludeFromRecents="true" android:launchMode="singleInstance" android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize"/>
+        <service
+            android:name=".jpush.JpushService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":pushcore">
+            <intent-filter>
+                <action android:name="cn.jiguang.user.service.action" />
+            </intent-filter>
+        </service>
 
     </application>
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="com.gentcent.wechat.zzk.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" /> <!-- Optional. Required for location feature -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 用于开启 debug 版本的应用在 6.0 系统上的层叠窗口权限 -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 震动权限 -->
+    <uses-permission android:name="android.permission.GET_TASKS" /> <!-- 摄像头权限 -->
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 自动聚焦权限 -->
+    <uses-permission android:name="android.permission.SEND_SMS" /><!--发短信的权限-->
+    <uses-permission android:name="android.permission.RECEIVE_SMS" /><!--收短信的权限-->
+    <uses-permission android:name="android.permission.READ_SMS" /><!--读取短信信息的权限-->
+    <uses-permission android:name="android.permission.WRITE_SMS" /><!--读取短信信息的权限-->
+
+
+    <uses-permission android:name="android.permission.CAMERA" />
 
 </manifest>

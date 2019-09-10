@@ -29,7 +29,7 @@ public class KeepAlive {
 	
 	public static void a(final Context context, final String packageName, int i) {
 		if (ActivityService.MIUIUtils()) {
-			XLog.d(" MIUIUtils do not keepAlive");
+//			XLog.d(" MIUIUtils do not keepAlive");
 		} else if (TextUtils.equals(DeviceUtils.getModel(), "GRA-A0")) {
 			XLog.d(" GRA do not keepAlive");
 		} else if (!ObjectUtils.isNotEmpty(a) || !a.contains(packageName)) {
