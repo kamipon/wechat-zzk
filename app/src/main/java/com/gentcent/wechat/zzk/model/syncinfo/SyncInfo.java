@@ -109,7 +109,7 @@ public class SyncInfo {
 //				XLog.e(selfAllData.toString());
 //			}
 			List<SnsContentItemBean> allDatas = SnsHandler.getAllDatas(MainManager.wxLpparam);
-			XLog.d("openWxDb:  " + "所有的朋友圈数据=====================================================================================");
+//			XLog.d("openWxDb:  " + "所有的朋友圈数据=====================================================================================");
 //			UploadService.syncSns(allDatas);
 			MyHelper.writeLine("self_sns_info", GsonUtils.GsonString(allDatas));
 			MyHelper.writeLine("sync_sns_over", "true");

@@ -118,35 +118,39 @@ public class UploadUtil {
 	 */
 	public static void bindWeixin(final UserBean u) {
 		if (!isbinded()) return;
-		XLog.e("bindWeixin: " + u.toString());
-		XLog.e("phone-id: " + MyHelper.readLine("phone-id"));
-		OkHttpUtils.post().url(Api.addweixin + MyHelper.readLine("phone-id"))
-				.addParams("weixinID", u.username)
-				.addParams("weixin", u.alias)
-				.addParams("pic", u.reserved2 == null ? "" : u.reserved2)
-				.addParams("province", u.province == null ? "" : u.province)
-				.addParams("city", u.region == null ? "" : u.region)
-				.addParams("sex", String.valueOf(u.sex))
-				.addParams("nick", String.valueOf(u.nickname))
-				.addParams("signature", String.valueOf(u.signature))
-				.build().execute(
-				new StringCallback() {
-					@Override
-					public void onError(Call call, Exception e, int id) {
-						XLog.e("error: " + Log.getStackTraceString(e));
-						ToastUtils.showShort("同步失败，请检查网络后重新再试");
-					}
-					
-					@Override
-					public void onResponse(String response, int id) {
-						XLog.d("response: " + response);
-						JSONObject jsonObject = JSONObject.parseObject(response);
-						if (jsonObject.getBoolean("flag")) {
-						} else {
-							ToastUtils.showShort(jsonObject.getString("msg"));
-						}
-					}
-				});
+		ThreadPoolUtils.getInstance().run(new Runnable() {
+			@Override
+			public void run() {
+				OkHttpUtils.post().url(Api.addweixin + MyHelper.readLine("phone-id"))
+						.addParams("weixinID", u.username)
+						.addParams("weixin", u.alias)
+						.addParams("pic", u.reserved2 == null ? "" : u.reserved2)
+						.addParams("province", u.province == null ? "" : u.province)
+						.addParams("city", u.region == null ? "" : u.region)
+						.addParams("sex", String.valueOf(u.sex))
+						.addParams("nick", String.valueOf(u.nickname))
+						.addParams("signature", String.valueOf(u.signature))
+						.build().execute(
+						new StringCallback() {
+							@Override
+							public void onError(Call call, Exception e, int id) {
+								XLog.e("error: " + Log.getStackTraceString(e));
+								ToastUtils.showShort("同步失败，请检查网络后重新再试");
+							}
+							
+							@Override
+							public void onResponse(String response, int id) {
+								XLog.d("response: " + response);
+								JSONObject jsonObject = JSONObject.parseObject(response);
+								if (jsonObject.getBoolean("flag")) {
+								} else {
+									ToastUtils.showShort(jsonObject.getString("msg"));
+								}
+							}
+						});
+			}
+		});
+		
 	}
 	
 	/**
@@ -154,32 +158,38 @@ public class UploadUtil {
 	 */
 	public static void bindGroup(final UserBean u) {
 		if (!isbinded()) return;
-		OkHttpUtils.post().url(Api.addgroup)
-				.addParams("chartRoomFriendsList", GsonUtils.GsonString(u.chartRoomFriendsList))
-				.addParams("isAddAddressBook", String.valueOf(u.isAddAddressBook))
-				.addParams("pic", u.reserved2 == null ? "" : u.reserved2)
-				.addParams("nickname", u.nickname)
-				.addParams("notice", u.notice)
-				.addParams("roomOwner", u.roomOwner)
-				.addParams("username", u.username)
-				.build().execute(
-				new StringCallback() {
-					@Override
-					public void onError(Call call, Exception e, int id) {
-						XLog.e("error: " + Log.getStackTraceString(e));
-						ToastUtils.showShort("同步失败，请检查网络后重新再试");
-					}
-					
-					@Override
-					public void onResponse(String response, int id) {
-						XLog.d("response: " + response);
-						JSONObject jsonObject = JSONObject.parseObject(response);
-						if (jsonObject.getBoolean("flag")) {
-						} else {
-							ToastUtils.showShort(jsonObject.getString("msg"));
-						}
-					}
-				});
+		ThreadPoolUtils.getInstance().run(new Runnable() {
+			@Override
+			public void run() {
+				OkHttpUtils.post().url(Api.addgroup)
+						.addParams("chartRoomFriendsList", GsonUtils.GsonString(u.chartRoomFriendsList))
+						.addParams("isAddAddressBook", String.valueOf(u.isAddAddressBook))
+						.addParams("pic", u.reserved2 == null ? "" : u.reserved2)
+						.addParams("nickname", u.nickname)
+						.addParams("notice", u.notice)
+						.addParams("roomOwner", u.roomOwner)
+						.addParams("username", u.username)
+						.build().execute(
+						new StringCallback() {
+							@Override
+							public void onError(Call call, Exception e, int id) {
+								XLog.e("error: " + Log.getStackTraceString(e));
+								ToastUtils.showShort("同步失败，请检查网络后重新再试");
+							}
+							
+							@Override
+							public void onResponse(String response, int id) {
+								XLog.d("response: " + response);
+								JSONObject jsonObject = JSONObject.parseObject(response);
+								if (jsonObject.getBoolean("flag")) {
+								} else {
+									ToastUtils.showShort(jsonObject.getString("msg"));
+								}
+							}
+						});
+			}
+		});
+		
 	}
 	
 	/**
@@ -187,37 +197,42 @@ public class UploadUtil {
 	 */
 	public static void bindFriend(final UserBean u) {
 		if (!isbinded()) return;
-		OkHttpUtils.post().url(Api.appfriend)
-				.addParams("weixinID", UserDao.getMyWxid())
-				.addParams("friendWeixinID", u.username)
-				.addParams("friendWeixin", u.alias)
-				.addParams("pic", u.reserved2 == null ? "" : u.reserved2)
-				.addParams("province", u.province == null ? "" : u.province)
-				.addParams("city", u.region == null ? "" : u.region)
-				.addParams("nick", u.nickname)
-				.addParams("sex", String.valueOf(u.sex))
-				.addParams("desc", u.conRemark)
-				.addParams("fromType", String.valueOf(u.sourceType))
-				.addParams("from", u.sourceText)
-				.addParams("signature", u.signature)
-				.build().execute(
-				new StringCallback() {
-					@Override
-					public void onError(Call call, Exception e, int id) {
-						XLog.e("error: " + Log.getStackTraceString(e));
-						ToastUtils.showShort("同步失败，请检查网络后重新再试");
-					}
-					
-					@Override
-					public void onResponse(String response, int id) {
-						XLog.d("response: " + response);
-						JSONObject jsonObject = JSONObject.parseObject(response);
-						if (jsonObject.getBoolean("flag")) {
-						} else {
-							ToastUtils.showShort(jsonObject.getString("msg"));
-						}
-					}
-				});
+		ThreadPoolUtils.getInstance().run(new Runnable() {
+			@Override
+			public void run() {
+				OkHttpUtils.post().url(Api.appfriend)
+						.addParams("weixinID", UserDao.getMyWxid())
+						.addParams("friendWeixinID", u.username)
+						.addParams("friendWeixin", u.alias)
+						.addParams("pic", u.reserved2 == null ? "" : u.reserved2)
+						.addParams("province", u.province == null ? "" : u.province)
+						.addParams("city", u.region == null ? "" : u.region)
+						.addParams("nick", u.nickname)
+						.addParams("sex", String.valueOf(u.sex))
+						.addParams("desc", u.conRemark)
+						.addParams("fromType", String.valueOf(u.sourceType))
+						.addParams("from", u.sourceText)
+						.addParams("signature", u.signature)
+						.build().execute(
+						new StringCallback() {
+							@Override
+							public void onError(Call call, Exception e, int id) {
+								XLog.e("error: " + Log.getStackTraceString(e));
+								ToastUtils.showShort("同步失败，请检查网络后重新再试");
+							}
+							
+							@Override
+							public void onResponse(String response, int id) {
+								XLog.d("response: " + response);
+								JSONObject jsonObject = JSONObject.parseObject(response);
+								if (jsonObject.getBoolean("flag")) {
+								} else {
+									ToastUtils.showShort(jsonObject.getString("msg"));
+								}
+							}
+						});
+			}
+		});
 	}
 	
 	/**
@@ -225,27 +240,33 @@ public class UploadUtil {
 	 */
 	public static void syncSns(final List<SnsContentItemBean> allDatas) {
 		if (!isbinded()) return;
-		OkHttpUtils.post().url(Api.syncSns)
-				.addParams("snsInfoList", GsonUtils.GsonString(allDatas))
-				.addParams("myWxId", UserDao.getMyWxid())
-				.build().execute(
-				new StringCallback() {
-					@Override
-					public void onError(Call call, Exception e, int id) {
-						XLog.e("error: " + Log.getStackTraceString(e));
-						ToastUtils.showShort("同步失败，请检查网络后重新再试");
-					}
-					
-					@Override
-					public void onResponse(String response, int id) {
-						XLog.d("response: " + response);
-						JSONObject jsonObject = JSONObject.parseObject(response);
-						if (jsonObject.getBoolean("flag")) {
-						} else {
-							ToastUtils.showShort(jsonObject.getString("msg"));
-						}
-					}
-				});
+		ThreadPoolUtils.getInstance().run(new Runnable() {
+			@Override
+			public void run() {
+				OkHttpUtils.post().url(Api.syncSns)
+						.addParams("snsInfoList", GsonUtils.GsonString(allDatas))
+						.addParams("myWxId", UserDao.getMyWxid())
+						.build().execute(
+						new StringCallback() {
+							@Override
+							public void onError(Call call, Exception e, int id) {
+								XLog.e("error: " + Log.getStackTraceString(e));
+								ToastUtils.showShort("同步失败，请检查网络后重新再试");
+							}
+							
+							@Override
+							public void onResponse(String response, int id) {
+								XLog.d("response: " + response);
+								JSONObject jsonObject = JSONObject.parseObject(response);
+								if (jsonObject.getBoolean("flag")) {
+								} else {
+									ToastUtils.showShort(jsonObject.getString("msg"));
+								}
+							}
+						});
+			}
+		});
+		
 	}
 	
 	/**
@@ -440,12 +461,17 @@ public class UploadUtil {
 	 *
 	 * @param smsInfo
 	 */
-	public static void sendToBack(SmsInfo smsInfo, StringCallback stringCallback) {
+	public static void sendToBack(final SmsInfo smsInfo, final StringCallback stringCallback) {
 		if (!isbinded()) return;
-		OkHttpUtils.post().url(Api.smsNew)
-				.addParams("smsInfo", GsonUtils.GsonString(smsInfo))
-				.addParams("phoneid", MyHelper.readLine("phone-id"))
-				.build().execute(stringCallback);
+		ThreadPoolUtils.getInstance().run(new Runnable() {
+			@Override
+			public void run() {
+				OkHttpUtils.post().url(Api.smsNew)
+						.addParams("smsInfo", GsonUtils.GsonString(smsInfo))
+						.addParams("phoneid", MyHelper.readLine("phone-id"))
+						.build().execute(stringCallback);
+			}
+		});
 		
 	}
 	
@@ -454,11 +480,45 @@ public class UploadUtil {
 	 *
 	 * @param list
 	 */
-	public static void sendToBack(List<SmsInfo> list, StringCallback stringCallback) {
+	public static void sendToBack(final List<SmsInfo> list, final StringCallback stringCallback) {
 		if (!isbinded()) return;
-		OkHttpUtils.post().url(Api.smsAll)
-				.addParams("smsInfoList", GsonUtils.GsonString(list))
-				.addParams("phoneid", MyHelper.readLine("phone-id"))
-				.build().execute(stringCallback);
+		ThreadPoolUtils.getInstance().run(new Runnable() {
+			@Override
+			public void run() {
+				OkHttpUtils.post().url(Api.smsAll)
+						.addParams("smsInfoList", GsonUtils.GsonString(list))
+						.addParams("phoneid", MyHelper.readLine("phone-id"))
+						.build().execute(stringCallback);
+			}
+		});
+	}
+	
+	/**
+	 * 每分钟发送一次设备状态到后台
+	 */
+	public static void sendStatus(final int isusual, final int isroot, final int isxPosed, final int electric) {
+		if (!isbinded()) return;
+		ThreadPoolUtils.getInstance().run(new Runnable() {
+			@Override
+			public void run() {
+				OkHttpUtils.post().url(Api.appPhoneUpdate)
+						.addParams("id", MyHelper.readLine("phone-id"))
+						.addParams("isusual", String.valueOf(isusual))
+						.addParams("isroot", String.valueOf(isroot))
+						.addParams("isxPosed", String.valueOf(isxPosed))
+						.addParams("electric", String.valueOf(electric))
+						.build().execute(new StringCallback() {
+					@Override
+					public void onError(Call call, Exception e, int id) {
+						XLog.e("error: " + Log.getStackTraceString(e));
+					}
+					
+					@Override
+					public void onResponse(String response, int id) {
+						XLog.d("发送存活状态: " + isusual + " 电量：" + electric);
+					}
+				});
+			}
+		});
 	}
 }

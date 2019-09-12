@@ -1,5 +1,6 @@
 package com.gentcent.wechat.zzk.background;
 
+import android.os.BatteryManager;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.AppUtils;
@@ -17,6 +18,8 @@ import com.gentcent.wechat.zzk.util.ZzkUtil;
 
 import java.io.File;
 import java.util.List;
+
+import static android.content.Context.BATTERY_SERVICE;
 
 /**
  * @author zuozhi
@@ -48,6 +51,17 @@ public class UploadService {
 		phoneInfoBean.electric = "";
 		XLog.d("当前的sys-info：" + MyHelper.readLine("sys-info", "未绑定设备信息"));
 		UploadUtil.bindDevice(phoneInfoBean);
+	}
+	
+	/**
+	 * 每分钟发送一次设备状态到后台
+	 */
+	public static void sendStatus(int isusual) {
+		int isroot = DeviceUtils.isDeviceRooted() ? 1 : 0;
+		int isxPosed = isXposed() ? 1 : 0;
+		Integer battery = Integer.valueOf(MyHelper.readLine("battery", "4"));
+		
+		UploadUtil.sendStatus(isusual, isroot, isxPosed, battery);
 	}
 	
 	/**
@@ -164,5 +178,4 @@ public class UploadService {
 		}
 		return -1;
 	}
-	
 }

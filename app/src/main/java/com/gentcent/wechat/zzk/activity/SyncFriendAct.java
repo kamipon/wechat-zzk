@@ -255,7 +255,6 @@ public class SyncFriendAct extends BaseActivity {
 	 * 同步朋友圈
 	 */
 	public void postSelfSns(String self_sns_info, String mywxid, final int fnum) {
-		XLog.e("self_sns_info:" + self_sns_info);
 		OkHttpUtils.post().url(Api.syncSns)
 				.addParams("snsInfoList", self_sns_info)
 				.addParams("myWxId", mywxid)

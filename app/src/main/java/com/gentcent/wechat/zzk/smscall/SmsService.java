@@ -52,6 +52,8 @@ public class SmsService extends Service {
 		
 		//注册接收器
 		IntentFilter intentFilter = new IntentFilter("ZzkAction");
+		intentFilter.addAction(Intent.ACTION_TIME_TICK);
+		intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
 		myReceiver = new ZzkReceiver();
 		MyApplication.getAppContext().registerReceiver(myReceiver, intentFilter);
 		XLog.d("注册ZZK接收器");

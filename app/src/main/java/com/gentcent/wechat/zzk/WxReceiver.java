@@ -31,8 +31,6 @@ import com.gentcent.wechat.zzk.wcdb.UserDao;
 
 import java.util.concurrent.TimeUnit;
 
-import cn.jiguang.api.utils.ByteBufferUtils;
-
 /**
  * 微信广播接收器
  */

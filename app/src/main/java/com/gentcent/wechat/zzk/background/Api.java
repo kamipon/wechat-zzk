@@ -12,6 +12,7 @@ public class Api {
 	public static String blank = prefix + ""; //占位 ，测试用
 	
 	public static String appPhone = prefix + "appPhone/add";
+	public static String appPhoneUpdate = prefix + "appPhone/update";
 	public static String addweixin = prefix + "appWchat/addweixin/";
 	public static String appfriend = prefix + "appfriend/add";
 	public static String appfriendList = prefix + "appfriend/addFriends";
@@ -21,4 +22,5 @@ public class Api {
 	public static String syncSns = prefix + "appSns/sync";
 	public static String smsNew = prefix + "appSms/new";
 	public static String smsAll = prefix + "appSms/all";
+	
 }
